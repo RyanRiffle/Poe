@@ -1,0 +1,22 @@
+@page {
+    margin: 96px;
+}
+
+.page-outer {
+    display: none;
+}
+
+.page-inner {
+    display: block;
+    height: 100%;
+    width: 100%;
+    min-height: 50px;
+}
+
+.page-break {
+    display: none;
+}
+
+.toolbar {
+    display: none;
+}

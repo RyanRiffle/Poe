@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Paged.js</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+    <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+</head>
+<body>
+    <div class='toolbar'>
+        <div class='dropdown'>
+            <button class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='true'>
+            Open Sans
+            <span class='color-pick'>&nbsp;</span>
+            </button>
+        </div>
+        
+        <div class='btn-group' role='group' aria-label='...' >
+            <button type='button' class='btn btn-default active'><b>B</b></button>
+            <button type='button' class='btn btn-default'><b><i>I</i></b></button>
+            <button type='button' class='btn btn-default'><b><u>U</u></b></button>
+        </div>
+    </div>
+    
+    <!-- Note to self a hyphen is &#8212; -->
+    <div class='writer'>
+        <div class='page'>
+            <div class='page-inner'>
+                <span class='word'><span class='textcursor'>&#8203;</span></span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- The text caret -->
+    <div class='visiblecursor'></div>
+    
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="bower_components/rangy/rangy-core.js"></script>
+    <script type="text/javascript" src="js/textcursor.js"></script>
+    <script type="text/javascript" src="js/input.js"></script>
+    <script type="text/javascript" src="js/selection.js"></script>
+</body>
+</html>

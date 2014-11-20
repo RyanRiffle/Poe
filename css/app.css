@@ -1,0 +1,146 @@
+
+.writer {
+    border-top: 1px solid #FCFCFC;
+    background-color: #F8F8F8;
+    padding-top: 12px;
+    padding-bottom: 24px;
+    user-select: none;
+}
+
+.page {
+    width: 816px;
+    min-height: 1056px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #C6C6C6;
+    background-color: white;
+    margin-top: 12px;
+    cursor: text;
+    font-size: 100%;
+    user-select: text;
+}
+
+.page-inner {
+    height: 100%;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    padding: 96px;
+    outline: none;
+    font-family: 'Open Sans';
+    font-size: 12pt;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+
+.textcursor {
+    user-select: none;
+}
+
+.textcursor::before {
+    content: '\200B';
+}
+
+.page-break {
+    margin-top: 96px;
+    margin-bottom: 96px;
+    margin-left: -97px;
+    margin-right: -97px;
+    height: 12px;
+    background-color: #F8F8F8;
+    
+    border-top: 1px solid #E9E9E9;
+    border-bottom: 1px solid #E9E9E9;
+}
+
+.toolbar {
+    width: 100%;
+    
+background: #f8f8f8; /* Old browsers */
+background: -moz-linear-gradient(top, #f8f8f8 77%, #f8f8f8 77%, #f2f2f2 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(77%,#f8f8f8), color-stop(77%,#f8f8f8), color-stop(100%,#f2f2f2)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* IE10+ */
+background: linear-gradient(to bottom, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
+    border-bottom: 1px solid #C6C6C6;
+    
+    font-family: 'Open Sans';
+}
+
+.toolbar input {
+    border-radius: 3px;
+    border: 1px solid #C6C6C6;
+    background-color: transparent;
+    padding: 3px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: 12px;
+    outline: none;
+}
+
+.toolbar {
+    user-select: none;
+}
+
+.toolbar button {
+    background-color: #FBFBFB !important;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    margin-left: 12px;
+    padding-left: 6px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-right: 3px;
+}
+
+.color-pick {
+    padding-left: 16px;
+    background-color: black;
+    border-radius: 4px;
+    float: right;
+}
+
+.font-select {
+    width: 150px;
+    text-align: left !important;
+    padding-right: 0px;
+    font-size: 10pt !important;
+}
+
+.btn-group {
+    display: inline-block;
+    margin-left: 12px;
+}
+
+.dropdown {
+    display: inline;
+}
+
+.btn-group button {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
+.visiblecursor {
+    position: absolute;
+    height: 14pt;
+    width: 2px;
+    background-color: black;
+    margin-right: -1px;
+}
+
+.visiblecursor.hide {
+    display: none;
+}
+
+.tab {
+    padding-left: 50px;
+}
