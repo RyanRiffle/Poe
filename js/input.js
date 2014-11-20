@@ -303,12 +303,10 @@ function updatePageBreaks(updateAll) {
         
         var elementBottom = $element.position().top+$element.height()-143;
         if (nextMultiple === 0) {
-            console.log(0);
             nextMultiple = elementBottom;
             var remainder = nextMultiple % pageHeight;
             nextMultiple = nextMultiple + (pageHeight-remainder);
         }
-        console.log(elementBottom +'>'+ nextMultiple);
         
         if(elementBottom > nextMultiple) {
             $element.before($('<div class="page-break"></div>'));
@@ -317,7 +315,6 @@ function updatePageBreaks(updateAll) {
             nextMultiple = nextMultiple + pageHeight;
             
             $('.page').attr('style', 'min-height:'+(1056*breaks)+'px !important');
-            console.log('Set min-height: '+(1056*breaks)+'px !important');
         }
     };
     

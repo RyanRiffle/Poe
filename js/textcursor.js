@@ -96,13 +96,11 @@ function _TextCursor() {
     };
     
     this.beginMove = function() {
-        console.log('begin move');
         clearInterval(BlinkTimer);  
         this.showCursor();
     };
     
     this.endMove = function() {
-    console.log('end move');
     BlinkTimer = setInterval(Blink, 800);
         
         $VisibleCursor.css('left', this.position().left).css('top', this.position().top);
