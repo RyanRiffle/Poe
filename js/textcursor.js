@@ -38,25 +38,36 @@ function _TextCursor() {
         
         for(var i = 0; i < count; i++) {
             var prevSibling = $TextCursor[0].previousSibling;
-            if (prevSibling !== null) {
+            if (prevSibling !== null && prevSibling.textContent !== '') {
                 $(prevSibling).before($TextCursor);
             } else {
-                var child = $TextCursor.parent().prev('.word')[0].lastChild;
-                if (child.textContent === '') {
-                    /*
-                        In case there is an empty text node go to the next
-                        and remove the empty one. Has to check for the empty
-                        one because sometimes there is an empty text node.
-                    */
-                    if (child === $TextCursor.parent()[0].firstChild) {
-                        child = $TextCursor.parent().prev('.word')[0].lastChild;
-                        $($TextCursor.parent().next('.word')[0].firstChild).remove();
-                    } else {
-                        child = child.previousSibling;
-                        $(child.nextSibling).remove();
+                prevSibling = $TextCursor.parent().prev('.word');
+                if (prevSibling.length !== 0) {
+                    prevSibling = prevSibling[0].lastChild;
+                    if (prevSibling.textContent === '') {
+                        /*
+                            In case there is an empty text node go to the next
+                            and remove the empty one. Has to check for the empty
+                            one because sometimes there is an empty text node.
+                        */
+                        if (prevSibling === $TextCursor.parent()[0].firstChild) {
+                            prevSibling = $TextCursor.parent().prev('.word')[0].lastChild;
+                            $($TextCursor.parent().next('.word')[0].firstChild).remove();
+                        } else {
+                            prevSibling = prevSibling.previousSibling;
+                            $(prevSibling.nextSibling).remove();
+                        }
+                    }
+                    $(prevSibling).before($TextCursor);
+                } else {
+                    prevSibling = $TextCursor.parents('.line').prev('.line')[0];//.lastChild.lastChild;
+                    if (prevSibling !== undefined) {
+                        prevSibling = prevSibling.lastChild.lastChild;
+                        if (prevSibling !== null) {
+                            $(prevSibling).after($TextCursor);   
+                        }
                     }
                 }
-                $(child).before($TextCursor);
             }
         }
         this.endMove();
@@ -76,12 +87,21 @@ function _TextCursor() {
             if (nextSibling !== null) {
                 $(nextSibling).after($TextCursor);   
             } else {
-                var child = $($TextCursor.parent().next('.word')[0].firstChild);
-                if (child[0].textContent === '') {
-                    child = $(child[0].nextSibling);
-                    $(child[0].previousSibling).remove();
+                var child = $TextCursor.parent().next('.word');//[0].firstChild);
+                if (child.length !== 0) {
+                    child = $(child[0].firstChild);
+                    if (child[0].textContent === '') {
+                        child = $(child[0].nextSibling);
+                        $(child[0].previousSibling).remove();
+                    }
+                    child.after($TextCursor);
                 }
-               child.after($TextCursor);
+                else {
+                    nextSibling = $TextCursor.parents('.line').next('.line');
+                    if (nextSibling.length !== 0) {
+                        nextSibling.children().first().prepend($TextCursor);    
+                    }
+                }
             }
         }
         this.endMove();

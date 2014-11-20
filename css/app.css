@@ -163,6 +163,22 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
 }
 
 .line {
+    margin: 0px;
+    padding: 0px;
     width: 100%;
     overflow: hidden;
+}
+
+.line::before {
+    content: '\200B';
+}
+
+.line.newline:empty::before {
+    content: '\00a0';
+}
+
+.fontmetrics {
+    position: absolute;
+    left: -100px;
+    top: -100px;
 }

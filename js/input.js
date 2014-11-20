@@ -1,3 +1,4 @@
+$FontMetrics = $('.fontmetrics');
 var characterMapShift = [];
 characterMapShift[8] = "";
 characterMapShift[9] = "";
@@ -219,6 +220,8 @@ var Key_Down = 40;
 var Key_Tab = 9;
 
 var Word_Element = "<span class='word'></span>";
+var Line_Element = "<div class='line'></div>";
+var Line_Newline_Element = "<div class='line newline'></div>";
 
 function mapKey(isShiftKey, characterCode) {
     if (typeof isShiftKey != "boolean" || typeof characterCode != "number") {
@@ -272,60 +275,64 @@ function splitAt($node, callback) {
 }
 
 function updateWordWrap(updateAll) {
-    var pageLeft = $('.page-inner').width();
     TextCursor.beginMove();
+    
+    var offset = $('.line').first().position().left;
     
     var doWrap = function(index, element) {
         var $element = $(element);
-        if ($element.position().left+$element.width() - 363 >  pageLeft) {
-            $element.before('<br class="word-wrap"/>');   
+        var current;
+        if (current = (($element.position().left + $element.width()) - offset) > $element.parent().width()) {
+            if ($element.parent().next().length === 0 || $element.parent().next().hasClass('newline')) {
+                $line = $(Line_Element);
+                $element.parent().after($line);
+            }
+            
+            $element.parent().next().prepend($element);
         }
     };
     
     if (updateAll !== true) {
-        $TextCursor.parent().nextAll('.word-wrap').remove();
         $($TextCursor.parent()[0].previousSibling).nextAll('.word').each(doWrap);
         TextCursor.endMove();
         return;
     }
     
-    $('.word-wrap').remove();
     $('.word').each(doWrap);
 }
 
 var breaks = 1;
 var nextMultiple = 0;
 function updatePageBreaks(updateAll) {
-    var pageHeight = 1056 - (96*2);
+    var pageHeight = (1056-(96*2));
+    var offset = $('.line').first().position().top;
     
+    var last = 1;
     var doBreaks = function(index, element) {
-        $element = $(element);
+        $line = $(element);
         
-        var elementBottom = $element.position().top+$element.height()-143;
-        if (nextMultiple === 0) {
-            nextMultiple = elementBottom;
-            var remainder = nextMultiple % pageHeight;
-            nextMultiple = nextMultiple + (pageHeight-remainder);
-        }
-        
-        if(elementBottom > nextMultiple) {
-            $element.before($('<div class="page-break"></div>'));
-            breaks = breaks+1;
-            
-            nextMultiple = nextMultiple + pageHeight;
-            
-            $('.page').attr('style', 'min-height:'+(1056*breaks)+'px !important');
+        console.log(($line.position().top + $line.height() - offset) / pageHeight +' > '+ last);
+        if (($line.position().top + $line.height() - offset) / pageHeight > last) {
+            $line.before('<div class="page-break"></div>');
+            last += 1;
+            lastHeight = parseInt($('.page-inner').css('min-height').replace('px', ''));
+            console.log((lastHeight + 1056) + 'px');
+            $('.page-inner').css('min-height',  (lastHeight + 1056) + 'px');
         }
     };
     
     if (updateAll !== true) {
-        $TextCursor.parent().nextAll('.page-break').remove();
-        $($TextCursor.parent()[0].previousSibling).nextAll('.word').each(doBreaks);
-    } else {
-        
+        TextCursor.beginMove();
+        $TextCursor.parents('.line').nextAll('.page-break').remove();
+        $line = $TextCursor.parents('.line');
+        last = $('.line').first().nextUntil($line, '.page-break').length + 1;
+        doBreaks(0, $line[0]);
+        $line.nextAll('.line').each(doBreaks);
+        TextCursor.endMove();
     }
 }
 
+var Backspace_Deleted = 0;
 function HandleKey_Backspace(event) {
     event.preventDefault();
     /*
@@ -407,26 +414,53 @@ function HandleKey_Backspace(event) {
                 var todelete = prevSibling;
                 prevSibling = prevSibling.previousSibling;
                 $(prevSibling).append($TextCursor);
-                $(todelete).remove();
-            } else if (prevSibling.nodeType === 1 && prevSibling.tagName !== 'BR') {
+                Backspace_Deleted += $FontMetrics.html($(todelete)).width();
+            } else if (prevSibling.nodeType === 1) {
                $(prevSibling).append($TextCursor);
                 prevSibling = $TextCursor[0].previousSibling;
                 if (prevSibling !== null)
-                    $(prevSibling).remove();
+                    Backspace_Deleted += $FontMetrics.html($(prevSibling)).width();
                 removeParent = true;
-            } else if (prevSibling.tagName === 'BR') {
-                $(prevSibling).remove();
             } else {
                 var prevPrevSibling = prevSibling.previousSibling;
-                $(prevSibling).remove();
+                Backspace_Deleted += $FontMetrics.html($(prevSibling)).width();
                 $(prevPrevSibling).append($TextCursor);
                 removeParent = true;
             }
 
             if (removeParent && $parent[0].textContent === '' && $('.word').length !== 1)
                 $parent.remove();
+        } else {
+            //Go up a line
+            $lineAbove = $TextCursor.parents('.line').prev('.line');
+            if ($lineAbove.length !== 0) {
+                $TextCursor.parent().remove();
+                $lineAbove.children('.word').last().append($TextCursor);
+            } else if ($TextCursor.parents('.line').prev('.page-break').length !== 0) {
+                $TextCursor.parents('.line').prev('.page-break').remove();
+                HandleKey_Backspace(event);
+            }
         }
+        
+        $line = $TextCursor.parents('.line');
+        var $element;
+        var $prev;
+        var child;
+        $line.nextUntil('.line.newline', '.line').each(function(index, element) {
+            $element = $(element);
+            $prev = $(element).prev('.line');
+            child = $element.children('.word').first();
+
+            if (child.length === 0 || $prev.length === 0)
+                return;
+
+            $prev.append(child);
+            if ( child.position().left + child.width() - $element.position().left > $prev.width() ) {
+                $element.prepend(child);   
+            }
+        });
     }
+    
     TextCursor.endMove();
 }
 
@@ -449,12 +483,14 @@ function HandleKey_Space(event) {
 }
 
 function HandleKey_Enter(event) {
-    $newWord = $('<span class="word"></span>');
-    $break = $('<br/>');
-    splitAt($TextCursor, function($front, $end) {
-        $end.prepend($TextCursor);
-        $end.before($break);
-    });
+    TextCursor.beginMove();
+    $line = $(Line_Newline_Element);
+    $word = $(Word_Element);
+    
+    $TextCursor.parents().filter('.line').after($line);
+    $line.html($word);
+    $word.html($TextCursor);
+    TextCursor.endMove();
 }
 
 function HandleKey_Left(event) {
@@ -491,22 +527,30 @@ function DeleteSelection() {
 }
 
 $(document).ready(function() {
+    //This is needed for the pagebreaks
+    $('.page-inner').css('min-height', '1056px');
+    
     $('body').keydown(function(event) {
+        var update = true;
         switch(event.keyCode) {
             case Key_Left:
                 HandleKey_Left(event);
+                update = false;
                 break;
                 
             case Key_Right:
                 HandleKey_Right(event);
+                update = false;
                 break;
                 
             case Key_Up:
                 event.preventDefault();
+                update = false;
                 break;
                 
             case Key_Down:
                 event.preventDefault();
+                update = false;
                 break;
                 
             case Key_Space:
@@ -540,7 +584,9 @@ $(document).ready(function() {
         /*
             These will handle word wraps and pagination after the current position of the caret.
         */
-        updateWordWrap(false);
-        updatePageBreaks(false);
+        if (update) {
+            updateWordWrap(false);
+            updatePageBreaks(false);
+        }
     });
 });
