@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $('.writer').on('mouseup', '.word', function(event) {
+    $('.writer').on('mouseup', '.page', function(event) {
         var selection = rangy.getSelection();
         
         /*
@@ -15,9 +15,15 @@ $(document).ready(function() {
         
             $startContainer.before($TextCursor);
         } else {
-            console.log('here');
             //Use event.target along with clientX and clientY
             var $target = $(event.target);
+            //Since the mouseup is on .page, we don't want to be able to move the cursor on the page,
+            //just on the words.
+            if (!$target.parent().hasClass('word')) {
+                TextCursor.endMove();
+                return;
+            }
+            
             var relx = event.clientX - $target.position().left;
             
             children = $target[0].childNodes;

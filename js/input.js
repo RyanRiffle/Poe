@@ -341,13 +341,12 @@ function HandleKey_Backspace(event) {
         TextCursor.beginMove();
         //There is a selection
         var range = selection.getRangeAt(0);
-        var rangeStart
+        var rangeStart;
         range.deleteContents();
+        range.setStart($TextCursor[0], 0);
+        range.setEnd($TextCursor[0], 0);
         var wordElms = $('.word');
-        for(var x=0; x < wordElms.length; x++) {
-            if (wordElms[x].innerHTML === '')
-                $(wordElms[x]).remove();
-        }
+        $('.word:empty').remove();
 
         $parent = $TextCursor.parent();
         console.log($parent[0].previousSibling);
@@ -363,6 +362,8 @@ function HandleKey_Backspace(event) {
         }
 
         updateWordWrap(false);
+        updatePageBreaks(false);
+        console.log(range);
         //Ugly hack but sometimes backspacing on a selection removes everything ?? Other times it does not
         $('.page-inner:empty').html('<span class="word"><span class="textcursor"></span></span>');
         TextCursor.endMove();
@@ -404,9 +405,17 @@ function HandleKey_Backspace(event) {
         prevSibling = $TextCursor[0].parentElement.previousSibling;
         var $parent = $TextCursor.parent();
         var removeParent = false;
-        if (prevSibling !== null) { 
-            if (prevSibling.isElement && prevSibling.tagName !== 'BR') {
+        if (prevSibling !== null) {
+            if ($(prevSibling).hasClass('tab')) {
+                var todelete = prevSibling;
+                prevSibling = prevSibling.previousSibling;
+                $(prevSibling).append($TextCursor);
+                $(todelete).remove();
+            } else if (prevSibling.nodeType === 1 && prevSibling.tagName !== 'BR') {
                $(prevSibling).append($TextCursor);
+                prevSibling = $TextCursor[0].previousSibling;
+                if (prevSibling !== null)
+                    $(prevSibling).remove();
                 removeParent = true;
             } else if (prevSibling.tagName === 'BR') {
                 $(prevSibling).remove();
@@ -465,9 +474,23 @@ function HandleKey_Tab(event) {
     event.preventDefault();
     TextCursor.beginMove();
     $Tab = $('<span class="tab">&nbsp;</span>');
-    $TextCursor.before($Tab);
-    $Tab.html();
+    splitAt($TextCursor, function($before, $after) {
+        $before.after($Tab);
+        $after.prepend($TextCursor);
+        TextCursor.endMove();
+    });
     TextCursor.endMove();
+}
+
+/*
+    Deletes the selected text if there is text selected.
+*/
+function DeleteSelection() {
+    var sel = rangy.getSelection();
+    if (!sel.isCollapsed) {
+        sel.getRangeAt(0).deleteContents();
+        $('.word:empty').remove();
+    }
 }
 
 $(document).ready(function() {
@@ -490,10 +513,12 @@ $(document).ready(function() {
                 break;
                 
             case Key_Space:
+                DeleteSelection();
                 HandleKey_Space(event);
                 break;
                 
             case Key_Enter:
+                DeleteSelection();
                 HandleKey_Enter(event);
                 break;
                 
@@ -502,10 +527,12 @@ $(document).ready(function() {
                 break;
                 
             case Key_Tab:
+                DeleteSelection();
                 HandleKey_Tab(event);
                 break;
                 
             default:
+                DeleteSelection();
                 TextCursor.beginMove();
                 var letter = mapKey(event.shiftKey, event.keyCode);
                 $TextCursor.before(CreateTextNode(letter));
