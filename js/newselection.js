@@ -118,7 +118,7 @@ function Selection() {
         
         $('.selected').removeClass('selected').removeClass('middle').removeClass('left').removeClass('right');
         
-        $(self.startElement).nextUntil($(self.endElement), '.word').each(function(index, $element) {
+        $(self.startElement).wordsUntil($(self.endElement), '.word').each(function(index, $element) {
             $element = $($element);
              if ($element[0] === self.startElement)
                  $element.addClass('selected').addClass('left');
@@ -138,28 +138,20 @@ function Selection() {
         if (self.startNode === undefined || self.endNode === undefined)
             return;
         
-        if ($(self.startNode).isAfter($(self.endNode))) {
-            var swap = self.startNode;
-            self.startNode = self.endNode;
-            self.endNode = swap;
-        }
-        
         if (self.startNode.nextSibling === self.endNode || self.startNode.previousSibling === self.endNode) {
             //Split 'em!W
             $(self.endNode).after($splitter);
             splitAt($splitter, function($before, $after) {
                 self.startElement = $before[0];
                 self.endElement = $before[0];
+                $splitter.remove();
             });
-            
-            $splitter.remove();
             $('.word:empty').remove();
             
             return;
         }
         
         //Since start is only set once every selection
-        if (self.startElement === null) {
             $(self.startNode).before($splitter);
             var firstNode = $(self.startNode).parent()[0].firstChild;
             if (firstNode.nodeType === 3 && firstNode.textContent === '')
@@ -173,16 +165,21 @@ function Selection() {
                     self.startElement = $after[0];
                 });
             }
-        }
                 
         $(self.endNode).after($splitter);
         splitAt($splitter, function($before, $after) {
             self._splitEnd = [$before, $after];
+            console.log(self._splitEnd);
             self.endElement = $before[0];
             $splitter.remove();
         });
         
         $('.word:empty').remove();
+        if ($(self.startElement).isAfter($(self.endElement))) {
+            var swap = self.startElement;
+            self.startElement = self.endElement;
+            self.endElement = swap;
+        }
     };
     
     self._textNodeAtClientPos = function(x, y) {

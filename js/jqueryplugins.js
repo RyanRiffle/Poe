@@ -40,3 +40,32 @@ $.fn.childAtClientPos = function(x, y) {
     
     return null;
 };
+
+$.fn.wordsUntil = function($element, selector) {
+    $ret = this.nextUntil($element, selector);
+    $line = this.parents('.line');
+    var contains = $line.index($element);
+    
+    while(contains === -1) {
+        $line = $line.next('.line');
+        if ($line.length === 0 || $line.index($element) === 0)
+            break;
+        
+        console.log($line.children(selector).first().nextUntil($element, selector).length);
+        $ret.add($line.children(selector).first().nextUntil($element, selector));
+        $ret.add($line.children(selector).first());
+        
+        contains = $line.index($element);
+    }
+    
+    return $ret;
+};
+
+$.fn.join = function($element) {
+    if ($element.isAfter(this))
+        this.append($element.children());
+    else
+        this.prepend($element.children());
+    
+    $element.remove();
+};
