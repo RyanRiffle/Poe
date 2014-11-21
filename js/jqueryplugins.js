@@ -1,4 +1,24 @@
 $.fn.isAfter = function(elm) {
+    if (this[0].nodeType === 3 && elm[0].nodeType === 3) {
+        var range = document.createRange();
+        var thisrect, elmrect;
+        range.selectNode(this[0]);
+        thisrect = range.getClientRects()[0];
+        range.selectNode(elm[0]);
+        elmrect = range.getClientRects()[0];
+        
+        if (thisrect.top < elmrect.top) {
+            return false;   
+        } else if (thisrect.top > elmrect.top) {
+            return true;   
+        } else {
+            //They are on the same line.
+            if (thisrect.left < elmrect.left)
+                return false;   
+            else
+                return true;   
+        }
+    }
     return this.prevAll().filter(elm).length !== 0;
 };
 

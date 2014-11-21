@@ -6,6 +6,10 @@
     padding-bottom: 24px;
     -webkit-user-select: none;
     user-select: none;
+    overflow-y: scroll;
+    max-height: 600px;
+    width: 100%;
+    padding-bottom: 100%;
 }
 
 .page {
@@ -35,6 +39,7 @@ html, body {
     height: 100%;
     padding: 0px;
     margin: 0px;
+    overflow: hidden;
 }
 
 
@@ -145,21 +150,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
 
 .selected {
     background-color: #55C1EC;
-    border: 1px solid #2191D5;
     color: white;
-}
-
-.selected.left {
-    border-right: 1px solid #55C1EC;
-}
-
-.selected.middle {
-    border-right: 1px solid #55C1EC;
-    border-left: 1px solid #55C1EC;
-}
-
-.selected.right {
-    border-left: 1px solid #55C1EC;
 }
 
 .line {
