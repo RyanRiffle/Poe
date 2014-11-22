@@ -3,7 +3,18 @@ $('body').ready(function() {
 poe.Elements = {
     Word: '<span class="word"></span>',
     Line: '<div class="line"></div>',
+    Page: '<div class="page-inner"></div>',
 };
+    
+poe.Selectors = {
+    Word: '.word',
+    Line: '.line',
+    Page: '.page-inner',
+};
+    
+poe.Types = {};
+poe.Type.Writer = 'Writer';
+poe.Type.jQuery = 'jQuery';
 
 poe.writer = function() {
     var doc = poe.document();
@@ -28,18 +39,37 @@ poe.writer = function() {
             console.log(cursor.nextLine());
             cursor.nextLine().prepend(cursor.currentWord());
             cursor.updateVisibleCursor();
-        } else if (cursor.nextLine().isValid()) {
-            console.log(cursor.nextLine().firstChild().width() + cursor.currentLine().lastChild().positionRight() +' < '+ doc.lineOuterPosition());
-            if (cursor.nextLine().firstChild().width() + cursor.currentLine().lastChild().positionRight() < doc.lineOuterPosition()) {
+        } else if (cursor.nextLine().isValid() && !cursor.nextLine().hasClass('newline')) {
+            if (cursor.nextLine().firstChild().width() + cursor.currentLine().lastChild().pos().right < doc.lineOuterPosition()) {
                 cursor.currentLine().append(cursor.nextLine().firstChild());
+                if (cursor.nextLine().is(':empty')) {
+                    cursor.nextLine().remove();
+                    lineRemoved(cursor.currentPage());
+                }
             }
         }
+    };
+    
+    var updatePageBreaks = function() {
+        console.log(cursor.currentLine().pos().bottom +' > '+ cursor.currentPage().pos().bottom);
+        if (cursor.currentLine().pos().bottom > cursor.currentPage().pos().bottom) {
+            var page = $(poe.Elements.Page);
+            cursor.currentPage().after(page);
+            page.prepend(cursor.currentLine());
+        }
+    };
+    
+    var lineRemoved = function(page) {
+        
     };
     
     var handleKeyDown = function(event) {
         switch(event.keyCode) {
             case poe.key.Left:
                 event.preventDefault();
+                if (cursor.prev().parent()[0] === cursor.currentPage()[0])
+                    return;
+                
                 cursor.moveLeft(poe.TextCursor.Move.Char, 1);
                 break;
                 
@@ -50,15 +80,23 @@ poe.writer = function() {
                 
             case poe.key.Backspace:
                 event.preventDefault();
+                if (cursor.prev().parent()[0] === cursor.currentPage()[0])
+                    return;
+                
                 cursor.moveLeft(poe.TextCursor.Move.Char, 1);
                 cursor.next().remove();
                 updateWordWrap();
+                updatePageBreaks();
                 break;
                 
             case poe.key.Delete:
                 event.preventDefault();
+                if (cursor.next().parent().parent()[0] !== cursor.currentLine()[0]) {
+                    cursor.nextLine().removeClass('newline');
+                }
                 cursor.next().remove();
                 updateWordWrap();
+                updatePageBreaks();
                 break;
                 
             case poe.key.Space:
@@ -67,6 +105,23 @@ poe.writer = function() {
                 cursor.currentWord().after(poe.Elements.Word);
                 cursor.moveRight(poe.TextCursor.Move.Word, 1);
                 updateWordWrap();
+                updatePageBreaks();
+                break;
+                
+            case poe.key.Enter:
+                event.preventDefault();
+                cursor.currentLine().after(poe.Elements.Line);
+                var word = $(poe.Elements.Word);
+                cursor.nextLine().prepend(word);
+                while(cursor.next().parent() === cursor.currentWord()) {
+                    word.append(cursor.next());
+                }
+                
+                word.after(cursor.currentWord().nextAll());
+                cursor.moveRight(poe.TextCursor.Move.Line, 1);
+                cursor.moveRight(poe.TextCursor.Move.Word, 1);
+                cursor.currentLine().addClass('newline');
+                updatePageBreaks();
                 break;
                 
             default:
@@ -80,6 +135,7 @@ poe.writer = function() {
                 
                 cursor.insertBefore(letter);
                 updateWordWrap();
+                updatePageBreaks();
                 break;
         }
     };

@@ -15,6 +15,7 @@ poe.textCursor = function(forNode) {
     var anchor = $('<span class="textcursor"></span>');
     var range = $('<span class="textcursorrange"></span>');
     var visibleCursor = $('<div class="visiblecursor"></div>');
+    var blinkTimer;
     
     var self = {
         position: function() {
@@ -30,15 +31,19 @@ poe.textCursor = function(forNode) {
         },
         
         currentWord: function() {
-            return anchor.parents('.word');
+            return anchor.parents(poe.Selectors.Word);
         },
         
         currentLine: function() {
-            return anchor.parents('.line');
+            return anchor.parents(poe.Selectors.Line);
+        },
+        
+        currentPage: function() {
+            return anchor.parents(poe.Selectors.Page);  
         },
         
         nextWord: function() {
-            var node = anchor.parents('.word').nextNode();
+            var node = anchor.parents(poe.Selectors.Word).nextNode();
             while(!node.hasClass('word') && node.isValid()) {
                 node = node.nextNode();
             }
@@ -47,7 +52,7 @@ poe.textCursor = function(forNode) {
         },
         
         prevWord: function() {
-            var node = anchor.parents('.word').prevNode();
+            var node = anchor.parents(poe.Selectors.Word).prevNode();
             while(!node.hasClass('word') && node.isValid()) {
                 node = node.prevNode();
             }
@@ -74,7 +79,16 @@ poe.textCursor = function(forNode) {
             return node;
         },
         
+        nextPage: function() {
+            return self.currentPage().next(poe.Selectors.Page);
+        },
+        
+        prevPage: function() {
+            return self.currentPage().prev(poe.Selectors.Page);
+        },
+        
         moveRight: function(TextCursorMove, count) {
+            stopBlink();
             if (typeof(TextCursorMove) !== 'number') {
                 throw {
                     error: 'poe.TextCursor.Move.* should be the first argument to move functions.'  
@@ -105,7 +119,7 @@ poe.textCursor = function(forNode) {
                 for(var x = 0; x < count; x++) {
                     if (!self.nextLine().isValid())
                         break;
-                    self.nextLine().nextWord().prepend(anchor);
+                    self.nextLine().firstChild().prepend(anchor);
                 }
             };
             
@@ -124,9 +138,11 @@ poe.textCursor = function(forNode) {
             }
             
             self.updateVisibleCursor();
+            startBlink();
         },
         
         moveLeft: function(TextCursorMove, count) {
+            stopBlink();
             if (typeof(TextCursorMove) !== 'number') {
                 throw {
                     error: 'poe.TextCursor.Move.* should be the first argument to move functions.'  
@@ -176,6 +192,7 @@ poe.textCursor = function(forNode) {
             }
             
             self.updateVisibleCursor();
+            startBlink();
         },
         
         insertBefore: function(data) {
@@ -194,6 +211,19 @@ poe.textCursor = function(forNode) {
         }
     };
     
+    var blinkCursor = function() {
+        $('.visiblecursor').toggleClass('hide');
+    };
+    
+    var stopBlink = function() {
+        clearInterval(blinkTimer);
+        $('.visiblecursor').removeClass('hide');
+    };
+    
+    var startBlink = function() {
+        blinkTimer = setInterval(blinkCursor, 700);
+    }
+    
     var initialize = function() {
         if (typeof(forNode) !== 'undefined' && forNode.isValid()) {
             if (forNode.isTextNode()) {
@@ -202,17 +232,12 @@ poe.textCursor = function(forNode) {
                 forNode.prepend(anchor);
             }
         } else {
-            $('.word').first().prepend(anchor);
+            $(poe.Selectors.Word).first().prepend(anchor);
         }
         $('body').append(visibleCursor);
+        $('.writer').scroll(self.updateVisibleCursor);
 
-        //For blink the cursor
-        $('body').ready(function() {
-            setInterval(function() {
-                $('.visiblecursor').toggleClass('hide');
-            }, 700); 
-        });
-        
+        startBlink();
         self.updateVisibleCursor();
     }();
     

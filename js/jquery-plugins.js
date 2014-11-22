@@ -105,4 +105,14 @@ $.fn.prevTextNode = function() {
 
 $.fn.positionRight = function() {
     return this.position().left + this.width();
-}
+};
+
+$.fn.pos = function() {
+    var pos = this.position();
+    return {
+        left: pos.left,
+        top: pos.top,
+        right: pos.left + this.width(),
+        bottom: pos.top + this.height()
+    };
+};

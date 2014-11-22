@@ -15,23 +15,25 @@
 .page {
     width: 816px;
     min-height: 1056px;
+    max-height: 1056px;
+}
+
+.page-inner {
+    width: 816px;
+    min-height: 1056px;
+    max-height: 1056px;
+    -webkit-box-sizing: border-box;
+    padding: 96px;
+    outline: none;
+    font-family: 'Open Sans';
+    font-size: 12pt;
+    
     margin-left: auto;
     margin-right: auto;
     border: 1px solid #C6C6C6;
     background-color: white;
     margin-top: 12px;
     cursor: text;
-    font-size: 100%;
-}
-
-.page-inner {
-    height: 100%;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    padding: 96px;
-    outline: none;
-    font-family: 'Open Sans';
-    font-size: 12pt;
 }
 
 html, body {
