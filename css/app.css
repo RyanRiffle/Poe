@@ -52,6 +52,10 @@ html, body {
     content: '\200B';
 }
 
+.word:empty::before {
+    content: '\200B';
+}
+
 .page-break {
     margin-top: 96px;
     margin-bottom: 96px;

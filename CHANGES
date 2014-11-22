@@ -1,2 +1,6 @@
 Nov 20 2014
 Major change in js/input.js -- every line is now contained inside a div
+
+Nov 22 2014
+Codebase rewrite has came along nicely. The base functionality is back aside from pagination, and the code now
+documents itself a lot better.
