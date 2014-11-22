@@ -49,6 +49,14 @@ poe.textCursor = function (forNode) {
             prev: function () {
                 return anchor.prevTextNode();
             },
+            
+            nextNode: function () {
+                return anchor.nextNode();
+            },
+            
+            prevNode: function () {
+                return anchor.prevNode();
+            },
 
             currentWord: function () {
                 return anchor.parents(poe.Selectors.Word);
@@ -63,7 +71,7 @@ poe.textCursor = function (forNode) {
             },
 
             nextWord: function () {
-                var node = anchor.parents(poe.Selectors.Word).nextNode();
+                var node = anchor.parents(poe.Selectors.Word).nextSibling();
                 while (!node.hasClass('word') && node.isValid()) {
                     node = node.nextNode();
                 }

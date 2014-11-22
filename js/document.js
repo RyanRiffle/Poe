@@ -2,35 +2,69 @@
 poe.Types.Document = 'Document';
 
 poe.Document = function () {
-    var margins = {
-        left: 96,
-        top: 96,
-        right: 96,
-        bottom: 96
-    },
+    var styleElement = $('<style type="text/css"></style>'),
+        margins = {
+            left: 96,
+            top: 96,
+            right: 96,
+            bottom: 96
+        },
     
         size = {
             width: 816,
             height: 1056
         },
+        
+        lineSpacing = 1.5,
     
         lineLeft = $('.line').first().position().left,
         lineRight = lineLeft + $('.line').first().width(),
     
         updateMargins = function () {
             //Update the dom the reflect margin changes.
-            $(poe.Selectors.Page).css('padding-left', margins.left + 'px');
+            /*$(poe.Selectors.Page).css('padding-left', margins.left + 'px');
             $(poe.Selectors.Page).css('padding-top', margins.top + 'px');
             $(poe.Selectors.Page).css('padding-right', margins.right + 'px');
-            $(poe.Selectors.Page).css('padding-bottom', margins.bottom + 'px');
+            $(poe.Selectors.Page).css('padding-bottom', margins.bottom + 'px');*/
+            
+            styleElement.append(createCss(poe.Selectors.Page, {
+                'padding-left': margins.left + 'px',
+                'padding-right': margins.right + 'px',
+                'padding-top': margins.top + 'px',
+                'padding-bottom': margins.bottom + 'px'
+            }));
+            
+            styleElement.append(createCss(poe.Selectors.Line, {
+                'line-height': (lineSpacing*100) + '%'
+            }));
         },
         
         updateSize = function() {
-            $(poe.Selectors.Page).css('min-width', size.width);
-            $(poe.Selectors.Page).css('min-height', size.height);
-
-            $(poe.Selectors.Page).css('max-width', size.width);
-            $(poe.Selectors.Page).css('max-height', size.height);
+            styleElement.append(createCss(poe.Selectors.Page, {
+                'min-width': size.width + 'px',
+                'min-height': size.height + 'px',
+                'max-width': size.width + 'px',
+                'max-height': size.height + 'px'
+            }));
+        },
+        
+        createCss = function(selector, value) {
+            var key,
+                lines = [],
+                ret,
+                x;
+            for (key in value) {
+                lines.push(key + ':' + value[key] + ';');
+            }
+            
+            ret = selector + '{ ';
+            for (x = 0; x < lines.length; x += 1) {
+                ret += lines[x];
+            }
+            ret += ' }';
+            
+            console.log(ret);
+            return ret;
         },
     
         self = {
@@ -80,6 +114,8 @@ poe.Document = function () {
     
     //Constructor 
     (function () {
+        $('head').append(styleElement);
+        
         self.setMargin(1, 1, 1, 1);
         self.setSize(816, 1056);
     }());

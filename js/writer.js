@@ -4,13 +4,15 @@ $('body').ready(function () {
     poe.Elements = {
         Word: '<span class="word"></span>',
         Line: '<div class="line"></div>',
-        Page: '<div class="page-inner"></div>'
+        Page: '<div class="page-inner"></div>',
+        Tab: '<span class="tab word">&#8203;</span>'
     };
     
     poe.Selectors = {
         Word: '.word',
         Line: '.line',
-        Page: '.page-inner'
+        Page: '.page-inner',
+        Tab: '.tab'
     };
 
     poe.Types.Writer = 'Writer';
@@ -27,7 +29,10 @@ $('body').ready(function () {
             },
 
             updateWordWrap = function () {
-                if (cursor.position().left > doc.lineOuterPosition()) {
+                $(poe.Selectors.Word).filter(':empty').remove();
+                console.log(doc.lineInnerPosition());
+                console.log(cursor.position().left + ' > ' + cursor.currentLine().pos().right);
+                if (cursor.position().left > cursor.currentLine().pos().right) {
                     if (!cursor.nextLine().isValid()) {
                         cursor.currentLine().after(poe.Elements.Line);
                     }
@@ -78,6 +83,16 @@ $('body').ready(function () {
                 case poe.key.Backspace:
                     event.preventDefault();
                     var line;
+                    
+                    //Special case for tabs because well it needs it.
+                    if (cursor.prevNode().hasClass('tab')) {
+                        cursor.prevNode().remove();
+                        updateWordWrap();
+                        updatePageBreaks();
+                        cursor.updateVisibleCursor();
+                        return;
+                    }
+                        
                     if (cursor.prev().parent()[0] === cursor.currentPage()[0]) {
                         return;
                     }
@@ -129,6 +144,15 @@ $('body').ready(function () {
                     cursor.moveRight(poe.TextCursor.Move.Line, 1);
                     cursor.currentLine().addClass('newline');
                     updatePageBreaks();
+                    break;
+                        
+                case poe.key.Tab:
+                    event.preventDefault();
+                    var tab = $(poe.Elements.Tab),
+                        word = $(poe.Elements.Word);
+                    cursor.currentWord().after(tab);
+                    tab.after(word);
+                    cursor.moveRight(poe.TextCursor.Move.Word, 2);
                     break;
 
                 default:
