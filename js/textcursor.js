@@ -184,6 +184,7 @@ poe.textCursor = function (forNode) {
                         if (!self.prev().isValid()) {
                             break;
                         }
+                        
                         self.prev().before(anchor);
                     }
                 },

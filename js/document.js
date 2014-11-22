@@ -24,6 +24,14 @@ poe.Document = function () {
             $(poe.Selectors.Page).css('padding-right', margins.right + 'px');
             $(poe.Selectors.Page).css('padding-bottom', margins.bottom + 'px');
         },
+        
+        updateSize = function() {
+            $(poe.Selectors.Page).css('min-width', size.width);
+            $(poe.Selectors.Page).css('min-height', size.height);
+
+            $(poe.Selectors.Page).css('max-width', size.width);
+            $(poe.Selectors.Page).css('max-height', size.height);
+        },
     
         self = {
             type: function () {
@@ -57,11 +65,12 @@ poe.Document = function () {
             setSize: function (width, height) {
                 size.width = width;
                 size.height = height;
-                $(poe.Selectors.Page).css('min-width', size.width);
-                $(poe.Selectors.Page).css('min-height', size.height);
-
-                $(poe.Selectors.Page).css('max-width', size.width);
-                $(poe.Selectors.Page).css('max-height', size.height);
+                updateSize();
+            },
+            
+            pageAdded: function() {
+                updateMargins();
+                updateSize();
             },
 
             pageSize: function () {

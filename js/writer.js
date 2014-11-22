@@ -21,7 +21,9 @@ $('body').ready(function () {
             cursor = poe.TextCursor.create(),
             
             lineRemoved = function (page) {
-                
+                if (page.next(poe.Selectors.Page).isValid()) {
+                    page.append(page.next(poe.Selectors.Page).children(poe.Selectors.Line).first());
+                }
             },
 
             updateWordWrap = function () {
@@ -29,7 +31,6 @@ $('body').ready(function () {
                     if (!cursor.nextLine().isValid()) {
                         cursor.currentLine().after(poe.Elements.Line);
                     }
-                    console.log(cursor.nextLine());
                     cursor.nextLine().prepend(cursor.currentWord());
                     cursor.updateVisibleCursor();
                 } else if (cursor.nextLine().isValid() && !cursor.nextLine().hasClass('newline')) {
@@ -44,11 +45,11 @@ $('body').ready(function () {
             },
 
             updatePageBreaks = function () {
-                console.log(cursor.currentLine().pos().bottom + ' > ' + cursor.currentPage().pos().bottom);
-                if (cursor.currentLine().pos().bottom > cursor.currentPage().pos().bottom) {
+                if (cursor.currentLine().pos().bottom > cursor.currentPage().pos().bottom + parseInt(cursor.currentPage().css('padding-top').replace('px',''))) {
                     var page = $(poe.Elements.Page);
                     cursor.currentPage().after(page);
                     page.prepend(cursor.currentLine());
+                    doc.pageAdded();
                 }
             },
 
@@ -56,11 +57,17 @@ $('body').ready(function () {
                 switch (event.keyCode) {
                 case poe.key.Left:
                     event.preventDefault();
+                    var line;
                     if (cursor.prev().parent()[0] === cursor.currentPage()[0]) {
                         return;
                     }
-
+                    
+                    line = cursor.currentLine();
                     cursor.moveLeft(poe.TextCursor.Move.Char, 1);
+                    //Correction to make the cursor just go over a newline
+                    if (line[0] !== cursor.currentLine()[0]) {
+                        cursor.moveRight(poe.TextCursor.Move.Char, 1);
+                    }
                     break;
 
                 case poe.key.Right:
@@ -70,21 +77,31 @@ $('body').ready(function () {
 
                 case poe.key.Backspace:
                     event.preventDefault();
+                    var line;
                     if (cursor.prev().parent()[0] === cursor.currentPage()[0]) {
                         return;
                     }
-
+                    line = cursor.currentLine();
                     cursor.moveLeft(poe.TextCursor.Move.Char, 1);
-                    cursor.next().remove();
+                    if (line[0] !== cursor.currentLine()[0]) {
+                        cursor.moveRight(poe.TextCursor.Move.Char, 1);
+                        if (line.textContent() === '') {
+                            line.remove()
+                            lineRemoved(cursor.currentPage());
+                        }
+                    } else {
+                        cursor.next().remove();
+                    }
                     updateWordWrap();
                     updatePageBreaks();
                     break;
 
                 case poe.key.Delete:
                     event.preventDefault();
-                    if (cursor.next().parent().parent()[0] !== cursor.currentLine()[0]) {
+                    if (cursor.next().parents(poe.Selectors.Line)[0] !== cursor.currentLine()[0]) {
                         cursor.nextLine().removeClass('newline');
                     }
+                        
                     cursor.next().remove();
                     updateWordWrap();
                     updatePageBreaks();
@@ -110,7 +127,6 @@ $('body').ready(function () {
 
                     word.after(cursor.currentWord().nextAll());
                     cursor.moveRight(poe.TextCursor.Move.Line, 1);
-                    cursor.moveRight(poe.TextCursor.Move.Word, 1);
                     cursor.currentLine().addClass('newline');
                     updatePageBreaks();
                     break;

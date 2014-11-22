@@ -12,7 +12,7 @@ $.fn.isValid = function () {
 };
 
 $.fn.textContent = function () {
-    
+    return this[0].textContent;
 };
 
 $.fn.isTextNode = function () {
@@ -63,8 +63,13 @@ $.fn.nextNode = function () {
     if (this.nextSibling().isValid()) {
         return this.nextSibling();
     }
+
+    var node = this.parent();
+    while (!node.nextSibling().isValid()) {
+        node = node.parent();
+    }
     
-    return this.parent().nextSibling();
+    return node.nextSibling();
 };
 
 $.fn.prevNode = function () {
@@ -101,7 +106,6 @@ $.fn.prevTextNode = function () {
         } else {
             node = node.prevNode();
         }
-        console.log(node[0].childNodes);
     }
     
     return node;
