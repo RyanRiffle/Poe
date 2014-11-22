@@ -1,18 +1,21 @@
-$.fn.isValid = function() {
-    if (this.length === 0)
+'use strict';
+$.fn.isValid = function () {
+    if (this.length === 0) {
         return false;
+    }
     
-    if (this[0] === null || this[0] === undefined)
+    if (this[0] === null || this[0] === undefined) {
         return false;
+    }
     
     return true;
 };
 
-$.fn.textContent = function() {
+$.fn.textContent = function () {
     
 };
 
-$.fn.isTextNode = function() {
+$.fn.isTextNode = function () {
     if (this.isValid()) {
         return this[0].nodeType === 3;
     }
@@ -20,7 +23,7 @@ $.fn.isTextNode = function() {
     return false;
 };
 
-$.fn.isElement = function() {
+$.fn.isElement = function () {
     if (this.isValid()) {
         return this[0].nodeType === 1;
     }
@@ -28,31 +31,31 @@ $.fn.isElement = function() {
     return false;
 };
 
-$.fn.childNodes = function() {
+$.fn.childNodes = function () {
     return $(this[0].childNodes);
 };
 
-$.fn.hasChildNodes = function() {
+$.fn.hasChildNodes = function () {
     return this[0].childNodes.length !== 0;
 };
 
-$.fn.firstChild = function() {
+$.fn.firstChild = function () {
     return $(this[0].firstChild);
 };
 
-$.fn.lastChild = function() {
+$.fn.lastChild = function () {
     return $(this[0].lastChild);
 };
 
-$.fn.nextSibling = function() {
+$.fn.nextSibling = function () {
     return $(this[0].nextSibling);
 };
 
-$.fn.prevSibling = function() {
+$.fn.prevSibling = function () {
     return $(this[0].previousSibling);
 };
 
-$.fn.nextNode = function() {
+$.fn.nextNode = function () {
     if (this.hasChildNodes()) {
         return this.firstChild();
     }
@@ -64,7 +67,7 @@ $.fn.nextNode = function() {
     return this.parent().nextSibling();
 };
 
-$.fn.prevNode = function() {
+$.fn.prevNode = function () {
     if (this.hasChildNodes()) {
         return this.parent().lastChild();
     }
@@ -74,14 +77,14 @@ $.fn.prevNode = function() {
     }
     
     var node = this.parent();
-    while(!node.prevSibling().isValid()) {
+    while (!node.prevSibling().isValid()) {
         node = node.parent();
     }
     
     return node.prevSibling();
 };
 
-$.fn.nextTextNode = function() {
+$.fn.nextTextNode = function () {
     var node = this.nextNode();
     while (!node.isTextNode() && node.isValid()) {
         node = node.nextNode();
@@ -90,24 +93,25 @@ $.fn.nextTextNode = function() {
     return node;
 };
 
-$.fn.prevTextNode = function() {
+$.fn.prevTextNode = function () {
     var node = this.prevNode();
-    while(!node.isTextNode() && node.isValid()) {
-        if (node.hasChildNodes())
+    while (!node.isTextNode() && node.isValid()) {
+        if (node.hasChildNodes()) {
             node = node.lastChild();
-        else
+        } else {
             node = node.prevNode();
+        }
         console.log(node[0].childNodes);
     }
     
     return node;
 };
 
-$.fn.positionRight = function() {
+$.fn.positionRight = function () {
     return this.position().left + this.width();
 };
 
-$.fn.pos = function() {
+$.fn.pos = function () {
     var pos = this.position();
     return {
         left: pos.left,
@@ -115,4 +119,8 @@ $.fn.pos = function() {
         right: pos.left + this.width(),
         bottom: pos.top + this.height()
     };
+};
+
+$.fn.type = function () {
+    return poe.Types.jQuery;
 };

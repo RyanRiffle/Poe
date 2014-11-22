@@ -20,8 +20,6 @@
 
 .page-inner {
     width: 816px;
-    min-height: 1056px;
-    max-height: 1056px;
     -webkit-box-sizing: border-box;
     padding: 96px;
     outline: none;

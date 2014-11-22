@@ -1,74 +1,79 @@
+'use strict';
 poe.Types.Document = 'Document';
 
-poe.document = function() {
+poe.Document = function () {
     var margins = {
         left: 96,
         top: 96,
         right: 96,
         bottom: 96
-    };
+    },
     
-    var size = {
-        width: 816,
-        height: 1056
-    };
+        size = {
+            width: 816,
+            height: 1056
+        },
     
-    var lineLeft = $('.line').first().position().left;
-    var lineRight = lineLeft + $('.line').first().width();
+        lineLeft = $('.line').first().position().left,
+        lineRight = lineLeft + $('.line').first().width(),
     
-    var updateMargins = function() {
-        //Update the dom the reflect margin changes.
-        $('.page-inner').css('padding-left', margins.left + 'px');
-        $('.page-inner').css('padding-top', margins.top + 'px');
-        $('.page-inner').css('padding-right', margins.right + 'px');
-        $('.page-inner').css('padding-bottom', margins.bottom + 'px');
-        
-        $('.page-break').css('margin-top', margins.bottom + 'px');
-        $('.page-break').css('margin-bottom', margins.top + 'px');
-    };
+        updateMargins = function () {
+            //Update the dom the reflect margin changes.
+            $(poe.Selectors.Page).css('padding-left', margins.left + 'px');
+            $(poe.Selectors.Page).css('padding-top', margins.top + 'px');
+            $(poe.Selectors.Page).css('padding-right', margins.right + 'px');
+            $(poe.Selectors.Page).css('padding-bottom', margins.bottom + 'px');
+        },
     
-    var self = {
-        setMargin: function(left, top, right, bottom) {
-            margins.left = left * 96;
-            margins.top = top * 96;
-            margins.right = right * 96;
-            margins.bottom = bottom * 96;
-            updateMargins();
-        },
-        
-        lineOuterPosition: function() {
-            return lineRight;
-        },
-        
-        lineInnerPosition: function() {
-            return lineLeft;
-        },
-        
-        wordCount: function() {
-            return $('.word').length;
-        },
-        
-        pageCount: function() {
-            return $('.page-break').length + 1;
-        },
-        
-        updateSize: function() {
-            $('.page-inner').css('width', size.width);
-            $('.page-inner').css('height', size.height);
-        },
-        
-        pageSize: function() {
-            return size;  
-        },
-        
-        addPage: function(page) {
-            $('.writer').append(page.element());
-        }
-    };
+        self = {
+            type: function () {
+                return poe.Types.Document;
+            },
+
+            setMargin: function (left, top, right, bottom) {
+                margins.left = left * 96;
+                margins.top = top * 96;
+                margins.right = right * 96;
+                margins.bottom = bottom * 96;
+                updateMargins();
+            },
+
+            lineOuterPosition: function () {
+                return lineRight;
+            },
+
+            lineInnerPosition: function () {
+                return lineLeft;
+            },
+
+            wordCount: function () {
+                return $(poe.Selectors.Word).length;
+            },
+
+            pageCount: function () {
+                return $(poe.Selectors.Page).length + 1;
+            },
+
+            setSize: function (width, height) {
+                size.width = width;
+                size.height = height;
+                $(poe.Selectors.Page).css('min-width', size.width);
+                $(poe.Selectors.Page).css('min-height', size.height);
+
+                $(poe.Selectors.Page).css('max-width', size.width);
+                $(poe.Selectors.Page).css('max-height', size.height);
+            },
+
+            pageSize: function () {
+                return size;
+            }
+        };
     
-    var initialize = function() {
+    //Constructor 
+    (function () {
         self.setMargin(1, 1, 1, 1);
-    }();
+        self.setSize(816, 1056);
+    }());
     
     return self;
 };

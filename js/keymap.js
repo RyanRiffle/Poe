@@ -10,7 +10,7 @@ poe.key = {
     Right:      39,
     Up:         38,
     Down:       40,
-    Tab:         9,
+    Tab:         9
 };
 
 poe.keyMapShift[8] = "";
