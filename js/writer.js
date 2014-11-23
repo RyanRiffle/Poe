@@ -30,23 +30,33 @@ $('body').ready(function () {
 
             updateWordWrap = function () {
                 $(poe.Selectors.Word).filter(':empty').remove();
-                console.log(doc.lineInnerPosition());
-                console.log(cursor.position().left + ' > ' + cursor.currentLine().pos().right);
-                if (cursor.position().left > cursor.currentLine().pos().right) {
-                    if (!cursor.nextLine().isValid()) {
-                        cursor.currentLine().after(poe.Elements.Line);
-                    }
-                    cursor.nextLine().prepend(cursor.currentWord());
-                    cursor.updateVisibleCursor();
-                } else if (cursor.nextLine().isValid() && !cursor.nextLine().hasClass('newline')) {
-                    if (cursor.nextLine().firstChild().width() + cursor.currentLine().lastChild().pos().right < doc.lineOuterPosition()) {
-                        cursor.currentLine().append(cursor.nextLine().firstChild());
-                        if (cursor.nextLine().is(':empty')) {
-                            cursor.nextLine().remove();
-                            lineRemoved(cursor.currentPage());
+                
+                var line = cursor.currentLine(),
+                    nextLine = line.next(poe.Selectors.Line),
+                    lineChildren,
+                    nextLineChildren;
+    
+                while (line.isValid() && line.hasChildren(poe.Selectors.Word)) {
+                    while (line.children(poe.Selectors.Word).last().pos().right > line.pos().right) {
+                        if (!nextLine.isValid() || line.next(poe.Selectors.Line).hasClass('newline')) {
+                            line.after(poe.Elements.Line);
+                            nextLine = line.next(poe.Selectors.Line);
                         }
+                        
+                        nextLine.prepend(line.children(poe.Selectors.Word).last());    
                     }
+                    
+                    while (nextLine.children(poe.Selectors.Word).isValid() && nextLine.children(poe.Selectors.Word).first().width() + line.children(poe.Selectors.Word).last().pos().right < line.pos().right) {
+                        line.append(nextLine.children(poe.Selectors.Word).first());
+                        if (nextLine.is(':empty'))
+                            nextLine.remove();
+                    }
+                    
+                    line = nextLine;
+                    nextLine = line.next(poe.Selectors.Line);
                 }
+                
+                cursor.updateVisibleCursor();
             },
 
             updatePageBreaks = function () {

@@ -39,6 +39,10 @@ $.fn.hasChildNodes = function () {
     return this[0].childNodes.length !== 0;
 };
 
+$.fn.hasChildren = function(selector) {
+    return this.children(selector).length !== 0;
+};
+
 $.fn.firstChild = function () {
     return $(this[0].firstChild);
 };

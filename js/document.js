@@ -15,7 +15,7 @@ poe.Document = function () {
             height: 1056
         },
         
-        lineSpacing = 1.5,
+        lineSpacing = 2,
     
         lineLeft = $('.line').first().position().left,
         lineRight = lineLeft + $('.line').first().width(),
