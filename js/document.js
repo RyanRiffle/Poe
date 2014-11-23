@@ -79,6 +79,10 @@ poe.Document = function () {
                 margins.bottom = bottom * 96;
                 updateMargins();
             },
+            
+            margins: function() {
+                return margins;  
+            },
 
             lineOuterPosition: function () {
                 return lineRight;

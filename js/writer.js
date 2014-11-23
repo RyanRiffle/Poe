@@ -66,6 +66,19 @@ $('body').ready(function () {
                     page.prepend(cursor.currentLine());
                     doc.pageAdded();
                 }
+                
+                var line = cursor.currentPage().children(poe.Selectors.Line).last();
+                while (line.pos().bottom > line.parents(poe.Selectors.Page).pos().bottom + doc.margins().top) {
+                    line.parents(poe.Selectors.Page).next(poe.Selectors.Page).prepend(line);
+                    
+                    line = line.parents(poe.Selectors.Page).next(poe.Selectors.Page).children(poe.Selectors.Line).last();
+                    if (!line.isValid()) {
+                        break;
+                    }
+                }
+                
+                cursor.updateVisibleCursor();
+                $(poe.Selectors.Page).filter(':empty').remove();
             },
 
             handleKeyDown = function (event) {

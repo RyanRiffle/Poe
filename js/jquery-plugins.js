@@ -104,7 +104,7 @@ $.fn.nextTextNode = function () {
 
 $.fn.prevTextNode = function () {
     var node = this.prevNode();
-    while (!node.isTextNode() && node.isValid()) {
+    while ((!node.isTextNode() || node.textContent() === '') && node.isValid()) {
         if (node.hasChildNodes()) {
             node = node.lastChild();
         } else {
