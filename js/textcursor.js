@@ -4,7 +4,6 @@ poe.TextCursor = {
         Char: 1,
         Word: 2,
         Line: 3
-        //Paragraph: 4
     },
     
     create: function (forNode) {
@@ -16,20 +15,26 @@ poe.Types.TextCursor = 'TextCursor';
 
 poe.textCursor = function (forNode) {
     var anchor = $('<span class="textcursor"></span>'),
-        range = $('<span class="textcursorrange"></span>'),
+        range = $('<span class="textcursorrange"></span>'), //For selections
         visibleCursor = $('<div class="visiblecursor"></div>'),
-        blinkTimer,
+        blinkTimer, //Cursor blink timer
         styleChangedCallback,
         
         blinkCursor = function () {
             $('.visiblecursor').toggleClass('hide');
         },
     
+        /*
+            Used to stop the cursor from blinking when the user is typing.
+        */
         stopBlink = function () {
             clearInterval(blinkTimer);
             $('.visiblecursor').removeClass('hide');
         },
 
+        /*
+            Restarts the blinking of the cursor after the typing is done.
+        */
         startBlink = function () {
             blinkTimer = setInterval(blinkCursor, 700);
         },
@@ -38,12 +43,16 @@ poe.textCursor = function (forNode) {
             bold: false,
             italic: false,
             underline: false,
-            
+            color: 'black',
             font: {
                 size: 12,
             }
         },
         
+        /*
+            Updates the style stored in style to reflect the style of the current word.
+            It is updated every time the current word changes.
+        */
         updateStyle = function() {
             var tmp;
             var styleChanged = false;
@@ -73,10 +82,31 @@ poe.textCursor = function (forNode) {
         },
 
         self = {
+            /*
+                Returns the style of the current word.
+                {
+                    bold: false,
+                    italic: false,
+                    underline: false,
+                    color: '#000000',
+                    background-color: '#ffffff',
+                    font: {
+                        size: 12,
+                        family: 'Open Sans'
+                    }
+                }
+                
+                Note: font.size is always in point size.
+                Note: colors are based on css color codes, because they are inserted into the document as
+                      specified in the style attribute.
+            */
             style: function() {
                 return style;  
             },
             
+            /*
+                Apply a style to the current word. newStyle should have the same format as style()
+            */
             applyStyle: function(newStyle) {
                 style.bold = newStyle.bold;
                 
@@ -102,10 +132,16 @@ poe.textCursor = function (forNode) {
                 styleChangedCallback();
             },
 
+            /*
+                Returns the position of the cursor on the screen by client rects. Not global screen coordinates.
+            */
             position: function () {
                 return anchor.position();
             },
 
+            /*
+                Returns a jQuery object of the previous text node found in the document.
+            */
             next: function () {
                 var word = self.currentWord();
                 var ret =  anchor.nextTextNode();
@@ -114,6 +150,9 @@ poe.textCursor = function (forNode) {
                 return ret;
             },
 
+            /*
+                Returns a jQuery object of the previous text node found in the document.
+            */
             prev: function () {
                 var word = self.currentWord();
                 var ret =  anchor.prevTextNode();
@@ -122,26 +161,44 @@ poe.textCursor = function (forNode) {
                 return ret;
             },
             
+            /*
+                Like jQuery's .next() but it works with all nodes including text nodes.
+            */
             nextNode: function () {
                 return anchor.nextNode();
             },
             
+            /*
+                Like jQuery's .prev() but it works with all nodes including text nodes
+            */
             prevNode: function () {
                 return anchor.prevNode();
             },
 
+            /*
+                Returns the cursor containing word as a jQuery object.
+            */
             currentWord: function () {
                 return anchor.parents(poe.Selectors.Word);
             },
 
+            /*
+                Returns the cursor containing line as a jQuery object.
+            */
             currentLine: function () {
                 return anchor.parents(poe.Selectors.Line);
             },
 
+            /*
+                Returns the cursor containg page as a jQuery object.
+            */
             currentPage: function () {
                 return anchor.parents(poe.Selectors.Page);
             },
 
+            /*
+                Returns the word after the cursor containing word as a jQuery object.
+            */
             nextWord: function () {
                 var node = anchor.parents(poe.Selectors.Word).nextSibling();
                 while (!node.hasClass('word') && node.isValid()) {
@@ -151,6 +208,9 @@ poe.textCursor = function (forNode) {
                 return node;
             },
 
+            /*
+                Returns the word before the cursor containing word as a jQuery object.
+            */
             prevWord: function () {
                 var node = anchor.parents(poe.Selectors.Word).prevNode();
                 while (!node.hasClass('word') && node.isValid()) {
@@ -160,6 +220,9 @@ poe.textCursor = function (forNode) {
                 return node;
             },
 
+            /*
+                Returns the line after the current line as a jQuery object
+            */
             nextLine: function () {
                 var node = self.currentLine().nextSibling();
 
@@ -170,6 +233,9 @@ poe.textCursor = function (forNode) {
                 return node;
             },
 
+            /*
+                Returns the line before the current line as a jQuery object.
+            */
             prevLine: function () {
                 var node = self.currentLine().prevSibling();
                 while (!node.hasClass('line') && node.isValid()) {
@@ -179,14 +245,24 @@ poe.textCursor = function (forNode) {
                 return node;
             },
 
+            /*
+                Returns the page after the cursur containing page as a jQuery object.
+            */
             nextPage: function () {
                 return self.currentPage().next(poe.Selectors.Page);
             },
 
+            /*
+                Returns the page before the cursor containing page as a jQuery object.
+            */
             prevPage: function () {
                 return self.currentPage().prev(poe.Selectors.Page);
             },
 
+            /*
+                Moves the cursor right count times
+                TextCursorMove      see poe.TextCursor.Move
+            */
             moveRight: function (TextCursorMove, count) {
                 stopBlink();
                 if (typeof (TextCursorMove) !== 'number') {
@@ -246,6 +322,10 @@ poe.textCursor = function (forNode) {
                 startBlink();
             },
 
+            /*
+                Move the cursor left count times.
+                TextCursorMove      see poe.TextCursor.Move
+            */
             moveLeft: function (TextCursorMove, count) {
                 stopBlink();
                 if (typeof (TextCursorMove) !== 'number') {
@@ -307,21 +387,36 @@ poe.textCursor = function (forNode) {
                 startBlink();
             },
 
+            /*
+                Insert something before the cursor. This is basically jQuery .before()
+            */
             insertBefore: function (data) {
                 anchor.before(data);
                 self.updateVisibleCursor();
             },
 
+            /*
+                Insert something after the cursor. This is basically jQuery .after()
+            */
             insertAfter: function (data) {
                 anchor.after(data);
                 self.updateVisibleCursor();
             },
 
+            /*
+                Move the visible cursor to the 'fake' anchor cursor.
+            */
             updateVisibleCursor: function () {
                 visibleCursor.css('left', anchor.position().left + 'px');
                 visibleCursor.css('top', anchor.position().top + 'px');
             },
             
+            /*
+                Register a callback.
+                The only valid event at the moment is 'styleChanged' and is called
+                when the style of the word that the cursor is in is different that the current
+                set style.
+            */
             on: function(event, callback) {
                 if (event === 'styleChanged') {
                     styleChangedCallback = callback;
@@ -329,16 +424,28 @@ poe.textCursor = function (forNode) {
                 }
             },
             
+            /*
+                Enables / disables bold text.
+                It only applies to what is typed after calling this function.
+            */
             setBold: function (bold) {
                 style.bold = bold;
                 self.applyCharStyle(style);
             },
             
+            /*
+                Enables / disables italic text.
+                It only applies to what is typed after calling this function.
+            */
             setItalic: function (italic) {
                 style.italic = italic;
                 self.applyCharStyle(style);
             },
             
+            /*
+                Enables / disables underlined text.
+                It only applies to what is typed after calling this function.
+            */
             setUnderline: function (underline) {
                 style.underline = underline;
                 self.applyCharStyle(style);
