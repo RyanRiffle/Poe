@@ -21,6 +21,15 @@ $('body').ready(function () {
     poe.writer = (function () {
         var doc = new poe.Document(),
             cursor = poe.TextCursor.create(),
+            toolbar = poe.toolbar,
+            formatting = {
+                bold: false,
+                italic: false,
+                underline: false,
+                fontFamily: 'Open Sans',
+                fontSize: 12,
+                lineSpacing: 2.0,
+            },
             
             lineRemoved = function (page) {
                 if (page.next(poe.Selectors.Page).isValid()) {
@@ -82,6 +91,9 @@ $('body').ready(function () {
             },
 
             handleKeyDown = function (event) {
+                if (event.ctrlKey)
+                    return;
+                
                 switch (event.keyCode) {
                 case poe.key.Left:
                     event.preventDefault();
@@ -148,8 +160,10 @@ $('body').ready(function () {
                 case poe.key.Space:
                     event.preventDefault();
                     cursor.insertBefore('&nbsp;');
+                    var style = cursor.style();
                     cursor.currentWord().after(poe.Elements.Word);
                     cursor.moveRight(poe.TextCursor.Move.Word, 1);
+                    cursor.applyStyle(style);
                     updateWordWrap();
                     updatePageBreaks();
                     break;
@@ -163,8 +177,10 @@ $('body').ready(function () {
                         word.append(cursor.next());
                     }
 
+                    var style = cursor.style();
                     word.after(cursor.currentWord().nextAll());
                     cursor.moveRight(poe.TextCursor.Move.Line, 1);
+                    cursor.applyStyle(style);
                     cursor.currentLine().addClass('newline');
                     updatePageBreaks();
                     break;
@@ -172,10 +188,12 @@ $('body').ready(function () {
                 case poe.key.Tab:
                     event.preventDefault();
                     var tab = $(poe.Elements.Tab),
-                        word = $(poe.Elements.Word);
+                        word = $(poe.Elements.Word),
+                        style = cursor.style();
                     cursor.currentWord().after(tab);
                     tab.after(word);
                     cursor.moveRight(poe.TextCursor.Move.Word, 2);
+                    cursor.applyStyle(style);
                     break;
 
                 default:
@@ -196,22 +214,51 @@ $('body').ready(function () {
             
                     //The public interface of poe.writer
             self = {
-                type: function () {
-                    return poe.Types.Writer;
-                },
-
                 getDocument: function () {
                     return document;
                 },
 
                 getTextCursor: function () {
                     return cursor;
+                },
+                
+                bold: function(enable) {
+                    if (enable === undefined)
+                        return formatting.bold;
+                },
+                
+                italic: function(enable) {
+                    if (enable === undefined)
+                        return formatting.italic;
+                },
+                
+                underline: function(enable) {
+                    if (enable === undefined)
+                        return formatting.underline;
+                },
+                
+                fontFamily: function(fontName) {
+                    if (fontName === undefined)
+                        return formatting.fontFamily;
+                    
+                    formatting.fontFamily = fontName;
+                },
+                
+                fontSize: function(size) {
+                    if (size === undefined)
+                        return formatting.fontSize;
+                    
+                    formatting.fontSize = size;
                 }
             };
 
         //Constructor
         (function () {
             $('body').keydown(handleKeyDown);
+            toolbar.setCursor(cursor);
+            cursor.on('styleChanged', function() {
+                 toolbar.styleChanged(cursor);
+            });
         }());
         return self;
     }());

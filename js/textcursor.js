@@ -19,6 +19,7 @@ poe.textCursor = function (forNode) {
         range = $('<span class="textcursorrange"></span>'),
         visibleCursor = $('<div class="visiblecursor"></div>'),
         blinkTimer,
+        styleChangedCallback,
         
         blinkCursor = function () {
             $('.visiblecursor').toggleClass('hide');
@@ -32,10 +33,73 @@ poe.textCursor = function (forNode) {
         startBlink = function () {
             blinkTimer = setInterval(blinkCursor, 700);
         },
+        
+        style = {
+            bold: false,
+            italic: false,
+            underline: false,
+            
+            font: {
+                size: 12,
+            }
+        },
+        
+        updateStyle = function() {
+            var tmp;
+            var styleChanged = false;
+            if (tmp = self.currentWord().hasClass('bold') !== style.bold) {
+                style.bold = tmp;
+                styleChanged = true;
+            }
+            
+            if (tmp = self.currentWord().hasClass('italic') !== style.italic) {
+                style.italic = tmp;
+                styleChanged = true;
+            }
+            
+            if (tmp = self.currentWord().hasClass('underline') !== style.underline) {
+                style.underline = tmp;
+                styleChanged = true;
+            }
+            
+            if (tmp = parseInt(self.currentWord().css('font-size').replace('px','')) !== style.font.size) {
+                style.font.size = tmp;
+                styleChanged = true;
+            }
+            
+            if (styleChanged) {
+                styleChangedCallback();
+            }
+        },
 
         self = {
-            type: function () {
-                return poe.Types.TextCursor;
+            style: function() {
+                return style;  
+            },
+            
+            applyStyle: function(newStyle) {
+                style.bold = newStyle.bold;
+                
+                //Remove all style classes
+                self.currentWord().attr('class', 'word');
+                
+                if (style.bold) {
+                    self.currentWord().addClass('bold');
+                }
+
+                style.italic = newStyle.italic;
+                
+                if (style.italic) {
+                    self.currentWord().addClass('italic');
+                }
+            
+                style.underline = newStyle.underline;
+                
+                if (style.underline) {
+                    self.currentWord().addClass('underline');
+                }
+                
+                styleChangedCallback();
             },
 
             position: function () {
@@ -43,11 +107,19 @@ poe.textCursor = function (forNode) {
             },
 
             next: function () {
-                return anchor.nextTextNode();
+                var word = self.currentWord();
+                var ret =  anchor.nextTextNode();
+                if (self.currentWord()[0] !== word[0])
+                    updateStyle();
+                return ret;
             },
 
             prev: function () {
-                return anchor.prevTextNode();
+                var word = self.currentWord();
+                var ret =  anchor.prevTextNode();
+                if (self.currentWord()[0] !== word[0])
+                    updateStyle();
+                return ret;
             },
             
             nextNode: function () {
@@ -248,6 +320,45 @@ poe.textCursor = function (forNode) {
             updateVisibleCursor: function () {
                 visibleCursor.css('left', anchor.position().left + 'px');
                 visibleCursor.css('top', anchor.position().top + 'px');
+            },
+            
+            on: function(event, callback) {
+                if (event === 'styleChanged') {
+                    styleChangedCallback = callback;
+                    updateStyle();
+                }
+            },
+            
+            setBold: function (bold) {
+                style.bold = bold;
+                self.applyCharStyle(style);
+            },
+            
+            setItalic: function (italic) {
+                style.italic = italic;
+                self.applyCharStyle(style);
+            },
+            
+            setUnderline: function (underline) {
+                style.underline = underline;
+                self.applyCharStyle(style);
+            },
+            
+            /*
+                Creates three words from the current one. The text before
+                the cursor, text after, and a word in the middle to contain the
+                cursor and apply the style.
+            */
+            applyCharStyle: function (style) {
+                var word = $(poe.Elements.Word),
+                    word2 = $(poe.Elements.Word);
+                self.currentWord().after(word);
+                word.append(anchor.nextAll());
+                word.before(word2);
+                word2.append(anchor);
+                $(poe.Selectors.Word).filter(':empty').remove();
+                self.applyStyle(style);
+                self.updateVisibleCursor();
             }
         };
 

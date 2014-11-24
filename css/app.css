@@ -175,3 +175,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
     left: -100px;
     top: -100px;
 }
+
+.btn.btn-default {
+    outline: none !important;
+}

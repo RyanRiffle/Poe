@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <title>Poe.js</title>
     <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
 </head>
@@ -17,23 +18,17 @@
         </div>
         
         <div class='btn-group' role='group' aria-label='...' >
-            <button type='button' class='btn btn-default active'><b>B</b></button>
-            <button type='button' class='btn btn-default'><b><i>I</i></b></button>
-            <button type='button' class='btn btn-default'><b><u>U</u></b></button>
+            <button type='button' class='btn btn-default bold'><b>B</b></button>
+            <button type='button' class='btn btn-default italic'><b><i>I</i></b></button>
+            <button type='button' class='btn btn-default underline'><b><u>U</u></b></button>
         </div>
     </div>
     
     <!-- Note to self a hyphen is &#8212; -->
     <div class='writer'>
-        <!--<div class='page'>-->
             <div class='page-inner'>
-                <div class='line'><span class='word'></span></div></div>
-        <!--</div>-->
+                <div class='line'><span class='word bold'></span></div></div>
     </div>
-    
-    <!-- The text caret -->
-    <div class='visiblecursor'></div>
-    <span class='fontmetrics'></span>
     
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/rangy/rangy-core.js"></script>
@@ -43,5 +38,6 @@
     <script type="text/javascript" src="js/textcursor.js"></script>
     <script type="text/javascript" src="js/document.js"></script>
     <script type="text/javascript" src="js/writer.js"></script>
+    <script type="text/javascript" src="js/toolbar.js"></script>
 </body>
 </html>
