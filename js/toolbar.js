@@ -65,6 +65,10 @@ poe.toolbar = (function() {
                 event.preventDefault();
                 cursor.setUnderline(!cursor.style().underline);
                 break;
+            
+            default:
+                event.preventDefault();
+                break;
             }
         },
         

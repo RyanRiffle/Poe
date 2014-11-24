@@ -112,6 +112,8 @@ $('body').ready(function () {
 
                 case poe.key.Right:
                     event.preventDefault();
+                    if (cursor.next().parent()[0] === $('.writer')[0])
+                        return;
                     cursor.moveRight(poe.TextCursor.Move.Char, 1);
                     break;
 
