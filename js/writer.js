@@ -252,11 +252,20 @@ $('body').ready(function () {
                     
                     formatting.fontSize = size;
                 }
+            },
+            
+            handleResize = function () {
+                updateWordWrap();
+                updatePageBreaks();
+                cursor.updateVisibleCursor();
+                
+                //Resize body
             };
 
         //Constructor
         (function () {
             $('body').keydown(handleKeyDown);
+            $(window).resize(handleResize);
             toolbar.setCursor(cursor);
             cursor.on('styleChanged', function() {
                  toolbar.styleChanged(cursor);

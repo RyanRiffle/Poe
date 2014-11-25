@@ -7,7 +7,6 @@
     -webkit-user-select: none;
     user-select: none;
     overflow-y: scroll;
-    max-height: 600px;
     width: 100%;
     padding-bottom: 100%;
 }
