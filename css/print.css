@@ -20,3 +20,7 @@
 .toolbar {
     display: none;
 }
+
+.line.newline:emtpy::before {
+    content: '\00a0';
+}

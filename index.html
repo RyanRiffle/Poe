@@ -2,8 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Paged.js</title>
+    <title>Poe.js</title>
     <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
 </head>
@@ -17,28 +18,27 @@
         </div>
         
         <div class='btn-group' role='group' aria-label='...' >
-            <button type='button' class='btn btn-default active'><b>B</b></button>
-            <button type='button' class='btn btn-default'><b><i>I</i></b></button>
-            <button type='button' class='btn btn-default'><b><u>U</u></b></button>
+            <button type='button' class='btn btn-default bold'>B</button>
+            <button type='button' class='btn btn-default italic'>I</button>
+            <button type='button' class='btn btn-default underline'>U</button>
         </div>
     </div>
     
     <!-- Note to self a hyphen is &#8212; -->
     <div class='writer'>
-        <div class='page'>
             <div class='page-inner'>
-                <span class='word'><span class='textcursor'>&#8203;</span></span>
-            </div>
-        </div>
+                <div class='line'><span class='word'></span></div></div><!-- Note if there are returns or spaces
+                                                                             between these it will break the application. -->
     </div>
-    
-    <!-- The text caret -->
-    <div class='visiblecursor'></div>
     
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/rangy/rangy-core.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/jquery-plugins.js"></script>
+    <script type="text/javascript" src="js/keymap.js"></script>
     <script type="text/javascript" src="js/textcursor.js"></script>
-    <script type="text/javascript" src="js/input.js"></script>
-    <script type="text/javascript" src="js/selection.js"></script>
+    <script type="text/javascript" src="js/document.js"></script>
+    <script type="text/javascript" src="js/writer.js"></script>
+    <script type="text/javascript" src="js/toolbar.js"></script>
 </body>
 </html>

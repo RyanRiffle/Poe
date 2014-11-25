@@ -4,30 +4,31 @@
     background-color: #F8F8F8;
     padding-top: 12px;
     padding-bottom: 24px;
+    -webkit-user-select: none;
     user-select: none;
+    overflow-y: scroll;
+    width: 100%;
+    padding-bottom: 100%;
 }
 
 .page {
     width: 816px;
     min-height: 1056px;
+    max-height: 1056px;
+}
+
+.page-inner {
+    -webkit-box-sizing: border-box;
+    outline: none;
+    font-family: 'Open Sans';
+    font-size: 12pt;
+    
     margin-left: auto;
     margin-right: auto;
     border: 1px solid #C6C6C6;
     background-color: white;
     margin-top: 12px;
     cursor: text;
-    font-size: 100%;
-    user-select: text;
-}
-
-.page-inner {
-    height: 100%;
-    width: 100%;
-    -webkit-box-sizing: border-box;
-    padding: 96px;
-    outline: none;
-    font-family: 'Open Sans';
-    font-size: 12pt;
 }
 
 html, body {
@@ -35,6 +36,7 @@ html, body {
     height: 100%;
     padding: 0px;
     margin: 0px;
+    overflow: hidden;
 }
 
 
@@ -44,6 +46,10 @@ html, body {
 }
 
 .textcursor::before {
+    content: '\200B';
+}
+
+.word:empty::before {
     content: '\200B';
 }
 
@@ -73,6 +79,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
     border-bottom: 1px solid #C6C6C6;
     
     font-family: 'Open Sans';
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .toolbar input {
@@ -84,10 +92,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
     margin-bottom: 12px;
     margin-left: 12px;
     outline: none;
-}
-
-.toolbar {
-    user-select: none;
 }
 
 .toolbar button {
@@ -143,4 +147,34 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
 
 .tab {
     padding-left: 50px;
+}
+
+.selected {
+    background-color: #55C1EC;
+    color: white;
+}
+
+.line {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.line::before {
+    content: '\200B';
+}
+
+.line.newline:empty::before {
+    content: '\00a0';
+}
+
+.fontmetrics {
+    position: absolute;
+    left: -100px;
+    top: -100px;
+}
+
+.btn.btn-default {
+    outline: none !important;
 }

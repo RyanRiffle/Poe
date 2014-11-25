@@ -1,0 +1,2 @@
+var poe = {};
+poe.Types = {};
