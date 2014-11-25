@@ -178,3 +178,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', end
 .btn.btn-default {
     outline: none !important;
 }
+
+.btn.bold {
+    font-weight: bold;
+}
+
+.btn.italic {
+    font-weight: bold;
+    font-style: italic;
+}
+
+.btn.underline {
+    font-weight: bold;
+    text-decoration: underline;
+}
