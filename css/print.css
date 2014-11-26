@@ -1,26 +1,35 @@
 @page {
-    margin: 96px;
+    margin: 1in;
+    max-resolution: 96dppi;
+    min-resolution: 96dppi;
 }
 
-.page-outer {
-    display: none;
+/*
+    I have no clue why but font-size 150% makes the page fit the way it shows
+    when editing it.
+*/
+body {
+    font-size: 150%;
+}
+
+/*
+    For some reason it seams that the print line-height needs to be 
+    25% less than the editing line-height;
+*/
+.line {
+    line-height: 175% !important;
 }
 
 .page-inner {
     display: block;
-    height: 100%;
-    width: 100%;
-    min-height: 50px;
-}
-
-.page-break {
-    display: none;
+    min-height: 0px !important;
+    max-height: none !important;
+    
+    padding: 0px !important;
+    font-family: 'Open Sans';
+    margin: 0px;
 }
 
 .toolbar {
     display: none;
-}
-
-.line.newline:emtpy::before {
-    content: '\00a0';
 }

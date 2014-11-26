@@ -26,6 +26,7 @@ poe.Document = function () {
             $(poe.Selectors.Page).css('padding-top', margins.top + 'px');
             $(poe.Selectors.Page).css('padding-right', margins.right + 'px');
             $(poe.Selectors.Page).css('padding-bottom', margins.bottom + 'px');*/
+            styleElement.html('');
             
             styleElement.append(createCss(poe.Selectors.Page, {
                 'padding-left': margins.left + 'px',
@@ -37,6 +38,8 @@ poe.Document = function () {
             styleElement.append(createCss(poe.Selectors.Line, {
                 'line-height': (lineSpacing*100) + '%'
             }));
+            
+            updateSize();
         },
         
         updateSize = function() {

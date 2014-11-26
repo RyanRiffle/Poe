@@ -46,6 +46,7 @@ poe.textCursor = function (forNode) {
             color: 'black',
             font: {
                 size: 12,
+                name: 'Open Sans'
             }
         },
         

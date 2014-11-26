@@ -260,6 +260,9 @@ $('body').ready(function () {
                 cursor.updateVisibleCursor();
                 
                 //Resize body
+                console.log($('.writer').position().top);
+                console.log($('body').height());
+                $('.writer').css('height', ($('body').height() - $('.writer').position().top) + 'px');
             };
 
         //Constructor
@@ -267,6 +270,7 @@ $('body').ready(function () {
             $('body').keydown(handleKeyDown);
             $(window).resize(handleResize);
             toolbar.setCursor(cursor);
+            handleResize();
             cursor.on('styleChanged', function() {
                  toolbar.styleChanged(cursor);
             });
