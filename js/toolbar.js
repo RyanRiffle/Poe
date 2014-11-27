@@ -26,10 +26,14 @@ poe.toolbar = (function() {
                 } else {
                     buttons.underline.removeClass('active');
                 }
+                
+                $('#font-size-select .text').html(style.font.size);
+                $('#font-select .text').html(style.font.name);
             },
             
             setCursor: function(textCursor) {
                 cursor = textCursor;
+                console.log(cursor.style());
             }
         },
         
@@ -72,9 +76,29 @@ poe.toolbar = (function() {
             }
         },
         
+        handleFontSelect = function (event) {
+            var $target = $(event.target),
+                style = cursor.style();
+            $('#font-select .text').html($target.text());
+            $('#font-select .text').css('font-family', '"' + $target.text() + '"');
+            style.font.name = $target.text();
+            cursor.applyCharStyle(style);
+        },
+        
+        handleFontSize = function (event) {
+            var $target = $(event.target),
+                style = cursor.style();
+            $('#font-size-select .text').html($target.text());
+            style.font.size = parseInt($target.text());
+            console.log(style);
+            cursor.applyCharStyle(style);
+        },
+        
         initialize = (function() {
             $('.btn').click(handleButtonPressed);
             $('body').keydown(handleShortcuts);
+            $('#font-list li a').click(handleFontSelect);
+            $('#font-size-list li a').click(handleFontSize);
         }());
     
     return self;

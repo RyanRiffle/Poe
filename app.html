@@ -7,14 +7,54 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Arial|Calibri|Cambria|Comic+Sans+MS|Consolas|Corsiva|Courier+New|Droid+Sans|Droid+Serif|Impact|Syncopate|Times+New+Roman|Ubuntu"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
 </head>
 <body> 
     <div class='toolbar'>
         <div class='dropdown'>
-            <button class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='true'>
-            Open Sans
+            <button id='font-select' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
+                <span class='text'>Cambria</span>
             <span class='color-pick'>&nbsp;</span>
             </button>
+            <ul id='font-list' class='dropdown-menu' role='menu' aria-labelledby='font-select' data-toggle='dropdown' aria-expand='true'>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Arial";'>Arial</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Calibri";'>Calibri</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Cambria";'>Cambria</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Comic Sans MS";'>Comic Sans MS</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Consolas";'>Consolas</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Corsiva";'>Corsiva</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Courier New";'>Courier New</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Droid Sans";'>Droid Sans</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Arial";'>Droid Serif</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Impact";'>Impact</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Syncopate";'>Syncopate</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Times New Roman";'>Times New Roman</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Ubuntu";'>Ubuntu</a></li>
+            </ul>
+        </div>
+        
+        <div class='dropdown'>
+            <button id='font-size-select' class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
+                <span class='text'>12</span>
+                <span class='caret'></span>
+            </button>
+            <ul id='font-size-list' class='dropdown-menu' role='menu' aria-labelledby='font-size-select' data-toggle='dropdown' aria-expand='true'>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>8</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>9</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>10</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>11</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>12</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>14</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>18</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>24</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>30</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>36</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>48</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>60</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>72</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>96</a></li>
+            </ul>
         </div>
         
         <div class='btn-group' role='group' aria-label='...' >
@@ -32,8 +72,10 @@
     </div>
     
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
     <script type="text/javascript" src="bower_components/rangy/rangy-core.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/fontmanager.js"></script>
     <script type="text/javascript" src="js/jquery-plugins.js"></script>
     <script type="text/javascript" src="js/keymap.js"></script>
     <script type="text/javascript" src="js/textcursor.js"></script>

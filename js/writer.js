@@ -165,7 +165,7 @@ $('body').ready(function () {
                     var style = cursor.style();
                     cursor.currentWord().after(poe.Elements.Word);
                     cursor.moveRight(poe.TextCursor.Move.Word, 1);
-                    cursor.applyStyle(style);
+                    cursor.applyCharStyle(style);
                     updateWordWrap();
                     updatePageBreaks();
                     break;
@@ -192,10 +192,12 @@ $('body').ready(function () {
                     var tab = $(poe.Elements.Tab),
                         word = $(poe.Elements.Word),
                         style = cursor.style();
-                    cursor.currentWord().after(tab);
-                    tab.after(word);
-                    cursor.moveRight(poe.TextCursor.Move.Word, 2);
-                    cursor.applyStyle(style);
+                    cursor.splitWordAtCursor(function (newWord) {
+                        newWord.before(tab);
+                        cursor.moveRight(poe.TextCursor.Move.Word, 2);
+                        cursor.moveRight(poe.TextCursor.Move.Word, 2);
+                        cursor.applyStyle(style);
+                    });
                     break;
 
                 default:
@@ -274,6 +276,9 @@ $('body').ready(function () {
             cursor.on('styleChanged', function() {
                  toolbar.styleChanged(cursor);
             });
+            cursor.applyStyle(cursor.style());
+            console.log(cursor.style());
+            toolbar.styleChanged(cursor);
         }());
         return self;
     }());

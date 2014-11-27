@@ -13,8 +13,8 @@
 .page-inner {
     -webkit-box-sizing: border-box;
     outline: none;
-    font-family: 'Arial';
-    font-size: 11pt;
+    font-family: 'Cambria';
+    font-size: 12pt;
     
     margin-left: auto;
     margin-right: auto;
@@ -172,4 +172,13 @@ html, body {
 .btn.underline {
     font-weight: bold;
     text-decoration: underline;
+}
+
+#font-size-select .text {
+    padding-right: 15px;
+    text-align: left;
+}
+
+#font-size-select .caret {
+    text-align: right;
 }

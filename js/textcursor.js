@@ -57,28 +57,35 @@ poe.textCursor = function (forNode) {
         updateStyle = function() {
             var tmp;
             var styleChanged = false;
-            if (tmp = self.currentWord().hasClass('bold') !== style.bold) {
+            
+            if ((tmp = self.currentWord().hasClass('bold')) !== style.bold) {
                 style.bold = tmp;
                 styleChanged = true;
             }
             
-            if (tmp = self.currentWord().hasClass('italic') !== style.italic) {
+            if ((tmp = self.currentWord().hasClass('italic')) !== style.italic) {
                 style.italic = tmp;
                 styleChanged = true;
             }
             
-            if (tmp = self.currentWord().hasClass('underline') !== style.underline) {
+            if ((tmp = self.currentWord().hasClass('underline')) !== style.underline) {
                 style.underline = tmp;
                 styleChanged = true;
             }
             
-            if (tmp = parseInt(self.currentWord().css('font-size').replace('px','')) !== style.font.size) {
+            if ((tmp = parseInt(self.currentWord().css('font-size').replace('pt',''))) !== style.font.size) {
                 style.font.size = tmp;
+                styleChanged = true;
+            }
+            
+            if ((tmp = self.currentWord().css('font-family').replace('"', '')) !== style.font.name) {
+                style.font.name = tmp;
                 styleChanged = true;
             }
             
             if (styleChanged) {
                 styleChangedCallback();
+                visibleCursor.height(style.font.size + 'pt');
             }
         },
 
@@ -93,7 +100,7 @@ poe.textCursor = function (forNode) {
                     background-color: '#ffffff',
                     font: {
                         size: 12,
-                        family: 'Open Sans'
+                        family: 'Calibri'
                     }
                 }
                 
@@ -119,7 +126,6 @@ poe.textCursor = function (forNode) {
                 }
 
                 style.italic = newStyle.italic;
-                
                 if (style.italic) {
                     self.currentWord().addClass('italic');
                 }
@@ -128,6 +134,17 @@ poe.textCursor = function (forNode) {
                 
                 if (style.underline) {
                     self.currentWord().addClass('underline');
+                }
+                
+                if (newStyle.font.name) {
+                    style.font.name = newStyle.font.name;
+                    self.currentWord().css('font-family', '"' + style.font.name + '"');
+                }
+                
+                if (newStyle.font.size) {
+                    style.font.size = newStyle.font.size;
+                    self.currentWord().css('font-size', style.font.size + 'pt');
+                    visibleCursor.height(style.font.size + 'pt');
                 }
                 
                 styleChangedCallback();
@@ -146,7 +163,7 @@ poe.textCursor = function (forNode) {
             next: function () {
                 var word = self.currentWord();
                 var ret =  anchor.nextTextNode();
-                if (self.currentWord()[0] !== word[0])
+                if (ret.parents(poe.Selectors.Word)[0] !== word[0])
                     updateStyle();
                 return ret;
             },
@@ -157,7 +174,7 @@ poe.textCursor = function (forNode) {
             prev: function () {
                 var word = self.currentWord();
                 var ret =  anchor.prevTextNode();
-                if (self.currentWord()[0] !== word[0])
+                if (ret.parents(poe.Selectors.Word)[0] !== word[0])
                     updateStyle();
                 return ret;
             },
@@ -467,6 +484,19 @@ poe.textCursor = function (forNode) {
                 $(poe.Selectors.Word).filter(':empty').remove();
                 self.applyStyle(style);
                 self.updateVisibleCursor();
+            },
+            
+            splitWordAtCursor: function(callback) {
+                var back = $(poe.Elements.Word);
+                self.currentWord().after(back);
+                while (anchor.nextSibling().isValid()) {
+                    back.append(anchor.nextSibling());
+                }
+                if (self.currentWord().is(':empty'))
+                    self.currentWord().remove();
+                callback(back);
+                if (back.is(':emtpy'))
+                    back.remove();
             }
         };
 
@@ -484,6 +514,7 @@ poe.textCursor = function (forNode) {
         $('body').append(visibleCursor);
         $('.writer').scroll(self.updateVisibleCursor);
 
+        console.log(style);
         startBlink();
         self.updateVisibleCursor();
     }());
