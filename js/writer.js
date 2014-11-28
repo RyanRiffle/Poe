@@ -171,6 +171,7 @@ $('body').ready(function () {
                     break;
 
                 case poe.key.Enter:
+                    var style = cursor.style();
                     event.preventDefault();
                     cursor.currentLine().after(poe.Elements.Line);
                     var word = $(poe.Elements.Word);
@@ -179,7 +180,6 @@ $('body').ready(function () {
                         word.append(cursor.next());
                     }
 
-                    var style = cursor.style();
                     word.after(cursor.currentWord().nextAll());
                     cursor.moveRight(poe.TextCursor.Move.Line, 1);
                     cursor.applyStyle(style);
