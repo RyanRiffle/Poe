@@ -66,7 +66,6 @@ poe.Document = function () {
             }
             ret += ' }';
             
-            console.log(ret);
             return ret;
         },
     

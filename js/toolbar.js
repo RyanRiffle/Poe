@@ -33,7 +33,6 @@ poe.toolbar = (function() {
             
             setCursor: function(textCursor) {
                 cursor = textCursor;
-                console.log(cursor.style());
             }
         },
         
@@ -90,7 +89,6 @@ poe.toolbar = (function() {
                 style = cursor.style();
             $('#font-size-select .text').html($target.text());
             style.font.size = parseInt($target.text());
-            console.log(style);
             cursor.applyCharStyle(style);
         },
         

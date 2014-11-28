@@ -262,8 +262,6 @@ $('body').ready(function () {
                 cursor.updateVisibleCursor();
                 
                 //Resize body
-                console.log($('.writer').position().top);
-                console.log($('body').height());
                 $('.writer').css('height', ($('body').height() - $('.writer').position().top) + 'px');
             };
 
@@ -277,7 +275,6 @@ $('body').ready(function () {
                  toolbar.styleChanged(cursor);
             });
             cursor.applyStyle(cursor.style());
-            console.log(cursor.style());
             toolbar.styleChanged(cursor);
         }());
         return self;

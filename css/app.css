@@ -1,4 +1,3 @@
-@import url(http://fonts.googleapis.com/css?family=Arial|Calibri|Cambria|Comic+Sans+MS|Consolas|Corsiva|Courier+New|Droid+Sans|Droid+Serif|Impact|Syncopate|Times+New+Roman|Ubuntu)
 .writer {
     border-top: 1px solid #FCFCFC;
     background-color: #F8F8F8;
@@ -13,8 +12,6 @@
 .page-inner {
     -webkit-box-sizing: border-box;
     outline: none;
-    font-family: 'Cambria';
-    font-size: 12pt;
     
     margin-left: auto;
     margin-right: auto;

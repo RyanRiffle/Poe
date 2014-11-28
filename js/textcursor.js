@@ -45,8 +45,8 @@ poe.textCursor = function (forNode) {
             underline: false,
             color: 'black',
             font: {
-                size: 12,
-                name: 'Open Sans'
+                size: 16,
+                name: 'Tinos'
             }
         },
         
@@ -73,7 +73,8 @@ poe.textCursor = function (forNode) {
                 styleChanged = true;
             }
             
-            if ((tmp = parseInt(self.currentWord().css('font-size').replace('pt',''))) !== style.font.size) {
+            if ((tmp = parseInt(self.currentWord().css('font-size').replace('px',''))) !== style.font.size) {
+                console.log(self.currentWord().css('font-size'));
                 style.font.size = tmp;
                 styleChanged = true;
             }
@@ -83,9 +84,9 @@ poe.textCursor = function (forNode) {
                 styleChanged = true;
             }
             
-            if (styleChanged) {
+            if (styleChanged && styleChanged) {
                 styleChangedCallback();
-                visibleCursor.height(style.font.size + 'pt');
+                visibleCursor.height(style.font.size + 'px');
             }
         },
 
@@ -143,11 +144,12 @@ poe.textCursor = function (forNode) {
                 
                 if (newStyle.font.size) {
                     style.font.size = newStyle.font.size;
-                    self.currentWord().css('font-size', style.font.size + 'pt');
-                    visibleCursor.height(style.font.size + 'pt');
+                    self.currentWord().css('font-size', style.font.size + 'px');
+                    visibleCursor.height(style.font.size + 'px');
                 }
                 
-                styleChangedCallback();
+                if (styleChangedCallback)
+                    styleChangedCallback();
             },
 
             /*
@@ -514,7 +516,7 @@ poe.textCursor = function (forNode) {
         $('body').append(visibleCursor);
         $('.writer').scroll(self.updateVisibleCursor);
 
-        console.log(style);
+        self.applyStyle(style);
         startBlink();
         self.updateVisibleCursor();
     }());
