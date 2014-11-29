@@ -75,8 +75,12 @@ poe.textCursor = function (forNode) {
                 styleChanged = true;
             }
             
+            if ((tmp = self.currentWord().css('color')) !== style.color) {
+                style.color = tmp;
+                styleChanged = true;
+            }
+            
             if ((tmp = parseInt(self.currentWord().css('font-size').replace('px',''))) !== style.font.size) {
-                console.log(self.currentWord().css('font-size'));
                 style.font.size = tmp;
                 styleChanged = true;
             }
@@ -137,6 +141,11 @@ poe.textCursor = function (forNode) {
                 
                 if (style.underline) {
                     self.currentWord().addClass('underline');
+                }
+                
+                if (newStyle.color) {
+                    style.color = newStyle.color;
+                    self.currentWord().css('color', style.color);
                 }
                 
                 if (newStyle.font.name) {

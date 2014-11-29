@@ -15,7 +15,17 @@
         <div class='dropdown'>
             <button id='font-select' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
                 <span class='text'>Cambria</span>
-            <span class='color-pick'>&nbsp;</span>
+                <div class='dropdown'>
+                    <span id='color-pick' class='color-pick dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='true'>&nbsp;</span>
+                    <ul id='color-list' class='dropdown-menu' aria-labelledby='color-pick' role='menu' data-toggle='dropdown' aria-expand='true'>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: black;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #428bca;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #5cb85c;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #5bc0de;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #f0ad4e;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #d9534f;'></a></li>
+                    </ul>
+                </div>
             </button>
             <ul id='font-list' class='dropdown-menu' role='menu' aria-labelledby='font-select' data-toggle='dropdown' aria-expand='true'>
                 <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Arimo";'>Arimo</a></li>
