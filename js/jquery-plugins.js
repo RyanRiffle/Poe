@@ -120,6 +120,12 @@ $.fn.positionRight = function () {
 };
 
 $.fn.pos = function () {
+    if (!this.isValid()) {
+        console.log(this);
+        console.log("Has Children: " + this.hasChildren(poe.Selectors.Word));
+        throw 'Cannot call $.fn.pos on an invalid object.';
+    }
+    
     var pos = this.position();
     return {
         left: pos.left,

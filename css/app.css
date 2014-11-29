@@ -136,7 +136,6 @@ html, body {
     padding: 0px;
     width: 100%;
     overflow: hidden;
-    zoom: -1;
 }
 
 .line::before {
@@ -183,4 +182,22 @@ html, body {
 ::selection {
     background: #55C1EC;
     color: white;
+}
+
+.color-list-item {
+    height: 48px;
+    width: 48px;
+    padding: 0px !important;
+    margin-left: 12px;
+    margin-bottom: 12px;
+    margin-top: 12px;
+    border-radius: 4px;
+}
+
+#color-list {
+    width: 200px;
+}
+
+#color-list > li {
+    float: left;
 }

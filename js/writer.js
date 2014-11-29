@@ -36,26 +36,72 @@ $('body').ready(function () {
                     page.append(page.next(poe.Selectors.Page).children(poe.Selectors.Line).first());
                 }
             },
+            
+            checkAlignmentSpacers = function () {
+                var $line;
+                var padding;
+                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-left').each(function (index, ln) {
+                    $(ln).css('padding', '0px'); 
+                });
+                
+                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-justify').each(function (index, ln) {
+                    $(ln).css('padding', '0px'); 
+                });
+                
+                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-right').each(function (index, ln) {
+                    $line = $(ln);
+                    padding = 0;
+                    
+                    $line.children(poe.Selectors.Word).each(function (index, w) {
+                        padding += $(w).width(); 
+                    });
+                    
+                    padding = $line.parents(poe.Selectors.Page).width() - padding - 6;
+                    $line.css('padding-left', padding + 'px');
+                });
+                
+                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-center').each(function (index, ln) {
+                    $line = $(ln);
+                    padding = 0;
+                    
+                    $line.children(poe.Selectors.Word).each(function (index, w) {
+                        padding += $(w).width(); 
+                    });
+                    
+                    padding = $line.parents(poe.Selectors.Page).width() - padding - 6;
+                    padding /= 2;
+                    $line.css('padding-left', padding + 'px');
+                    $line.css('padding-right', padding + 'px');
+                });
+            },
 
             updateWordWrap = function () {
                 $(poe.Selectors.Word).filter(':empty').remove();
+                checkAlignmentSpacers();
                 
                 var line = cursor.currentLine(),
                     nextLine = line.next(poe.Selectors.Line),
                     lineChildren,
-                    nextLineChildren;
-    
-                while (line.isValid() && line.hasChildren(poe.Selectors.Word)) {
-                    while (line.children(poe.Selectors.Word).last().pos().right > line.pos().right) {
+                    nextLineChildren,
+                    linePadding,
+                    doWrap = function () {
                         if (!nextLine.isValid() || line.next(poe.Selectors.Line).hasClass('newline')) {
-                            line.after(poe.Elements.Line);
-                            nextLine = line.next(poe.Selectors.Line);
-                        }
-                        
-                        nextLine.prepend(line.children(poe.Selectors.Word).last());    
+                                line.after(poe.Elements.Line);
+                                nextLine = line.next(poe.Selectors.Line);
+                                nextLine.attr('class', line.attr('class'));
+                            }
+
+                        nextLine.prepend(line.children(poe.Selectors.Word).last()); 
+                    };
+    
+                while (line.isValid() && line.children(poe.Selectors.Word).isValid()) {
+                    linePadding = parseInt(line.css('padding-left').replace('px', ''));
+                    while (line.children(poe.Selectors.Word).last().pos().right > line.pos().right + linePadding) {
+                        doWrap();
+                        checkAlignmentSpacers();
                     }
                     
-                    while (nextLine.children(poe.Selectors.Word).isValid() && nextLine.children(poe.Selectors.Word).first().width() + line.children(poe.Selectors.Word).last().pos().right < line.pos().right) {
+                    while (nextLine.children(poe.Selectors.Word).isValid() && nextLine.children(poe.Selectors.Word).first().width() + line.children(poe.Selectors.Word).last().pos().right < $(poe.Selectors.Page).pos().right) {
                         line.append(nextLine.children(poe.Selectors.Word).first());
                         if (nextLine.is(':empty'))
                             nextLine.remove();
@@ -228,6 +274,10 @@ $('body').ready(function () {
 
                 default:
                     event.preventDefault();
+                    if (event.keyCode === 16) {
+                        return;
+                    }
+                        
                     if (cursor.hasSelection()) {
                         cursor.removeSelectedText();
                     }
@@ -302,7 +352,8 @@ $('body').ready(function () {
             toolbar.setCursor(cursor);
             handleResize();
             cursor.on('styleChanged', function() {
-                 toolbar.styleChanged(cursor);
+                checkAlignmentSpacers();
+                toolbar.styleChanged(cursor);
             });
             cursor.applyStyle(cursor.style());
             toolbar.styleChanged(cursor);

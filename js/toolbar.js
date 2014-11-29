@@ -27,6 +27,8 @@ poe.toolbar = (function() {
                     buttons.underline.removeClass('active');
                 }
                 
+                console.log(style.color);
+                $('#color-pick').css('background-color', style.color);
                 $('#font-size-select .text').html(style.font.size);
                 $('#font-select .text').html(style.font.name);
             },
@@ -92,11 +94,38 @@ poe.toolbar = (function() {
             cursor.applyCharStyle(style);
         },
         
+        handleColorSelect = function (event) {
+            var $color = $(event.target),
+                colorCode,
+                style;
+            colorCode = $color.css('background-color');
+            $('#color-pick').css('background-color', colorCode);
+            style = cursor.style();
+            style.color = colorCode;
+            cursor.applyCharStyle(style);
+        },
+        
+        handleAlignment = function (event) {
+            var button = $(event.target),
+                style = cursor.style();
+            if (button.hasClass('glyphicon')) {
+                button = button.parent();
+            }
+            
+            $('#alignment button').removeClass('active');
+            
+            button.addClass('active');
+            style.align = parseInt(button.attr('name'));
+            cursor.applyCharStyle(style);
+        },
+        
         initialize = (function() {
             $('.btn').click(handleButtonPressed);
             $('body').keydown(handleShortcuts);
             $('#font-list li a').click(handleFontSelect);
             $('#font-size-list li a').click(handleFontSize);
+            $('.color-list-item').click(handleColorSelect);
+            $('#alignment button').click(handleAlignment);
         }());
     
     return self;
