@@ -5,14 +5,16 @@ $('body').ready(function () {
         Word: '<span class="word"></span>',
         Line: '<div class="line"></div>',
         Page: '<div class="page-inner"></div>',
-        Tab: '<span class="tab word">&#8203;</span>'
+        Tab: '<span class="tab word">&#8203;</span>',
+        Paragraph: '<div class="paragraph"></div>',
     };
     
     poe.Selectors = {
         Word: '.word',
         Line: '.line',
         Page: '.page-inner',
-        Tab: '.tab'
+        Tab: '.tab',
+        Paragraph: '.paragraph'
     };
 
     poe.Types.Writer = 'Writer';
@@ -40,15 +42,15 @@ $('body').ready(function () {
             checkAlignmentSpacers = function () {
                 var $line;
                 var padding;
-                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-left').each(function (index, ln) {
+                cursor.currentParagraph().children(poe.Selectors.Line).filter('.align-left').each(function (index, ln) {
                     $(ln).css('padding', '0px'); 
                 });
                 
-                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-justify').each(function (index, ln) {
+                cursor.currentParagraph().children(poe.Selectors.Line).filter('.align-justify').each(function (index, ln) {
                     $(ln).css('padding', '0px'); 
                 });
                 
-                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-right').each(function (index, ln) {
+                cursor.currentParagraph().children(poe.Selectors.Line).filter('.align-right').each(function (index, ln) {
                     $line = $(ln);
                     padding = 0;
                     
@@ -60,7 +62,7 @@ $('body').ready(function () {
                     $line.css('padding-left', padding + 'px');
                 });
                 
-                cursor.currentLine().nextAll(poe.Selectors.Line).add(cursor.currentLine()).filter('.align-center').each(function (index, ln) {
+                cursor.currentParagraph().children(poe.Selectors.Line).filter('.align-center').each(function (index, ln) {
                     $line = $(ln);
                     padding = 0;
                     
@@ -122,7 +124,7 @@ $('body').ready(function () {
                     doc.pageAdded();
                 }
                 
-                var line = cursor.currentPage().children(poe.Selectors.Line).last();
+                var line = cursor.currentPage().children(poe.Selectors.Paragraph).children(poe.Selectors.Line).last();
                 while (line.pos().bottom > line.parents(poe.Selectors.Page).pos().bottom + doc.margins().top) {
                     line.parents(poe.Selectors.Page).next(poe.Selectors.Page).prepend(line);
                     
@@ -235,23 +237,26 @@ $('body').ready(function () {
                     break;
 
                 case poe.key.Enter:
-                    var style = cursor.style();
+                    var style = cursor.style(),
+                        paragraph = $(poe.Elements.Paragraph);
                     if (cursor.hasSelection()) {
                         cursor.removeSelectedText();
                     }
                         
                     event.preventDefault();
-                    cursor.currentLine().after(poe.Elements.Line);
+                    cursor.currentParagraph().after(paragraph);
+                    paragraph.append(poe.Elements.Line);
+                    //cursor.currentLine().after(poe.Elements.Line);
                     var word = $(poe.Elements.Word);
-                    cursor.nextLine().prepend(word);
+                    paragraph.children(poe.Selectors.Line).first().prepend(word);
+                    //cursor.nextLine().prepend(word);
                     while (cursor.next().parent() === cursor.currentWord()) {
                         word.append(cursor.next());
                     }
-
+                    
                     word.after(cursor.currentWord().nextAll());
-                    cursor.moveRight(poe.TextCursor.Move.Line, 1);
+                    cursor.moveRight(poe.TextCursor.Move.Paragraph, 1);
                     cursor.applyStyle(style);
-                    cursor.currentLine().addClass('newline');
                     updatePageBreaks();
                     break;
                         

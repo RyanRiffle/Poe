@@ -3,7 +3,8 @@ poe.TextCursor = {
     Move: {
         Char: 1,
         Word: 2,
-        Line: 3
+        Line: 3,
+        Paragraph: 4
     },
     
     Align: {
@@ -135,7 +136,7 @@ poe.textCursor = function (forNode) {
                 
                 //Remove all style classes
                 self.currentWord().attr('class', 'word');
-                self.currentLine().attr('class', 'line');
+                self.currentParagraph().children(poe.Selectors.Line).attr('class', 'line');
                 
                 if (style.bold) {
                     self.currentWord().addClass('bold');
@@ -169,15 +170,8 @@ poe.textCursor = function (forNode) {
                     }
                 }
                 
-                self.currentLine().addClass(alignClass);
-                self.currentLine().nextUntil('.newline').each(function (index, line) {
-                    $(line).addClass(alignClass); 
-                });
-                
-                self.currentLine().prevUntil('.newline').each(function (index, line) {
-                    $(line).addClass(alignClass); 
-                });
-                
+                console.log(self.currentParagraph().children(poe.Selectors.Line));
+                self.currentParagraph().children(poe.Selectors.Line).addClass(alignClass);
                 if (style.underline) {
                     self.currentWord().addClass('underline');
                 }
@@ -198,8 +192,9 @@ poe.textCursor = function (forNode) {
                     visibleCursor.height(style.font.size + 'px');
                 }
                 
-                if (styleChangedCallback)
+                if (styleChangedCallback) {
                     styleChangedCallback();
+                }
             },
             
             /*
@@ -258,6 +253,18 @@ poe.textCursor = function (forNode) {
             */
             prevNode: function () {
                 return anchor.prevNode();
+            },
+            
+            currentParagraph: function () {
+                return anchor.parents(poe.Selectors.Paragraph);
+            },
+            
+            nextParagraph: function () {
+                return self.currentParagraph().next(poe.Selectors.Paragraph);
+            },
+            
+            prevParagraph: function () {
+                return self.currentParagraph().prev(poe.Selectors.Paragraph);
             },
 
             /*
@@ -398,6 +405,18 @@ poe.textCursor = function (forNode) {
                             }
                             tmp.firstChild().prepend(anchor);
                         }
+                    },
+                    
+                    paragraph = function () {
+                        var x,
+                            tmp;
+                        for (x = 0; x < count; x+= 1) {
+                            tmp = self.nextParagraph();
+                            if (!tmp.isValid()) {
+                                break;
+                            }
+                            tmp.children(poe.Selectors.Line).firstChild().prepend(anchor);
+                        }
                     };
 
                 switch (TextCursorMove) {
@@ -411,6 +430,10 @@ poe.textCursor = function (forNode) {
 
                 case poe.TextCursor.Move.Line:
                     line();
+                    break;
+                        
+                case poe.TextCursor.Move.Paragraph:
+                    paragraph();
                     break;
                 }
 
@@ -474,6 +497,18 @@ poe.textCursor = function (forNode) {
                             }
                             tmp.prevWord().append(anchor);
                         }
+                    },
+                    
+                    paragraph = function () {
+                        var x,
+                            tmp;
+                        for (x = 0; x < count; x+= 1) {
+                            tmp = self.prevParagraph();
+                            if (!tmp.isValid()) {
+                                break;
+                            }
+                            tmp.children(poe.Selectors.Line).firstChild().prepend(anchor);
+                        }
                     };
 
                 switch (TextCursorMove) {
@@ -487,6 +522,10 @@ poe.textCursor = function (forNode) {
 
                 case poe.TextCursor.Move.Line:
                     line();
+                    break;
+                        
+                case poe.TextCursor.Move.Paragraph:
+                    paragraph();
                     break;
                 }
 

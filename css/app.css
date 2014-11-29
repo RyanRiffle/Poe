@@ -201,3 +201,7 @@ html, body {
 #color-list > li {
     float: left;
 }
+
+.paragraph {
+    width: 100%;
+}
