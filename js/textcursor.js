@@ -608,7 +608,7 @@ poe.textCursor = function (forNode) {
                 rangy.getSelection().setSingleRange(rangy.createRange());
                 $(poe.Selectors.Word).each(function (index, elm) {
                     var word = $(elm);
-                    if (word.textContent() === '') {
+                    if (word.textContent() === '' && anchor.parent()[0] !== word[0]) {
                         word.remove();
                     }
                 });
