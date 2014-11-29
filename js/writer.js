@@ -239,6 +239,7 @@ $('body').ready(function () {
                 case poe.key.Enter:
                     var style = cursor.style(),
                         paragraph = $(poe.Elements.Paragraph);
+                        
                     if (cursor.hasSelection()) {
                         cursor.removeSelectedText();
                     }
@@ -250,7 +251,7 @@ $('body').ready(function () {
                     var word = $(poe.Elements.Word);
                     paragraph.children(poe.Selectors.Line).first().prepend(word);
                     //cursor.nextLine().prepend(word);
-                    while (cursor.next().parent() === cursor.currentWord()) {
+                    while (cursor.next().parent()[0] === cursor.currentWord()[0]) {
                         word.append(cursor.next());
                     }
                     
