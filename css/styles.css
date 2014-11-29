@@ -9,3 +9,24 @@
 .underline {
     text-decoration: underline;
 }
+
+/* Nothing has to be done for align-left */
+.align-left {
+    
+}
+
+.align-center {
+    
+}
+
+.align-right {
+    
+}
+
+.align-justify {
+    
+}
+
+.align-right-spacer {
+    display: inline-block;
+}

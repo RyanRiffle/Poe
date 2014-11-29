@@ -105,12 +105,27 @@ poe.toolbar = (function() {
             cursor.applyCharStyle(style);
         },
         
+        handleAlignment = function (event) {
+            var button = $(event.target),
+                style = cursor.style();
+            if (button.hasClass('glyphicon')) {
+                button = button.parent();
+            }
+            
+            $('#alignment button').removeClass('active');
+            
+            button.addClass('active');
+            style.align = parseInt(button.attr('name'));
+            cursor.applyCharStyle(style);
+        },
+        
         initialize = (function() {
             $('.btn').click(handleButtonPressed);
             $('body').keydown(handleShortcuts);
             $('#font-list li a').click(handleFontSelect);
             $('#font-size-list li a').click(handleFontSize);
             $('.color-list-item').click(handleColorSelect);
+            $('#alignment button').click(handleAlignment);
         }());
     
     return self;

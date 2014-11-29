@@ -6,6 +6,13 @@ poe.TextCursor = {
         Line: 3
     },
     
+    Align: {
+        Left: 1,
+        Center: 2,
+        Right: 3,
+        Justify: 4
+    },
+    
     create: function (forNode) {
         return new poe.textCursor(forNode);
     }
@@ -15,7 +22,6 @@ poe.Types.TextCursor = 'TextCursor';
 
 poe.textCursor = function (forNode) {
     var anchor = $('<span class="textcursor"></span>'),
-        range = $('<span class="textcursorrange"></span>'), //For selections
         visibleCursor = $('<div class="visiblecursor"></div>'),
         blinkTimer, //Cursor blink timer
         styleChangedCallback,
@@ -25,27 +31,13 @@ poe.textCursor = function (forNode) {
         blinkCursor = function () {
             $('.visiblecursor').toggleClass('hide');
         },
-    
-        /*
-            Used to stop the cursor from blinking when the user is typing.
-        */
-        stopBlink = function () {
-            clearInterval(blinkTimer);
-            $('.visiblecursor').removeClass('hide');
-        },
-
-        /*
-            Restarts the blinking of the cursor after the typing is done.
-        */
-        startBlink = function () {
-            blinkTimer = setInterval(blinkCursor, 700);
-        },
         
         style = {
             bold: false,
             italic: false,
             underline: false,
             color: 'black',
+            align: poe.TextCursor.Align.Left,
             font: {
                 size: 16,
                 name: 'Tinos'
@@ -72,6 +64,22 @@ poe.textCursor = function (forNode) {
             
             if ((tmp = self.currentWord().hasClass('underline')) !== style.underline) {
                 style.underline = tmp;
+                styleChanged = true;
+            }
+            
+            tmp = 0;
+            if (self.currentLine().hasClass('align-left')) {
+                tmp = poe.TextCursor.Align.Left;
+            } else if (self.currentLine().hasClass('align-center')) {
+                tmp = poe.TextCursor.Align.Center;
+            } else if (self.currentLine().hasClass('align-right')) {
+                tmp = poe.TextCursor.Align.Right;
+            } else if (self.currentLine().hasClass('align-justify')) {
+                tmp = poe.TextCursor.Align.Justify;
+            }
+            
+            if (tmp !== style.align) {
+                style.align = tmp;
                 styleChanged = true;
             }
             
@@ -127,6 +135,7 @@ poe.textCursor = function (forNode) {
                 
                 //Remove all style classes
                 self.currentWord().attr('class', 'word');
+                self.currentLine().attr('class', 'line');
                 
                 if (style.bold) {
                     self.currentWord().addClass('bold');
@@ -138,6 +147,36 @@ poe.textCursor = function (forNode) {
                 }
             
                 style.underline = newStyle.underline;
+                
+                var alignClass = '';
+                if (style.align) {
+                    switch(style.align) {
+                    case poe.TextCursor.Align.Left:
+                        alignClass = 'align-left';
+                        break;
+                            
+                    case poe.TextCursor.Align.Center:
+                        alignClass = 'align-center';
+                        break;
+                            
+                    case poe.TextCursor.Align.Right:
+                        alignClass = 'align-right';
+                        break;
+                            
+                    case poe.TextCursor.Align.Justify:
+                        alignClass = 'align-justify';
+                        break;
+                    }
+                }
+                
+                self.currentLine().addClass(alignClass);
+                self.currentLine().nextUntil('.newline').each(function (index, line) {
+                    $(line).addClass(alignClass); 
+                });
+                
+                self.currentLine().prevUntil('.newline').each(function (index, line) {
+                    $(line).addClass(alignClass); 
+                });
                 
                 if (style.underline) {
                     self.currentWord().addClass('underline');
@@ -161,6 +200,21 @@ poe.textCursor = function (forNode) {
                 
                 if (styleChangedCallback)
                     styleChangedCallback();
+            },
+            
+            /*
+                Used to stop the cursor from blinking when the user is typing.
+            */
+            stopBlink: function () {
+                clearInterval(blinkTimer);
+                $('.visiblecursor').removeClass('hide');
+            },
+
+            /*
+                Restarts the blinking of the cursor after the typing is done.
+            */
+            startBlink: function () {
+                blinkTimer = setInterval(blinkCursor, 700);
             },
 
             /*
@@ -295,7 +349,12 @@ poe.textCursor = function (forNode) {
                 TextCursorMove      see poe.TextCursor.Move
             */
             moveRight: function (TextCursorMove, count) {
-                stopBlink();
+                if (self.hasSelection()) {
+                    $(self.range().endContainer).before(anchor);
+                    rangy.getSelection().setSingleRange(rangy.createRange());
+                }
+                
+                self.stopBlink();
                 if (typeof (TextCursorMove) !== 'number') {
                     throw {
                         error: 'poe.TextCursor.Move.* should be the first argument to move functions.'
@@ -307,31 +366,37 @@ poe.textCursor = function (forNode) {
                 }
 
                 var char = function () {
-                    var x;
+                    var x,
+                        tmp;
                     for (x = 0; x < count; x = x + 1) {
-                        if (!self.next().isValid()) {
+                        tmp = self.next();
+                        if (!tmp.isValid()) {
                             break;
                         }
-                        self.next().after(anchor);
+                        tmp.after(anchor);
                     }
                 },
 
                     word = function () {
-                        var x;
+                        var x,
+                            tmp;
                         for (x = 0; x < count; x = x + 1) {
-                            if (!self.nextWord().isValid()) {
+                            tmp = self.nextWord();
+                            if (!tmp.isValid()) {
                                 break;
                             }
-                            self.nextWord().prepend(anchor);
+                            tmp.prepend(anchor);
                         }
                     },
                     line = function () {
-                        var x;
+                        var x,
+                            tmp;
                         for (x = 0; x < count; x = x + 1) {
-                            if (!self.nextLine().isValid()) {
+                            tmp = self.nextLine();
+                            if (!tmp.isValid()) {
                                 break;
                             }
-                            self.nextLine().firstChild().prepend(anchor);
+                            tmp.firstChild().prepend(anchor);
                         }
                     };
 
@@ -350,7 +415,7 @@ poe.textCursor = function (forNode) {
                 }
 
                 self.updateVisibleCursor();
-                startBlink();
+                self.startBlink();
             },
 
             /*
@@ -358,7 +423,12 @@ poe.textCursor = function (forNode) {
                 TextCursorMove      see poe.TextCursor.Move
             */
             moveLeft: function (TextCursorMove, count) {
-                stopBlink();
+                if (self.hasSelection()) {
+                    $(self.range().startContainer).after(anchor);
+                    rangy.getSelection().setSingleRange(rangy.createRange());
+                }
+                
+                self.stopBlink();
                 if (typeof (TextCursorMove) !== 'number') {
                     throw {
                         error: 'poe.TextCursor.Move.* should be the first argument to move functions.'
@@ -370,33 +440,39 @@ poe.textCursor = function (forNode) {
                 }
 
                 var char = function () {
-                    var x;
+                    var x,
+                        tmp;
                     for (x = 0; x < count; x = x + 1) {
-                        if (!self.prev().isValid()) {
+                        tmp = self.prev();
+                        if (!tmp.isValid()) {
                             break;
                         }
                         
-                        self.prev().before(anchor);
+                        tmp.before(anchor);
                     }
                 },
 
                     word = function () {
-                        var x = 0;
+                        var x = 0,
+                            tmp;
                         for (x = 0; x < count; x = x + 1) {
-                            if (!self.prevWord().isValid()) {
+                            tmp = self.prevWord();
+                            if (!tmp.isValid()) {
                                 break;
                             }
-                            self.prevWord().append(anchor);
+                            tmp.append(anchor);
                         }
                     },
 
                     line = function () {
-                        var x;
+                        var x,
+                            tmp;
                         for (x = 0; x < count; x += 1) {
-                            if (!self.prevLine().isValid()) {
+                            tmp = self.prevLine();
+                            if (!tmp.isValid()) {
                                 break;
                             }
-                            self.prevLine().prevWord().append(anchor);
+                            tmp.prevWord().append(anchor);
                         }
                     };
 
@@ -415,7 +491,7 @@ poe.textCursor = function (forNode) {
                 }
 
                 self.updateVisibleCursor();
-                startBlink();
+                self.startBlink();
             },
 
             /*
@@ -508,7 +584,7 @@ poe.textCursor = function (forNode) {
                 if (self.currentWord().is(':empty'))
                     self.currentWord().remove();
                 callback(back);
-                if (back.is(':emtpy'))
+                if (back.is(':empty'))
                     back.remove();
             },
             
@@ -583,9 +659,13 @@ poe.textCursor = function (forNode) {
         },
         
         handleMouseUp = function (event) {
+            if (self.hasSelection())
+                return;
+            
             var node = textNodeAtPos(event.clientX, event.clientY);
-            if (node.isValid()) {
+            if (node.isValid() && node.parent().hasClass('word')) {
                 node.before(anchor);
+                self.updateVisibleCursor();
             }
         };
 
@@ -601,13 +681,12 @@ poe.textCursor = function (forNode) {
             $(poe.Selectors.Word).first().prepend(anchor);
         }
         
-        anchor.append(range);
         $('body').append(visibleCursor);
         $('.writer').scroll(self.updateVisibleCursor);
         $('.writer').mouseup(handleMouseUp);
 
         self.applyStyle(style);
-        startBlink();
+        self.startBlink();
         self.updateVisibleCursor();
     }());
     

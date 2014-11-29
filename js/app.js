@@ -7,4 +7,8 @@ $(document).ready(function () {
         event.stopImmediatePropagation();
         $('#color-pick').parent('.dropdown').addClass('open');
     });
+    
+    $('#alignment button span').click(function (event) {
+        var button = $(event.target).parent();
+    });
 });

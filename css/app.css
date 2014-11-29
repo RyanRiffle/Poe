@@ -136,7 +136,6 @@ html, body {
     padding: 0px;
     width: 100%;
     overflow: hidden;
-    zoom: -1;
 }
 
 .line::before {
