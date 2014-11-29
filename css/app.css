@@ -3,7 +3,7 @@
     background-color: #F8F8F8;
     padding-top: 12px;
     padding-bottom: 24px;
-    -webkit-user-select: none;
+    -webkit-user-select: text;
     user-select: none;
     overflow-y: scroll;
     width: 100%;
@@ -39,7 +39,7 @@ html, body {
 }
 
 .word:empty::before {
-    content: '\00a0';
+    content: '\200B';
 }
 
 .toolbar {
@@ -178,4 +178,9 @@ html, body {
 
 #font-size-select .caret {
     text-align: right;
+}
+
+::selection {
+    background: #55C1EC;
+    color: white;
 }

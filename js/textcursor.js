@@ -19,6 +19,8 @@ poe.textCursor = function (forNode) {
         visibleCursor = $('<div class="visiblecursor"></div>'),
         blinkTimer, //Cursor blink timer
         styleChangedCallback,
+        leftMouseButtonDown = false,
+        anchorIsSet = false,
         
         blinkCursor = function () {
             $('.visiblecursor').toggleClass('hide');
@@ -499,6 +501,82 @@ poe.textCursor = function (forNode) {
                 callback(back);
                 if (back.is(':emtpy'))
                     back.remove();
+            },
+            
+            range: function () {
+                var sel = rangy.getSelection();
+                return sel.getRangeAt(0);
+            },
+            
+            hasSelection: function () {
+                var isCollapsed = rangy.getSelection().isCollapsed;
+                if (!isCollapsed && rangy.getSelection().getRangeAt(0).toString() === '')
+                    return false;
+                
+                return !isCollapsed;
+            },
+            
+            removeSelectedText: function () {
+                var range = self.range();
+                $(range.startContainer).before(anchor);
+                range.deleteContents();
+                rangy.getSelection().setSingleRange(rangy.createRange());
+                $(poe.Selectors.Word).each(function (index, elm) {
+                    var word = $(elm);
+                    if (word.textContent() === '') {
+                        word.remove();
+                    }
+                });
+                $(poe.Selectors.Line).filter(':empty').remove();
+            }
+        },
+        
+        textNodeAtPos = function (x, y) {
+            var ret = $();
+            if (y < $(poe.Selectors.Line).first().position().top) {
+                ret = $(poe.Selectors.Line).first().nextTextNode();
+                if (ret[0] === anchor[0]) {
+                    return anchor.nextSibling();
+                }
+                
+                return ret;
+            } else if (y > $(poe.Selectors.Line).last().pos().bottom) {
+                ret = $(poe.Selectors.Line).last().children(poe.Selectors.Word).last().childNodes().last();
+                if (ret[0] === anchor[0]) {
+                    return anchor.prevSibling();
+                }
+                return $(poe.Selectors.Line).last().children(poe.Selectors.Word).last().childNodes().last();
+            }
+            
+            $(poe.Selectors.Line).each(function(index, element) {
+                var $line = $(element);
+                
+                if (y >= $line.pos().top && y <= $line.pos().bottom) {
+                    $line.children(poe.Selectors.Word).each(function (wordindex, wordelement) {
+                         var $word = $(wordelement);
+                        if (x >= $word.pos().left && x <= $word.pos().right) {
+                            $word.childNodes().each(function (textindex, textelement) {
+                                var $text = $(textelement);
+                                var range = document.createRange();
+                                range.selectNode(textelement);
+                                var rect = range.getClientRects()[0];
+                                
+                                if (rect && x >= rect.left && x <= rect.right) {
+                                    ret = $text;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            
+            return ret;
+        },
+        
+        handleMouseUp = function (event) {
+            var node = textNodeAtPos(event.clientX, event.clientY);
+            if (node.isValid()) {
+                node.before(anchor);
             }
         };
 
@@ -513,8 +591,11 @@ poe.textCursor = function (forNode) {
         } else {
             $(poe.Selectors.Word).first().prepend(anchor);
         }
+        
+        anchor.append(range);
         $('body').append(visibleCursor);
         $('.writer').scroll(self.updateVisibleCursor);
+        $('.writer').mouseup(handleMouseUp);
 
         self.applyStyle(style);
         startBlink();

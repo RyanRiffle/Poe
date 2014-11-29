@@ -119,6 +119,13 @@ $('body').ready(function () {
 
                 case poe.key.Backspace:
                     event.preventDefault();
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                        $(poe.Selectors.Word).filter(':empty').remove();
+                        updateWordWrap();
+                        updatePageBreaks();
+                        break;
+                    }
                     var line;
                     
                     //Special case for tabs because well it needs it.
@@ -150,6 +157,13 @@ $('body').ready(function () {
 
                 case poe.key.Delete:
                     event.preventDefault();
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                        updateWordWrap();
+                        updatePageBreaks();
+                        break;
+                    }
+                        
                     if (cursor.next().parents(poe.Selectors.Line)[0] !== cursor.currentLine()[0]) {
                         cursor.nextLine().removeClass('newline');
                     }
@@ -160,6 +174,10 @@ $('body').ready(function () {
                     break;
 
                 case poe.key.Space:
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                    }
+                        
                     event.preventDefault();
                     cursor.insertBefore('&nbsp;');
                     var style = cursor.style();
@@ -172,6 +190,10 @@ $('body').ready(function () {
 
                 case poe.key.Enter:
                     var style = cursor.style();
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                    }
+                        
                     event.preventDefault();
                     cursor.currentLine().after(poe.Elements.Line);
                     var word = $(poe.Elements.Word);
@@ -189,6 +211,10 @@ $('body').ready(function () {
                         
                 case poe.key.Tab:
                     event.preventDefault();
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                    }
+                    
                     var tab = $(poe.Elements.Tab),
                         word = $(poe.Elements.Word),
                         style = cursor.style();
@@ -202,6 +228,10 @@ $('body').ready(function () {
 
                 default:
                     event.preventDefault();
+                    if (cursor.hasSelection()) {
+                        cursor.removeSelectedText();
+                    }
+                        
                     var letter;
                     if (event.shiftKey) {
                         letter = poe.keyMapShift[event.keyCode];
