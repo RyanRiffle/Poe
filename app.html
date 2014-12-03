@@ -7,10 +7,27 @@
     <link rel="stylesheet" type="text/css" href="css/styles.css"/>
     <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arimo|Cousine|Tinos|Open+Sans|Droid+Sans|Droid+Serif|Syncopate|Times+New+Roman|Ubuntu"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
+  
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+    <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+      <script type="text/javascript" src="js/Poe.js"></script>
+      <script type="text/javascript" src="js/Keymap.js"></script>
+      <script type="text/javascript" src="js/TextCursor.js"></script>
+      <script type="text/javascript" src="js/Checkable.js"></script>
+        <script type="text/javascript" src="js/Line.js"></script>
+    <script type="text/javascript" src="js/TextObject.js"></script>
+    <script type="text/javascript" src="js/Word.js"></script>
+    <script type="text/javascript" src="js/Paragraph.js"></script>
+    <script type="text/javascript" src="js/Page.js"></script>
+    <script type="text/javascript" src="js/Document.js"></script>
+    <script type="text/javascript" src="js/Writer.js"></script>
 </head>
 <body>
+    <poe-document></poe-document>
     <div class='toolbar'>
         <div class='dropdown'>
             <button id='font-select' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
@@ -76,25 +93,11 @@
             <button type='button' class='btn btn-default' name='3'><span class='glyphicon glyphicon-align-right'></span></button>
             <button type='button' class='btn btn-default' name='4'><span class='glyphicon glyphicon-align-justify'></span></button>
         </div>
+        
+        <div id='lists' class='btn-group' role='group'>
+            <button type='button' class='btn btn-default' name='bullet'><span class='glyphicon glyphicon-th-list'></span></button>
+            <button type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>
+        </div>
     </div>
-    
-    <!-- Note to self a hyphen is &#8212; -->
-    <div class='writer'>
-            <div class='page-inner'>
-                <div class='line'><span class='word'></span></div></div><!-- Note that if there are returns or spaces
-                                                                             between these it will break the application. -->
-    </div>
-    
-    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-    <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
-    <script type="text/javascript" src="bower_components/rangy/rangy-core.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/fontmanager.js"></script>
-    <script type="text/javascript" src="js/jquery-plugins.js"></script>
-    <script type="text/javascript" src="js/keymap.js"></script>
-    <script type="text/javascript" src="js/textcursor.js"></script>
-    <script type="text/javascript" src="js/document.js"></script>
-    <script type="text/javascript" src="js/writer.js"></script>
-    <script type="text/javascript" src="js/toolbar.js"></script>
 </body>
 </html>

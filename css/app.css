@@ -9,7 +9,7 @@
     width: 100%;
 }
 
-.page-inner {
+.page {
     -webkit-box-sizing: border-box;
     outline: none;
     
@@ -32,13 +32,10 @@ html, body {
 
 .textcursor {
     user-select: none;
+    margin-top: -1px;
 }
 
 .textcursor::before {
-    content: '\200B';
-}
-
-.word:empty::before {
     content: '\200B';
 }
 
@@ -116,6 +113,8 @@ html, body {
     width: 2px;
     background-color: black;
     margin-right: -1px;
+    top: 0px;
+    left: 0px;
 }
 
 .visiblecursor.hide {
@@ -138,9 +137,9 @@ html, body {
     overflow: hidden;
 }
 
-.line::before {
+/*.line:empty::before {
     content: '\200B';
-}
+}*/
 
 .line.newline:empty::before {
     content: '\00a0';
@@ -150,6 +149,10 @@ html, body {
     position: absolute;
     left: -100px;
     top: -100px;
+}
+
+.btn {
+    border-radius: 2px !important;
 }
 
 .btn.btn-default {
