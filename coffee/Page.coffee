@@ -10,6 +10,10 @@ class Poe.Page extends Poe.Checkable
   child: (index) ->
     return @children[index] if index >= 0 and index <= @children.length
     return null
+
+  index: ->
+    @parent.children.indexOf this
+  
   ###
   insertAfter inserts this after page
   ###

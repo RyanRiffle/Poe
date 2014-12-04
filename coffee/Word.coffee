@@ -6,13 +6,18 @@ class Poe.Word extends Poe.TextObject
 
   append: (text) ->
     @element.append $(text)
+    return this
 
   prepend: (text) ->
     @element.prepend $(text)
+    return this
 
   text: ->
     ret = $ @element[0].childNodes
     return ret
+
+  index: ->
+    @parent.children.indexOf this
 
   insertAfter: (word) ->
     word.element.after(@element)
@@ -39,8 +44,10 @@ class Poe.Word extends Poe.TextObject
   remove: ->
     @element.remove()
     @parent.children.remove(this)
+    return this
 
   setParent: (parent) ->
-    return if not parent
+    return this if not parent
     @parent.children.remove this if @parent
     @parent = parent
+    return this

@@ -63,6 +63,9 @@ class Poe.Line extends Poe.Checkable
   prev: ->
     return @parent.children.prev this
 
+  index: ->
+    @parent.children.indexOf this
+
   remove: ->
     for child in @children
       child.remove()

@@ -15,6 +15,9 @@ class Poe.Paragraph extends Poe.Checkable
     return @children[index] if index >= 0 && index < @children.length
     return null
 
+  index: ->
+    @parent.children.indexOf this
+
   ###
   insert after inserts this after paragraph
   ###
