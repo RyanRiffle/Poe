@@ -5,14 +5,14 @@ class Poe.Line extends Poe.Checkable
     @parent = null
     $('body').append(@element)
     @append new Poe.Word()
-    
+
   ###
   word returns the child word at index
   ###
-  word: (index) ->
+  child: (index) ->
     return @children[index] if index >= 0 && index <= @children.length - 1
     return null
-  
+
   ###
   insertBefore nserts this before line
   ###
@@ -21,7 +21,7 @@ class Poe.Line extends Poe.Checkable
     @parent.children.insertBefore this, line
     line.element.before @element
     return this
-  
+
   ###
   insertAfter inserts this after line
   ###
@@ -30,7 +30,7 @@ class Poe.Line extends Poe.Checkable
     @parent.children.insertAfter this, line
     line.element.after @element
     return this
-  
+
   ###
   prepend adds word to the front of the line
   ###
@@ -39,7 +39,7 @@ class Poe.Line extends Poe.Checkable
     @element.prepend word.element
     word.setParent this
     return this
-  
+
   ###
   append adds word to the end of the line
   ###
@@ -48,38 +48,38 @@ class Poe.Line extends Poe.Checkable
     @element.append word.element
     word.setParent this
     return this
-  
+
   ###
   next returns the line after this
   Returns null if no line exists
   ###
   next: ->
     return @parent.children.next this
-  
+
   ###
   prev returns the line before this
   Returns null if no line exists
   ###
   prev: ->
     return @parent.children.prev this
-  
+
   remove: ->
     for child in @children
       child.remove()
     @element.remove()
     @parent.children.remove this
     return this
-    
+
   visiblyContains: (child) ->
     childPos = child.element.offset()
     pos = @element.offset()
     childPos.right = childPos.left + child.element.width()
     pos.right = pos.left + @element.width()
-    
+
     if (childPos.right > pos.right)
       return false
     return true
-  
+
   setParent: (parent) ->
     return this if not parent
     @parent.children.remove(this) if @parent

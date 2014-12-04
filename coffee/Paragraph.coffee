@@ -1,21 +1,20 @@
 class Poe.Paragraph extends Poe.Checkable
-    
+
   constructor: (document) ->
     @children = []
     @element = $ '<div class="paragraph"></div>'
     $('body').append(@element)
     @setParent document
-    
+
     line = new Poe.Line()
     @append line
     console.log "Paragraph child count: #{@children.length}"
     #@append new Poe.Line()
-    
-    
-  line: (index) ->
+
+  child: (index) ->
     return @children[index] if index >= 0 && index < @children.length
     return null
-  
+
   ###
   insert after inserts this after paragraph
   ###
@@ -24,7 +23,7 @@ class Poe.Paragraph extends Poe.Checkable
     @parent.children.insertAfter this, paragraph
     paragraph.element.after @element
     return this
-  
+
   ###
   insertBefore inserts this before paragraph
   ###
@@ -33,7 +32,7 @@ class Poe.Paragraph extends Poe.Checkable
     @parent.children.insertBefore this, paragraph
     paragraph.element.before @element
     return this
-  
+
   ###
   prepend adds line to the top of the paragraph
   ###
@@ -42,7 +41,7 @@ class Poe.Paragraph extends Poe.Checkable
     @children.prepend line
     @element.prepend line.element
     return this
-  
+
   ###
   append adds line to the end of the paragraph
   ###
@@ -51,13 +50,13 @@ class Poe.Paragraph extends Poe.Checkable
     @children.append line
     @element.append line.element
     return this
-  
+
   next: ->
     @parent.children.next this
-  
+
   prev: ->
     @parent.children.prev this
-  
+
   setParent: (parent) ->
     if parent
       @parent = parent
