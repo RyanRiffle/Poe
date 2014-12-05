@@ -972,7 +972,7 @@ if (typeof jQuery === 'undefined') {
       var transition = $.support.transition && that.$element.hasClass('fade')
 
       if (!that.$element.parent().length) {
-        that.$element.appendTo(that.$body) // don't move modals dom position
+        that.$element.appendTo(that.$body) // don't move modals DOM position
       }
 
       that.$element
@@ -1381,8 +1381,8 @@ if (typeof jQuery === 'undefined') {
     if (this.hasContent() && this.enabled) {
       this.$element.trigger(e)
 
-      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
-      if (e.isDefaultPrevented() || !inDom) return
+      var inDOM = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDOM) return
       var that = this
 
       var $tip = this.tip()
@@ -1622,7 +1622,7 @@ if (typeof jQuery === 'undefined') {
   }
 
   Tooltip.prototype.getUID = function (prefix) {
-    do prefix += ~~(Math.random() * 1000000)
+    do prefix += ~~(Math.ranDOM() * 1000000)
     while (document.getElementById(prefix))
     return prefix
   }

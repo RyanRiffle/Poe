@@ -616,7 +616,7 @@ th {
 .glyphicon-calendar:before {
   content: "\e109";
 }
-.glyphicon-random:before {
+.glyphicon-ranDOM:before {
   content: "\e110";
 }
 .glyphicon-comment:before {

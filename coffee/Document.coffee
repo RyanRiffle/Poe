@@ -1,9 +1,16 @@
+###
+Poe.Document is the top and contains pages. It also manages
+page margins and page size.
+###
 class Poe.Document
+  ###
+  Create a new Poe.Document. Creating a document is only possible in {Poe.Writer}
+  in order for it to be shown in the DOM.
+  ###
   constructor: ->
     @children = []
     @element = $ '<div class="document"></div>'
     $('body').append(@element)
-    @element.hide()
     @append new Poe.Page()
     @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
     @setPageSize Poe.Document.PageSize.Letter
@@ -13,13 +20,20 @@ class Poe.Document
       left: 96
       right: 96
 
+  ###
+  Gets the child page at index.
+  @param index [Number] index to retrieve
+  @return [null] if the page does not exist
+  @return [Poe.Page] if the page exists
+  ###
   page: (index) ->
-    @page[index]
+    return @children[index] if index >= 0 and index < @children.length
+    return null
 
-  lines: ->
-    for page in @children
-      page.children
-
+  ###
+  Append a page to the end of the document.
+  @param page [Poe.Page] the page to append
+  ###
   append: (page) ->
     page.document = this
     @children.append page
@@ -27,6 +41,11 @@ class Poe.Document
     page.setParent this
     return this
 
+  ###
+  Prepend a page to the front of the document.
+  @param page [Poe.Page] the page to prepend
+  @return [Poe.Document] this
+  ###
   prepend: (page) ->
     page.document = this
     @children.prepend page
@@ -34,20 +53,24 @@ class Poe.Document
     page.setParent this
     return this
 
-  show: ->
-    @element.show()
-    return this
-
-  hide: ->
-    @element.hide()
-    return this
-
+  ###
+  Sets the page size to size
+  @param size [Object] the size object
+  @option size [Number] width the width in pixels
+  @option size [Number] height the height in pixels
+  @return [Poe.Document] this
+  ###
   setPageSize: (size) ->
     for page in @children
       page.element.height(size.height)
       page.element.width(size.width)
     return this
 
+  ###
+  Sets the page margins for all pages.
+  @param margins [Poe.Document.PageSize] the size
+  @return [Poe.Document] this
+  ###
   setPageMargins: (margins) ->
     for page in @children
       page.element.css 'padding-left', margins.left
@@ -56,6 +79,9 @@ class Poe.Document
       page.element.css 'padding-bottom', margins.bottom
     return this
 
+  ###
+  "Enum" of possible page sizes
+  ###
   @PageSize =
     Letter:
       height: 1056

@@ -68,7 +68,7 @@
       var transition = $.support.transition && that.$element.hasClass('fade')
 
       if (!that.$element.parent().length) {
-        that.$element.appendTo(that.$body) // don't move modals dom position
+        that.$element.appendTo(that.$body) // don't move modals DOM position
       }
 
       that.$element

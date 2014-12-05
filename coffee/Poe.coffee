@@ -73,11 +73,13 @@ if !Array.prototype.contains
   Array.prototype.contains = (item) ->
     return @indexOf(item) != -1
 
+# @nodoc
 $.fn.prevSibling = ->
   sibling = $ this[0].previousSibling
   return sibling if sibling.length != 0
   return null
 
+# @nodoc
 $.fn.nextSibling = ->
   sibling = $ this[0].nextSibling
   return sibling if sibling.length != 0

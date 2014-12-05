@@ -1,9 +1,24 @@
+###
+Poe.TextCursor is the visible caret on the screen. It is where all of the magic
+happens when it comes to user input. It listens for keydown event from the body element
+and inserts the text typed before the cursor. It also handles word wrap and page wrap.
+
+The cursor is actually handled in two different areas. There is a span and a visible
+cursor, this.element and this.visibleCursor respectively. The span is actually the
+cursor that is used. It has one child that is a zero width space &#8203; When the cursor
+is moved the visible cursor gets updated to the position of that span. Making it look
+like it is the cursor.
+###
 class Poe.TextCursor
+  ###
+  Creates a Poe.TextCursor instance
+  @param [Poe.Word] inside the word to put the cursor inside
+  ###
   constructor: (inside) ->
     if not inside
       throw new Error('Poe.TextCursor constructor expects one argument of type Poe.Word')
 
-    @element = $ '<span class="textcursor"></span>'
+    @element = $ '<span class="textcursor">&#8203;</span>'
     @visibleCursor = $ '<div class="visiblecursor"></div>'
     @currentWord = inside
     @blinkTimer = null
@@ -14,19 +29,34 @@ class Poe.TextCursor
     @textStyle = new Poe.TextStyle(this)
     @textStyle.applyWord @currentWord
 
-
+  ###
+  Convienence function for getting the cursor contiaining word's parent
+  @return [Poe.TextObject] the parent
+  ###
   currentLine: ->
     return @currentWord.parent
 
+  ###
+  Convienence function for currentLine().parent
+  @return [Poe.TextObject] currentLine().parent
+  ###
   currentParagraph: ->
     return @currentLine().parent
 
+  ###
+  Convenience function for currentParagraph().parent
+  @return [Poe.TextObject] currentParagraph().parent
+  ###
   currentPage: ->
     return @currentParagraph().parent
 
   ###
-  next returns the next text node in the document as a jQuery object
-  returns null if no node exists
+  Gets the next text node after the cursor. This will loop through all parents up to
+  the Poe.Document if neccessary. It does not change any members unless applyChanges
+  is true.
+  @param applyChanges [Boolean] If true the currentWord is changed by this function.
+  @return [null] if no node is found
+  @return [jQuery or null] the next text node found
   ###
   next: (applyChanges = false) ->
     next = @element.nextSibling()
@@ -46,14 +76,19 @@ class Poe.TextCursor
             paragraph = page.child 0
           line = paragraph.child 0
         word = line.child 0
-      next = word.text().first()
+      next = word.children().first()
     @textStyle.update word if @currentWord != word
     @currentWord = word if applyChanges and next
     return next
 
   ###
-  prev returns the previous text node in the document as a jQuery object
-  returns null if no node exists
+  Gets the previous text node before the cursor. This will loop through all parents up to
+  the Poe.Document containing the cursor if neccessary. This does not change any members
+  unless applyChanges is true.
+  @param applyChanges [Boolean] Sets the current word on return to the word containing
+  the return value.
+  @return [null] if no node is found
+  @return [jQuery or null] the previous text node found
   ###
   prev: (applyChanges = false) ->
     prev = @element.prevSibling()
@@ -74,13 +109,14 @@ class Poe.TextCursor
             paragraph = page.children.last()
           line = paragraph.children.last()
         word = line.children.last()
-      prev = word.text().last() if word.text().length > 0
+      prev = word.children().last() if word.children().length > 0
     @textStyle.update word if @currentWord != word
     @currentWord = word if applyChanges and prev
     return prev
 
   ###
-  moveLeft moves the cursor one text node to the left
+  Moves the cursor before the previous text node found by prev()
+  @return [Poe.TextCursor] this
   ###
   moveLeft: ->
     prev = @prev(true)
@@ -88,7 +124,8 @@ class Poe.TextCursor
     return this
 
   ###
-  moveRight moves the cursor one text node to the left
+  Moves the cursor after the next text node found by next()
+  @return [Poe.TextCursor] this
   ###
   moveRight: ->
     next = @next(true)
@@ -96,14 +133,22 @@ class Poe.TextCursor
     return this
 
   ###
-  update moves the actuall visible cursor to the correct position in the document
+  Moves the actual blinking cursor to where it should be.
+  @return [Poe.TextCursor] this
+  @private
   ###
   update: ->
     @visibleCursor.css 'top', "#{@element.position().top}px"
     @visibleCursor.css 'left', "#{@element.position().left}px"
+    return this
 
   ###
-  doWordWrap checks all lines in a paragraph to see if it needs word wraped and then wraps it
+  Fixes word wrap. Loops through all lines of the currentParagraph() and checks
+  to see if the last word in that line is outside of the editable area. If the word is
+  outside it gets moved down to the next line. If no line exists a line is created
+  after it.
+  @return [Poe.TextCursor] this
+  @private
   ###
   doWordWrap: ->
     # Loop through all lines in the current paragraph
@@ -118,8 +163,13 @@ class Poe.TextCursor
 
         newLine.prepend line.children.last()
 
+    return this
+
   ###
-  keyEvent handles typing
+  Handles typing. At first it stops the cursor from blinking. Then does anything
+  neccessary to translate the keydown onto the screen. Lastly it makes the cursor
+  continue blinking.
+  @private
   ###
   keyEvent: (event) =>
     if (event.ctrlKey)
@@ -150,7 +200,7 @@ class Poe.TextCursor
         while @currentLine().next()
           paragraph.append @currentLine().next()
 
-        if @currentWord.text().length == 1 and @currentLine().children.length == 1
+        if @currentWord.children().length == 1 and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
 
         console.log line.children.length
@@ -224,7 +274,9 @@ class Poe.TextCursor
     @show()
 
   ###
-  Show the cursor
+  Shows the cursor if it is hidden and sets a time to make the cursor blink if
+  it is not already.
+  @return [Poe.TextCursor] this
   ###
   show: ->
     @update()
@@ -234,7 +286,8 @@ class Poe.TextCursor
     return this
 
   ###
-  Hide the cursor
+  Hides the cursor if it is visible and stops it from blinking.
+  @return [Poe.TextCursor] this
   ###
   hide: ->
     clearInterval @blinkTimer
@@ -243,7 +296,8 @@ class Poe.TextCursor
     return this
 
   ###
-  Used by show, do not use by itself
+  Controls the actual blinking of the cursor. See show()
+  @private
   ###
   blink: =>
     @visibleCursor.toggleClass 'hide'
