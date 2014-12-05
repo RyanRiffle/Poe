@@ -75,7 +75,6 @@ class Poe.TextStyle
       middleWord.insertAfter word
       otherStyle = null
       element = middleWord.element
-      word = middleWord
       element.prepend @textCursor.element
       @textCursor.currentWord = middleWord
       if word.isEmpty()
@@ -84,6 +83,7 @@ class Poe.TextStyle
         lastWord.remove()
       else
         otherStyle.apply lastWord
+      word = middleWord
 
     if @bold
       element.addClass 'bold'
@@ -108,6 +108,10 @@ class Poe.TextStyle
     apply 'color', @color
     apply 'background-color', @background
     @currentWord = word
+
+    if @textCursor
+      @textCursor.visibleCursor.height(@fontSize)
+      @textCursor.update()
 
   ###
   Applies style so that any new text that is typed gets the style
@@ -161,6 +165,9 @@ class Poe.TextStyle
     @fontSize = parseInt(element.css('font-size'))
     @color = element.css('color')
     @background = element.css('background-color')
+
+    if @textCursor
+      @textCursor.visibleCursor.height(@fontSize)
 
     @currentWord = word
     for callback in @changedCallbacks

@@ -31,6 +31,7 @@ class Poe.ToolBar
 
     $('body').keydown @handleShortcut
     $('#font-list li').click @handleFontClick
+    $('#font-size-list li').click @handleFontSizeClick
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -104,9 +105,19 @@ class Poe.ToolBar
   ###
   Event handler for when a new font is clicked. Updates
   the current style and applies the style
+  @param event [MouseClickEvent] the event that happened.
   ###
   handleFontClick: (event) =>
     name = $(event.target).html()
     @elements.font.html(name)
     @textStyle.font = name
+    @textStyle.applyChar()
+
+  ###
+
+  ###
+  handleFontSizeClick: (event) =>
+    name = $(event.target).html()
+    @elements.fontSize.html(parseInt(name.replace('px', '')))
+    @textStyle.fontSize = parseInt(name.replace('px', ''))
     @textStyle.applyChar()
