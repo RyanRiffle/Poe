@@ -1,7 +1,7 @@
 window.Poe = {}
 
 $(document).ready ->
-  writer = new Poe.Writer('body')
+  writer = new Poe.Writer('#Poe')
 
 if !Array.prototype.last
   Array.prototype.last = ->
