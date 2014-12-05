@@ -112,6 +112,11 @@ class Poe.TextStyle
     if @textCursor
       @textCursor.visibleCursor.height(@fontSize)
       @textCursor.update()
+      if @italic
+        @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
+      else
+        @textCursor.visibleCursor.css('transform', 'none')
+
 
   ###
   Applies style so that any new text that is typed gets the style
@@ -168,6 +173,10 @@ class Poe.TextStyle
 
     if @textCursor
       @textCursor.visibleCursor.height(@fontSize)
+      if @italic
+        @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
+      else
+        @textCursor.visibleCursor.css('transform', 'none')
 
     @currentWord = word
     for callback in @changedCallbacks
