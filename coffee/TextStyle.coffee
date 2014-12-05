@@ -31,21 +31,21 @@ class Poe.TextStyle
       word = @textCursor.currentWord
       otherStyle = new Poe.TextStyle()
       otherStyle.update word
-      newWord = new Poe.Word()
-      newWord.insertAfter word
+      lastWord = new Poe.Word()
+      lastWord.insertAfter word
       while @textCursor.element.nextSibling()
-        newWord.element.append @textCursor.element.nextSibling()
-      newWord.prepend @textCursor.element
+        lastWord.element.append @textCursor.element.nextSibling()
+      lastWord.prepend @textCursor.element
 
       middleWord = new Poe.Word()
       middleWord.insertAfter word
-      @textCursor.currentWord = middleWord
+
       if word.isEmpty()
         word.remove()
-      if newWord.isEmpty()
-        newWord.remove()
+      if lastWord.isEmpty()
+        lastWord.remove()
       else
-        otherStyle.apply newWord
+        otherStyle.apply lastWord
 
       otherStyle = null
       element = middleWord.element
