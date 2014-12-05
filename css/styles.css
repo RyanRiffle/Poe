@@ -31,3 +31,18 @@
 .align-right-spacer {
     display: inline-block;
 }
+
+.list.bullet {
+    list-style-type: disc;
+}
+
+.list.number {
+    list-style-type: decimal;
+}
+
+.list > li {
+    padding-left: 10px;
+    display: list-item !important;
+    width: auto !important;
+    overflow: visible;
+}

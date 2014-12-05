@@ -9,16 +9,18 @@
     width: 100%;
 }
 
-.page-inner {
+.page {
     -webkit-box-sizing: border-box;
     outline: none;
-    
+
     margin-left: auto;
     margin-right: auto;
     border: 1px solid #C6C6C6;
     background-color: white;
     margin-top: 12px;
     cursor: text;
+
+    box-shadow: 0px 0px 15px darkgrey;
 }
 
 html, body {
@@ -32,19 +34,16 @@ html, body {
 
 .textcursor {
     user-select: none;
+    margin-top: -1px;
 }
 
 .textcursor::before {
     content: '\200B';
 }
 
-.word:empty::before {
-    content: '\200B';
-}
-
 .toolbar {
     width: 100%;
-    
+
     background: #f8f8f8; /* Old browsers */
     background: -moz-linear-gradient(top, #f8f8f8 77%, #f8f8f8 77%, #f2f2f2 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(77%,#f8f8f8), color-stop(77%,#f8f8f8), color-stop(100%,#f2f2f2)); /* Chrome,Safari4+ */
@@ -54,7 +53,7 @@ html, body {
     background: linear-gradient(to bottom, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
     border-bottom: 1px solid #C6C6C6;
-    
+
     font-family: 'Open Sans';
     -webkit-user-select: none;
     user-select: none;
@@ -116,6 +115,8 @@ html, body {
     width: 2px;
     background-color: black;
     margin-right: -1px;
+    top: 0px;
+    left: 0px;
 }
 
 .visiblecursor.hide {
@@ -138,9 +139,9 @@ html, body {
     overflow: hidden;
 }
 
-.line::before {
+/*.line:empty::before {
     content: '\200B';
-}
+}*/
 
 .line.newline:empty::before {
     content: '\00a0';
@@ -150,6 +151,10 @@ html, body {
     position: absolute;
     left: -100px;
     top: -100px;
+}
+
+.btn {
+    border-radius: 2px !important;
 }
 
 .btn.btn-default {
@@ -201,7 +206,10 @@ html, body {
 #color-list > li {
     float: left;
 }
+<<<<<<< HEAD
+=======
 
 .paragraph {
     width: 100%;
 }
+>>>>>>> master
