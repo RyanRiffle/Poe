@@ -29,6 +29,8 @@ class Poe.TextCursor
     @textStyle = new Poe.TextStyle(this)
     @textStyle.applyWord @currentWord
 
+    @capsLock = off
+
   ###
   Convienence function for getting the cursor contiaining word's parent
   @return [Poe.TextObject] the parent
@@ -65,7 +67,8 @@ class Poe.TextCursor
     paragraph = line.parent
     page = paragraph.parent
     while !next
-      word = word.next()
+      [old, word] = [word, word.next()]
+      old.remove() if old.isEmpty()
       if !word
         line = line.next()
         if !line
@@ -77,8 +80,8 @@ class Poe.TextCursor
           line = paragraph.child 0
         word = line.child 0
       next = word.children().first()
-    @textStyle.update word if @currentWord != word
     @currentWord = word if applyChanges and next
+    @textStyle.update word if @currentWord != word
     return next
 
   ###
@@ -110,8 +113,8 @@ class Poe.TextCursor
           line = paragraph.children.last()
         word = line.children.last()
       prev = word.children().last() if word.children().length > 0
-    @textStyle.update word if @currentWord != word
     @currentWord = word if applyChanges and prev
+    @textStyle.update word if @currentWord != word
     return prev
 
   ###
@@ -178,6 +181,9 @@ class Poe.TextCursor
     @hide()
     switch event.keyCode
       when Poe.key.Shift then break
+
+      when Poe.key.CapsLock
+        @capsLock = !@capsLock
 
       when Poe.key.Left
         @moveLeft()
@@ -267,6 +273,10 @@ class Poe.TextCursor
         @textStyle.applyWord @currentWord
         @doWordWrap()
       else
+        if event.shiftKey and @capsLock
+          event.shiftKey = false
+        else if not event.shiftKey and @capsLock and event.keyCode >= 65 and event.keyCode <= 90
+          event.shiftKey = true
         letter = Poe.keyMapShift[event.keyCode] if event.shiftKey
         letter = Poe.keyMap[event.keyCode] unless event.shiftKey
         @element.before letter

@@ -30,6 +30,7 @@ class Poe.ToolBar
     @elements.underline.click @clickToggle
 
     $('body').keydown @handleShortcut
+    $('#font-list li').click @handleFontClick
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -99,3 +100,13 @@ class Poe.ToolBar
       when Poe.key.U
         event.preventDefault()
         toggle @elements.underline
+
+  ###
+  Event handler for when a new font is clicked. Updates
+  the current style and applies the style
+  ###
+  handleFontClick: (event) =>
+    name = $(event.target).html()
+    @elements.font.html(name)
+    @textStyle.font = name
+    @textStyle.applyChar()

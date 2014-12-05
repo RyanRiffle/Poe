@@ -73,19 +73,17 @@ class Poe.TextStyle
 
       middleWord = new Poe.Word()
       middleWord.insertAfter word
-
+      otherStyle = null
+      element = middleWord.element
+      word = middleWord
+      element.prepend @textCursor.element
+      @textCursor.currentWord = middleWord
       if word.isEmpty()
         word.remove()
       if lastWord.isEmpty()
         lastWord.remove()
       else
         otherStyle.apply lastWord
-
-      otherStyle = null
-      element = middleWord.element
-      word = middleWord
-      element.prepend @textCursor.element
-      @textCursor.currentWord = middleWord
 
     if @bold
       element.addClass 'bold'
@@ -97,7 +95,7 @@ class Poe.TextStyle
     else
       element.removeClass 'italic'
 
-    if @underilne
+    if @underline
       element.addClass 'underline'
     else
       element.removeClass 'underline'
@@ -143,22 +141,23 @@ class Poe.TextStyle
     if not word or not element
       return
 
-    if element.css('font-weight') == 'bold'
+    if element.hasClass 'bold'
       @bold = true
     else
       @bold = false
 
-    if element.css('font-style') == 'italic'
+    if element.hasClass 'italic'
       @italic = true
     else
       @italic = false
 
-    if element.css('text-decoration') == 'underline'
+    if element.hasClass 'underline'
       @underline = true
     else
       @underline = false
 
     @font = element.css('font-family').split('"')[0]
+    @font = @font.replace("'", '').replace("'", '')
     @fontSize = parseInt(element.css('font-size'))
     @color = element.css('color')
     @background = element.css('background-color')
