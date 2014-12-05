@@ -1,5 +1,8 @@
 class Poe.TextCursor
   constructor: (inside) ->
+    if not inside
+      throw new Error('Poe.TextCursor constructor expects one argument of type Poe.Word')
+
     @element = $ '<span class="textcursor"></span>'
     @visibleCursor = $ '<div class="visiblecursor"></div>'
     @currentWord = inside
@@ -8,6 +11,18 @@ class Poe.TextCursor
     $('body').append @visibleCursor
     @show()
     $('body').keydown(@keyEvent)
+    @textStyle = new Poe.TextStyle(this)
+    @textStyle.applyWord @currentWord
+
+
+  currentLine: ->
+    return @currentWord.parent
+
+  currentParagraph: ->
+    return @currentLine().parent
+
+  currentPage: ->
+    return @currentParagraph().parent
 
   ###
   next returns the next text node in the document as a jQuery object
@@ -32,7 +47,8 @@ class Poe.TextCursor
           line = paragraph.child 0
         word = line.child 0
       next = word.text().first()
-    @currentWord = word if applyChanges
+    @textStyle.update word if @currentWord != word
+    @currentWord = word if applyChanges and next
     return next
 
   ###
@@ -55,11 +71,12 @@ class Poe.TextCursor
           if !paragraph
             page = page.prev()
             return null if !page
-            paragraph = page.children().last()
-          line = paragraph.children().last()
+            paragraph = page.children.last()
+          line = paragraph.children.last()
         word = line.children.last()
       prev = word.text().last() if word.text().length > 0
-    @currentWord = word if applyChanges
+    @textStyle.update word if @currentWord != word
+    @currentWord = word if applyChanges and prev
     return prev
 
   ###
@@ -89,8 +106,8 @@ class Poe.TextCursor
   doWordWrap checks all lines in a paragraph to see if it needs word wraped and then wraps it
   ###
   doWordWrap: ->
-    # for line in @currentWord.line.paragraph.lines
-    for line in @currentWord.parent.parent.children
+    # Loop through all lines in the current paragraph
+    for line in @currentParagraph().children
       while !line.visiblyContains line.children.last()
         if !line.next()
           newLine = new Poe.Line()
@@ -105,6 +122,8 @@ class Poe.TextCursor
   keyEvent handles typing
   ###
   keyEvent: (event) =>
+    if (event.ctrlKey)
+      return
     event.preventDefault()
     @hide()
     switch event.keyCode
@@ -118,7 +137,7 @@ class Poe.TextCursor
 
       when Poe.key.Enter
         paragraph = new Poe.Paragraph()
-        paragraph.insertAfter @currentWord.parent.parent
+        paragraph.insertAfter @currentParagraph()
         line = paragraph.child(0)
         word = line.child(0)
         while @element.nextSibling()
@@ -128,29 +147,45 @@ class Poe.TextCursor
           line.append @currentWord.next()
 
         # Move all lines after the current to the new paragraph
-        while @currentWord.parent.next()
-          paragraph.append @currentWord.parent.next()
+        while @currentLine().next()
+          paragraph.append @currentLine().next()
 
-        if @currentWord.text().length == 1 and @currentWord.parent.children.length == 1
+        if @currentWord.text().length == 1 and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
 
         console.log line.children.length
         @currentWord = word
         @currentWord.element.prepend @element
+        @textStyle.apply @currentWord
 
       when Poe.key.Backspace
+        # If the currentPage is empty there will be nothing to backspace
+        if @currentPage().isEmpty() and @currentPage().index() == 0
+          break
+
         prev = @prev()
 
         #Used for backspace over a word wrap
-        console.log @currentWord.index()
         if @currentWord.index() == 0
           word = @currentWord
           prev.before @element if prev
-          if @currentWord.parent.index() != 0
-            prev2 = @currentWord.parent.prev().children.last()
+          prev.remove() if prev
+          if @currentLine().index() != 0 and not @element.prevSibling()
+            prev2 = @currentLine().prev().children.last()
             if prev2
               @currentWord = prev2
-          word.parent.remove if word.isEmpty()
+              @currentWord.append @element
+            word.parent.remove if word.isEmpty()
+            break
+          else if @currentLine().index() == 0 and not @element.prevSibling()
+            if @currentParagraph().index() == 0 and @currentPage().index() == 0
+              break
+            prev2 = @currentParagraph().prev().children.last().children.last()
+            if prev2
+              @currentWord = prev2
+              @currentWord.append @element
+            word.parent.parent.remove() if word.parent.parent.isEmpty()
+            break
 
         prev.remove() if prev
 
@@ -179,7 +214,7 @@ class Poe.TextCursor
           next = next.nextSibling()
         word.prepend @element
         @currentWord = word
-        console.log @currentWord.element
+        @textStyle.applyWord @currentWord
         @doWordWrap()
       else
         letter = Poe.keyMapShift[event.keyCode] if event.shiftKey

@@ -73,6 +73,11 @@ class Poe.Line extends Poe.Checkable
     @parent.children.remove this
     return this
 
+  isEmpty: ->
+    if @element[0].textContent == ''
+      return true
+    return false
+
   visiblyContains: (child) ->
     childPos = child.element.offset()
     pos = @element.offset()

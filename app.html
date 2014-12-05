@@ -10,11 +10,13 @@
 
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arimo|Cousine|Tinos|Open+Sans|Droid+Sans|Droid+Serif|Syncopate|Times+New+Roman|Ubuntu"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
-  
+
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="js/Poe.js"></script>
+      <script type="text/javascript" src="js/TextStyle.js"></script>
+      <script type="text/javascript" src="js/Toolbar.js"></script>
       <script type="text/javascript" src="js/Keymap.js"></script>
       <script type="text/javascript" src="js/TextCursor.js"></script>
       <script type="text/javascript" src="js/Checkable.js"></script>
@@ -56,7 +58,7 @@
                 <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Ubuntu";'>Ubuntu</a></li>
             </ul>
         </div>
-        
+
         <div class='dropdown'>
             <button id='font-size-select' class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='false'>
                 <span class='text'>12</span>
@@ -79,13 +81,13 @@
                 <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>96</a></li>
             </ul>
         </div>
-        
+
         <div class='btn-group' role='group' aria-label='...' >
             <button type='button' class='btn btn-default bold'>B</button>
             <button type='button' class='btn btn-default italic'>I</button>
             <button type='button' class='btn btn-default underline'>U</button>
         </div>
-        
+
         <div id='alignment' class='btn-group' role='group' style='font-size: 16px;'>
             <!-- The names of the buttons match poe.TextCursor.Align.* -->
             <button type='button' class='btn btn-default active' name='1'><span class='glyphicon glyphicon-align-left'></span></button>
@@ -93,7 +95,7 @@
             <button type='button' class='btn btn-default' name='3'><span class='glyphicon glyphicon-align-right'></span></button>
             <button type='button' class='btn btn-default' name='4'><span class='glyphicon glyphicon-align-justify'></span></button>
         </div>
-        
+
         <div id='lists' class='btn-group' role='group'>
             <button type='button' class='btn btn-default' name='bullet'><span class='glyphicon glyphicon-th-list'></span></button>
             <button type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>

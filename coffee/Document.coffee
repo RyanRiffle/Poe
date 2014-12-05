@@ -1,11 +1,11 @@
 class Poe.Document
   constructor: ->
-    @pages = []
+    @children = []
     @element = $ '<div class="document"></div>'
     $('body').append(@element)
     @element.hide()
     @append new Poe.Page()
-    @textCursor = new Poe.TextCursor(@pages[0].child(0).child(0).child 0)
+    @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
     @setPageSize Poe.Document.PageSize.Letter
     @setPageMargins margins =
       top: 96
@@ -17,19 +17,19 @@ class Poe.Document
     @page[index]
 
   lines: ->
-    for page in @pages
+    for page in @children
       page.children
 
   append: (page) ->
     page.document = this
-    @pages.append page
+    @children.append page
     @element.append page.element
     page.setParent this
     return this
 
   prepend: (page) ->
     page.document = this
-    @pages.prepend page
+    @children.prepend page
     @element.prepend page.element
     page.setParent this
     return this
@@ -43,13 +43,13 @@ class Poe.Document
     return this
 
   setPageSize: (size) ->
-    for page in @pages
+    for page in @children
       page.element.height(size.height)
       page.element.width(size.width)
     return this
 
   setPageMargins: (margins) ->
-    for page in @pages
+    for page in @children
       page.element.css 'padding-left', margins.left
       page.element.css 'padding-right', margins.right
       page.element.css 'padding-top', margins.top

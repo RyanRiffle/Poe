@@ -13,7 +13,7 @@ class Poe.Page extends Poe.Checkable
 
   index: ->
     @parent.children.indexOf this
-  
+
   ###
   insertAfter inserts this after page
   ###
@@ -46,10 +46,24 @@ class Poe.Page extends Poe.Checkable
     @element.prepend paragraph.element
 
   next: ->
-    @parent.pages.next this
+    @parent.children.next this
 
   prev: ->
-    @parent.pages.prev this
+    @parent.children.prev this
+
+  ###
+  isEmpty returns true when only the textcursor is in the page or the page is
+  completely void of any text data
+  returns false otherwise
+  ###
+  isEmpty: ->
+    if @children.length == 1
+      if @child(0).children.length == 1
+        word = @child(0).child(0).child(0)
+        if word.text().length == 1 and word.text().first()[0] == @parent.textCursor.element[0]
+          return true
+
+    return false
 
   setParent: (parent) ->
     if parent != null && parent != undefined && parent.length != 0

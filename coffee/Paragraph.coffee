@@ -54,6 +54,18 @@ class Poe.Paragraph extends Poe.Checkable
     @element.append line.element
     return this
 
+  remove: ->
+    for line in @children
+      line.remove
+
+    @parent.children.remove this
+    @element.remove()
+
+  isEmpty: ->
+    if @element[0].textContent == ''
+      return true
+    return false
+
   next: ->
     @parent.children.next this
 
@@ -63,5 +75,4 @@ class Poe.Paragraph extends Poe.Checkable
   setParent: (parent) ->
     if parent
       @parent = parent
-      @element.show()
     return this
