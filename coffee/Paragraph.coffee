@@ -11,7 +11,7 @@ class Poe.Paragraph extends Poe.TextObject
   ###
   constructor: (page) ->
     @children = []
-    @element = $ '<div class="paragraph"></div>'
+    @element = $ '<p class="paragraph" align="left"></p>'
     $('body').append(@element)
     page.append this if page
 

@@ -1,5 +1,5 @@
 ###
-Base class for all styles including TextStyle and LineStyle.
+Base class for all styles including TextStyle and paragraphStyle.
 ###
 class Poe.Style
   constructor: (@textCursor) ->

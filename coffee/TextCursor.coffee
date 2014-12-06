@@ -29,9 +29,9 @@ class Poe.TextCursor
     @textStyle = new Poe.TextStyle(this)
     @textStyle.applyWord @currentWord
 
-    @lineStyle = new Poe.LineStyle(this)
-    @lineStyle.apply()
-    @lineStyle.changed @lineStyleChanged
+    @paragraphStyle = new Poe.ParagraphStyle(this)
+    @paragraphStyle.apply()
+    @paragraphStyle.changed @paragraphStyleChanged
 
     @capsLock = off
 
@@ -150,7 +150,7 @@ class Poe.TextCursor
     return this
 
   ###
-  Fixes word wrap. Starts off by calling {Poe.TextCursor#lineStyleChanged} then
+  Fixes word wrap. Starts off by calling {Poe.TextCursor#paragraphStyleChanged} then
   loops through all lines of the currentParagraph() and checks to see if the
   last word in that line is outside of the editable area. If the word is
   outside it gets moved down to the next line. If no line exists a line is created
@@ -159,9 +159,11 @@ class Poe.TextCursor
   @private
   ###
   doWordWrap: ->
-    @lineStyleChanged @lineStyle
     # Loop through all lines in the current paragraph
     for line in @currentParagraph().children
+      if line.isEmpty()
+        line.remove()
+        continue
       while !line.visiblyContains line.children.last()
         if !line.next()
           newLine = new Poe.Line()
@@ -177,10 +179,12 @@ class Poe.TextCursor
       for child in line.children
         childWidth += child.element.width()
 
+      break if not line.next()
       hasRoom = true
       while hasRoom
-        break if not line.next()
         child = line.next().child(0)
+        break if not child
+
         if childWidth + child.element.width() < line.element.outerWidth(false)
           hasRoom = true
           child.insertAfter line.children.last()
@@ -234,6 +238,7 @@ class Poe.TextCursor
         @currentWord = word
         @currentWord.element.prepend @element
         @textStyle.apply @currentWord
+        @paragraphStyle.update @currentLine()
 
       when Poe.key.Backspace
         # If the currentPage is empty there will be nothing to backspace
@@ -252,7 +257,6 @@ class Poe.TextCursor
             if prev2
               @currentWord = prev2
               @currentWord.append @element
-            word.parent.remove if word.isEmpty()
             break
           else if @currentLine().index() == 0 and not @element.prevSibling()
             if @currentParagraph().index() == 0 and @currentPage().index() == 0
@@ -284,7 +288,7 @@ class Poe.TextCursor
         next.remove() if next
 
       when Poe.key.Space
-        @element.before "&nbsp;"
+        @element.before " "
         word = new Poe.Word()
         word.insertAfter @currentWord
         next = @element.nextSibling()
@@ -307,32 +311,11 @@ class Poe.TextCursor
     @show()
 
   ###
-  Callback registered with {Poe.LineStyle} that will update the whole
+  Callback registered with {Poe.ParagraphStyle} that will update the whole
   paragraph's alignment.
   ###
-  lineStyleChanged: (style) =>
-    @show()
-    freeLineSpace = (line) ->
-      total = 0
-      for word in line.children
-        total += word.element.width()
-      return line.element.width() - total
-
-    for line in @currentParagraph().children
-      element = line.element
-      element.css('padding-left', '0px')
-      element.css('padding-right', '0px')
-      if element.hasClass Poe.LineStyle.Align.Left
-        break
-      if element.hasClass Poe.LineStyle.Align.Center
-        freeSpaceHalf = "#{freeLineSpace(line)/2}px"
-        element.css 'padding-left', freeSpaceHalf
-        element.css 'padding-right', freeSpaceHalf
-      if element.hasClass Poe.LineStyle.Align.Right
-        freeSpace = "#{freeLineSpace(line)}px"
-        element.css 'padding-left', freeSpace
-      if element.hasClass Poe.LineStyle.Align.Justify
-        break
+  paragraphStyleChanged: (style) =>
+    @show
 
     @update()
 

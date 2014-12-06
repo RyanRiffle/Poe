@@ -14,8 +14,8 @@ class Poe.ToolBar
     @textStyle = @writer.document.textCursor.textStyle
     @textStyle.changed @textStyleChanged
 
-    @lineStyle = @writer.document.textCursor.lineStyle
-    @lineStyle.changed @lineStyleChanged
+    @paragraphStyle = @writer.document.textCursor.paragraphStyle
+    @paragraphStyle.changed @paragraphStyleChanged
 
     @element = $ '.toolbar'
     @elements =
@@ -35,7 +35,7 @@ class Poe.ToolBar
 
     # Go ahead and update to match first word
     @textStyleChanged @textStyle
-    @lineStyleChanged @lineStyle
+    @paragraphStyleChanged @paragraphStyle
     @elements.bold.click @clickToggle
     @elements.italic.click @clickToggle
     @elements.underline.click @clickToggle
@@ -81,7 +81,7 @@ class Poe.ToolBar
       @textStyle.underline = !@textStyle.underline
 
     @textStyle.applyChar()
-    @styleChanged @textStyle
+    @textStyleChanged @textStyle
 
   ###
   A even handler for toolbar shortcuts. Returns immediately if
@@ -103,7 +103,7 @@ class Poe.ToolBar
         @textStyle.underline = !@textStyle.underline
 
       @textStyle.applyChar()
-      @styleChanged @textStyle
+      @textStyleChanged @textStyle
 
     switch event.keyCode
       when Poe.key.B
@@ -141,23 +141,23 @@ class Poe.ToolBar
 
   ###
   Called when the line style changes of the {Poe.TextCursor}
-  @param style [Poe.LineStyle] the style that has changed
+  @param style [Poe.ParagraphStyle] the style that has changed
   @private
   ###
-  lineStyleChanged: (style) =>
+  paragraphStyleChanged: (style) =>
     @elements.align.left.removeClass('active')
     @elements.align.center.removeClass('active')
     @elements.align.right.removeClass('active')
     @elements.align.justify.removeClass('active')
 
     switch style.align
-      when Poe.LineStyle.Align.Left
+      when Poe.ParagraphStyle.Align.Left
         element = @elements.align.left
-      when Poe.LineStyle.Align.Center
+      when Poe.ParagraphStyle.Align.Center
         element = @elements.align.center
-      when Poe.LineStyle.Align.Right
+      when Poe.ParagraphStyle.Align.Right
         element = @elements.align.right
-      when Poe.LineStyle.Align.Justify
+      when Poe.ParagraphStyle.Align.Justify
         element = @elements.align.justify
 
     element.addClass 'active'
@@ -170,12 +170,12 @@ class Poe.ToolBar
   handleTextAlignment: (event) =>
     target = event.target
     if target == @elements.align.left[0]
-      @lineStyle.align = Poe.LineStyle.Align.Left
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Left
     else if target == @elements.align.center[0]
-      @lineStyle.align = Poe.LineStyle.Align.Center
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Center
     else if target == @elements.align.right[0]
-      @lineStyle.align = Poe.LineStyle.Align.Right
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Right
     else if target == @elements.align.justify[0]
-      @lineStyle.align = Poe.LineStyle.Align.Justify
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
 
-    @lineStyle.apply()
+    @paragraphStyle.apply()

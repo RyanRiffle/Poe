@@ -20,7 +20,7 @@ class Poe.TextStyle extends Poe.Style
     @italic = false
     @underline = false
     @font = 'Tinos'
-    @fontSize = 16 #Pixels
+    @fontSize = 12 #Points
     @color = 'black' #css
     @backround = 'white'
     @currentWord = null
@@ -92,7 +92,8 @@ class Poe.TextStyle extends Poe.Style
       element.css(style, value)
 
     apply 'font-family', '"' + @font + '"'
-    apply 'font-size', "#{@fontSize}px"
+    size = (@fontSize * 96) / 72;
+    apply 'font-size', "#{size}px"
     apply 'color', @color
     apply 'background-color', @background
     @currentWord = word
@@ -100,7 +101,7 @@ class Poe.TextStyle extends Poe.Style
     @hasChanged
 
     if @textCursor
-      @textCursor.visibleCursor.height(@fontSize)
+      @textCursor.visibleCursor.css('height', "#{@fontSize}pt")
       @textCursor.update()
       if @italic
         @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
@@ -157,12 +158,12 @@ class Poe.TextStyle extends Poe.Style
 
     @font = element.css('font-family').split('"')[0]
     @font = @font.replace("'", '').replace("'", '')
-    @fontSize = parseInt(element.css('font-size'))
+    @fontSize = (parseInt(element.css('font-size')) * 72) / 96;
     @color = element.css('color')
     @background = element.css('background-color')
 
     if @textCursor
-      @textCursor.visibleCursor.height(@fontSize)
+      @textCursor.visibleCursor.css('height', "#{@fontSize}pt")
       if @italic
         @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
       else

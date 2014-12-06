@@ -13,18 +13,18 @@ body {
 }
 
 /*
-    For some reason it seams that the print line-height needs to be 
+    For some reason it seams that the print line-height needs to be
     25% less than the editing line-height;
 */
 .line {
     line-height: 175% !important;
 }
 
-.page-inner {
+.page {
     display: block;
     min-height: 0px !important;
     max-height: none !important;
-    
+
     padding: 0px !important;
     font-family: 'Open Sans';
     margin: 0px;
