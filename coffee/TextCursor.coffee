@@ -29,6 +29,10 @@ class Poe.TextCursor
     @textStyle = new Poe.TextStyle(this)
     @textStyle.applyWord @currentWord
 
+    @lineStyle = new Poe.LineStyle(this)
+    @lineStyle.apply()
+    @lineStyle.changed @lineStyleChanged
+
     @capsLock = off
 
   ###
@@ -146,25 +150,42 @@ class Poe.TextCursor
     return this
 
   ###
-  Fixes word wrap. Loops through all lines of the currentParagraph() and checks
-  to see if the last word in that line is outside of the editable area. If the word is
+  Fixes word wrap. Starts off by calling {Poe.TextCursor#lineStyleChanged} then
+  loops through all lines of the currentParagraph() and checks to see if the
+  last word in that line is outside of the editable area. If the word is
   outside it gets moved down to the next line. If no line exists a line is created
   after it.
   @return [Poe.TextCursor] this
   @private
   ###
   doWordWrap: ->
+    @lineStyleChanged @lineStyle
     # Loop through all lines in the current paragraph
     for line in @currentParagraph().children
       while !line.visiblyContains line.children.last()
         if !line.next()
           newLine = new Poe.Line()
+          newLine.element.attr('class', line.element.attr('class'))
           newLine.child(0).remove()
           newLine.insertAfter line
         else
           newLine = line.next()
 
         newLine.prepend line.children.last()
+
+      childWidth = 0
+      for child in line.children
+        childWidth += child.element.width()
+
+      hasRoom = true
+      while hasRoom
+        break if not line.next()
+        child = line.next().child(0)
+        if childWidth + child.element.width() < line.element.outerWidth(false)
+          hasRoom = true
+          child.insertAfter line.children.last()
+        else
+          hasRoom = false
 
     return this
 
@@ -256,6 +277,8 @@ class Poe.TextCursor
             @currentWord.remove()
             @currentWord = word
 
+        @doWordWrap()
+
       when Poe.key.Delete
         next = @next()
         next.remove() if next
@@ -282,6 +305,36 @@ class Poe.TextCursor
         @element.before letter
         @doWordWrap()
     @show()
+
+  ###
+  Callback registered with {Poe.LineStyle} that will update the whole
+  paragraph's alignment.
+  ###
+  lineStyleChanged: (style) =>
+    @show()
+    freeLineSpace = (line) ->
+      total = 0
+      for word in line.children
+        total += word.element.width()
+      return line.element.width() - total
+
+    for line in @currentParagraph().children
+      element = line.element
+      element.css('padding-left', '0px')
+      element.css('padding-right', '0px')
+      if element.hasClass Poe.LineStyle.Align.Left
+        break
+      if element.hasClass Poe.LineStyle.Align.Center
+        freeSpaceHalf = "#{freeLineSpace(line)/2}px"
+        element.css 'padding-left', freeSpaceHalf
+        element.css 'padding-right', freeSpaceHalf
+      if element.hasClass Poe.LineStyle.Align.Right
+        freeSpace = "#{freeLineSpace(line)}px"
+        element.css 'padding-left', freeSpace
+      if element.hasClass Poe.LineStyle.Align.Justify
+        break
+
+    @update()
 
   ###
   Shows the cursor if it is hidden and sets a time to make the cursor blink if

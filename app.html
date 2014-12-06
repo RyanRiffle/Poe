@@ -15,6 +15,8 @@
     <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="js/Poe.js"></script>
+      <script type="text/javascript" src="js/Style.js"></script>
+      <script type="text/javascript" src="js/LineStyle.js"></script>
       <script type="text/javascript" src="js/TextStyle.js"></script>
       <script type="text/javascript" src="js/Toolbar.js"></script>
       <script type="text/javascript" src="js/Keymap.js"></script>
@@ -88,10 +90,10 @@
 
         <div id='alignment' class='btn-group' role='group' style='font-size: 16px;'>
             <!-- The names of the buttons match poe.TextCursor.Align.* -->
-            <button type='button' class='btn btn-default active' name='1'><span class='glyphicon glyphicon-align-left'></span></button>
-            <button type='button' class='btn btn-default' name='2'><span class='glyphicon glyphicon-align-center'></span></button>
-            <button type='button' class='btn btn-default' name='3'><span class='glyphicon glyphicon-align-right'></span></button>
-            <button type='button' class='btn btn-default' name='4'><span class='glyphicon glyphicon-align-justify'></span></button>
+            <button id="align-left" type='button' class='btn btn-default active' name='1'><span class='glyphicon glyphicon-align-left'></span></button>
+            <button id="align-center" type='button' class='btn btn-default' name='2'><span class='glyphicon glyphicon-align-center'></span></button>
+            <button id="align-right" type='button' class='btn btn-default' name='3'><span class='glyphicon glyphicon-align-right'></span></button>
+            <button id="align-justify" type='button' class='btn btn-default' name='4'><span class='glyphicon glyphicon-align-justify'></span></button>
         </div>
 
         <div id='lists' class='btn-group' role='group'>

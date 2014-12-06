@@ -6,7 +6,7 @@ the whole word, e.g. for new text, the style needs to know
 what Poe.TextCursor to use. In that case you can pass it in
 the constructor or use setTextCursor().
 ###
-class Poe.TextStyle
+class Poe.TextStyle extends Poe.Style
   ###
   Construct new TextStyle.
   TextStyle is used to apply formatting to a Poe.Word.
@@ -23,20 +23,8 @@ class Poe.TextStyle
     @fontSize = 16 #Pixels
     @color = 'black' #css
     @backround = 'white'
-    @changedCallbacks = []
     @currentWord = null
-
-  ###
-  Set the Poe.TextCursor used by applyChar
-  @throw textCursor must be a Poe.TextCursor
-  @param [Poe.TextCursor] textCursor the cursor
-  @return [Poe.TextStyle] this
-  ###
-  setTextCursor: (textCursor) ->
-    if not textCursor instanceof Poe.TextCursor
-      throw new Error('textCursor must be a Poe.TextCursor')
-    @textCursor = textCursor
-    return this
+    @changedCallbacks = []
 
   ###
   Copies style to this style
@@ -109,6 +97,8 @@ class Poe.TextStyle
     apply 'background-color', @background
     @currentWord = word
 
+    @hasChanged
+
     if @textCursor
       @textCursor.visibleCursor.height(@fontSize)
       @textCursor.update()
@@ -179,19 +169,6 @@ class Poe.TextStyle
         @textCursor.visibleCursor.css('transform', 'none')
 
     @currentWord = word
-    for callback in @changedCallbacks
-      callback this
+    @hasChanged()
 
-    return this
-
-  ###
-  Register a callback to be called when the style changes
-  @param [Function] callbackFn a function that takes one argument of type Poe.TextStyle
-  @return [Poe.TextStyle] this
-  ###
-  changed: (callbackFn) ->
-    if typeof(callbackFn) != 'function'
-      throw new Error('Poe.TextStyle.changed expects one argument of type function')
-
-    @changedCallbacks.append callbackFn
     return this
