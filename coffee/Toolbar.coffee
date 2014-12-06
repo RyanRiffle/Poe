@@ -12,7 +12,11 @@ class Poe.ToolBar
     if not @writer
       throw new Error('new Poe.Toolbar takes exactly one argument of type Poe.Writer')
     @textStyle = @writer.document.textCursor.textStyle
-    @textStyle.changed @styleChanged
+    @textStyle.changed @textStyleChanged
+
+    @lineStyle = @writer.document.textCursor.lineStyle
+    @lineStyle.changed @lineStyleChanged
+
     @element = $ '.toolbar'
     @elements =
       bold: $ '.bold'
@@ -23,20 +27,31 @@ class Poe.ToolBar
       fontSize: $ '#font-size-select .text'
       color: $ '#color-pick'
 
+      align:
+        left: $ '#align-left'
+        center: $ '#align-center'
+        right: $ '#align-right'
+        justify: $ '#align-justify'
+
     # Go ahead and update to match first word
-    @styleChanged @textStyle
+    @textStyleChanged @textStyle
+    @lineStyleChanged @lineStyle
     @elements.bold.click @clickToggle
     @elements.italic.click @clickToggle
     @elements.underline.click @clickToggle
 
     $('body').keydown @handleShortcut
+    $('#font-list li').click @handleFontClick
+    $('#font-size-list li').click @handleFontSizeClick
+    $('#alignment button').click @handleTextAlignment
 
   ###
   A callback given to Poe.TextCursor.textStyle.
   @see Poe.TextStyle#changed
   @param style [Poe.TextStyle] the style to update the toolbar with
+  @private
   ###
-  styleChanged: (style) =>
+  textStyleChanged: (style) =>
     activate = (toolItem, isTrue) ->
       if isTrue
         toolItem.addClass 'active'
@@ -72,6 +87,7 @@ class Poe.ToolBar
   A even handler for toolbar shortcuts. Returns immediately if
   the control key is not pressed.
   @param event [MouseDownEvent] the event
+  @private
   ###
   handleShortcut: (event) =>
     if not event.ctrlKey
@@ -99,3 +115,67 @@ class Poe.ToolBar
       when Poe.key.U
         event.preventDefault()
         toggle @elements.underline
+
+  ###
+  Event handler for when a new font is clicked. Updates
+  the current style and applies the style
+  @param event [MouseClickEvent] the event that happened.
+  @private
+  ###
+  handleFontClick: (event) =>
+    name = $(event.target).html()
+    @elements.font.html(name)
+    @textStyle.font = name
+    @textStyle.applyChar()
+
+  ###
+  Event handler for when a font size is clicked.
+  @param event [MouseClickEvent] the event that triggered the callback
+  @private
+  ###
+  handleFontSizeClick: (event) =>
+    name = $(event.target).html()
+    @elements.fontSize.html(parseInt(name.replace('px', '')))
+    @textStyle.fontSize = parseInt(name.replace('px', ''))
+    @textStyle.applyChar()
+
+  ###
+  Called when the line style changes of the {Poe.TextCursor}
+  @param style [Poe.LineStyle] the style that has changed
+  @private
+  ###
+  lineStyleChanged: (style) =>
+    @elements.align.left.removeClass('active')
+    @elements.align.center.removeClass('active')
+    @elements.align.right.removeClass('active')
+    @elements.align.justify.removeClass('active')
+
+    switch style.align
+      when Poe.LineStyle.Align.Left
+        element = @elements.align.left
+      when Poe.LineStyle.Align.Center
+        element = @elements.align.center
+      when Poe.LineStyle.Align.Right
+        element = @elements.align.right
+      when Poe.LineStyle.Align.Justify
+        element = @elements.align.justify
+
+    element.addClass 'active'
+
+  ###
+  Event handler for text align buttons in the toolbar.
+  @param event [MouseClickEvent] the event that triggered this callback
+  @private
+  ###
+  handleTextAlignment: (event) =>
+    target = event.target
+    if target == @elements.align.left[0]
+      @lineStyle.align = Poe.LineStyle.Align.Left
+    else if target == @elements.align.center[0]
+      @lineStyle.align = Poe.LineStyle.Align.Center
+    else if target == @elements.align.right[0]
+      @lineStyle.align = Poe.LineStyle.Align.Right
+    else if target == @elements.align.justify[0]
+      @lineStyle.align = Poe.LineStyle.Align.Justify
+
+    @lineStyle.apply()

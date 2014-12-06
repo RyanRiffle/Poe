@@ -22,10 +22,10 @@ class Poe.Line extends Poe.TextObject
   @return [Boolean] true if child is contained, false otherwise
   ###
   visiblyContains: (child) ->
-    childPos = child.element.offset()
-    pos = @element.offset()
+    childPos = child.element.position()
+    pos = @element.position()
     childPos.right = childPos.left + child.element.width()
-    pos.right = pos.left + @element.width()
+    pos.right = pos.left + @element.outerWidth(false)
 
     if (childPos.right > pos.right)
       return false

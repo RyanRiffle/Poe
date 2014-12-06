@@ -15,6 +15,7 @@ Poe.key =
     I:          73
     U:          85
     Shift:      16
+    CapsLock:   20
 
 Poe.keyMapShift[8] = ""
 Poe.keyMapShift[9] = ""

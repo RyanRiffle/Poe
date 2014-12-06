@@ -6,7 +6,7 @@ the whole word, e.g. for new text, the style needs to know
 what Poe.TextCursor to use. In that case you can pass it in
 the constructor or use setTextCursor().
 ###
-class Poe.TextStyle
+class Poe.TextStyle extends Poe.Style
   ###
   Construct new TextStyle.
   TextStyle is used to apply formatting to a Poe.Word.
@@ -23,20 +23,8 @@ class Poe.TextStyle
     @fontSize = 16 #Pixels
     @color = 'black' #css
     @backround = 'white'
-    @changedCallbacks = []
     @currentWord = null
-
-  ###
-  Set the Poe.TextCursor used by applyChar
-  @throw textCursor must be a Poe.TextCursor
-  @param [Poe.TextCursor] textCursor the cursor
-  @return [Poe.TextStyle] this
-  ###
-  setTextCursor: (textCursor) ->
-    if not textCursor instanceof Poe.TextCursor
-      throw new Error('textCursor must be a Poe.TextCursor')
-    @textCursor = textCursor
-    return this
+    @changedCallbacks = []
 
   ###
   Copies style to this style
@@ -73,19 +61,17 @@ class Poe.TextStyle
 
       middleWord = new Poe.Word()
       middleWord.insertAfter word
-
+      otherStyle = null
+      element = middleWord.element
+      element.prepend @textCursor.element
+      @textCursor.currentWord = middleWord
       if word.isEmpty()
         word.remove()
       if lastWord.isEmpty()
         lastWord.remove()
       else
         otherStyle.apply lastWord
-
-      otherStyle = null
-      element = middleWord.element
       word = middleWord
-      element.prepend @textCursor.element
-      @textCursor.currentWord = middleWord
 
     if @bold
       element.addClass 'bold'
@@ -97,7 +83,7 @@ class Poe.TextStyle
     else
       element.removeClass 'italic'
 
-    if @underilne
+    if @underline
       element.addClass 'underline'
     else
       element.removeClass 'underline'
@@ -110,6 +96,17 @@ class Poe.TextStyle
     apply 'color', @color
     apply 'background-color', @background
     @currentWord = word
+
+    @hasChanged
+
+    if @textCursor
+      @textCursor.visibleCursor.height(@fontSize)
+      @textCursor.update()
+      if @italic
+        @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
+      else
+        @textCursor.visibleCursor.css('transform', 'none')
+
 
   ###
   Applies style so that any new text that is typed gets the style
@@ -143,40 +140,35 @@ class Poe.TextStyle
     if not word or not element
       return
 
-    if element.css('font-weight') == 'bold'
+    if element.hasClass 'bold'
       @bold = true
     else
       @bold = false
 
-    if element.css('font-style') == 'italic'
+    if element.hasClass 'italic'
       @italic = true
     else
       @italic = false
 
-    if element.css('text-decoration') == 'underline'
+    if element.hasClass 'underline'
       @underline = true
     else
       @underline = false
 
     @font = element.css('font-family').split('"')[0]
+    @font = @font.replace("'", '').replace("'", '')
     @fontSize = parseInt(element.css('font-size'))
     @color = element.css('color')
     @background = element.css('background-color')
 
+    if @textCursor
+      @textCursor.visibleCursor.height(@fontSize)
+      if @italic
+        @textCursor.visibleCursor.css('transform', 'rotate(10deg)')
+      else
+        @textCursor.visibleCursor.css('transform', 'none')
+
     @currentWord = word
-    for callback in @changedCallbacks
-      callback this
+    @hasChanged()
 
-    return this
-
-  ###
-  Register a callback to be called when the style changes
-  @param [Function] callbackFn a function that takes one argument of type Poe.TextStyle
-  @return [Poe.TextStyle] this
-  ###
-  changed: (callbackFn) ->
-    if typeof(callbackFn) != 'function'
-      throw new Error('Poe.TextStyle.changed expects one argument of type function')
-
-    @changedCallbacks.append callbackFn
     return this
