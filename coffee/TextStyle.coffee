@@ -128,6 +128,9 @@ class Poe.TextStyle extends Poe.Style
   @return [Poe.TextStyle] this
   ###
   applyWord: (word) ->
+    if not word
+      word = @textCursor.currentWord
+    
     @apply true, word
     return this
 

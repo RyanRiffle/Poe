@@ -17,5 +17,3 @@ class Poe.Paragraph extends Poe.TextObject
 
     line = new Poe.Line()
     @append line
-    console.log "Paragraph child count: #{@children.length}"
-    #@append new Poe.Line()

@@ -180,6 +180,7 @@ class Poe.TextCursor
         childWidth += child.element.width()
 
       break if not line.next()
+      break if line.next() instanceof Poe.ListItem
       hasRoom = true
       while hasRoom
         child = line.next().child(0)
@@ -211,12 +212,22 @@ class Poe.TextCursor
         @capsLock = !@capsLock
 
       when Poe.key.Left
+        if @currentWord.children().length == 1
+          @element.before "&#8203;"
         @moveLeft()
 
       when Poe.key.Right
+
         @moveRight()
 
       when Poe.key.Enter
+        if @currentParagraph() instanceof Poe.List
+          li = new Poe.ListItem()
+          li.insertAfter @currentLine()
+          @moveInside li.child(0)
+          @textStyle.applyWord()
+          break
+
         paragraph = new Poe.Paragraph()
         paragraph.insertAfter @currentParagraph()
         line = paragraph.child(0)
@@ -248,13 +259,33 @@ class Poe.TextCursor
 
         prev = @prev()
 
+        if @currentParagraph() instanceof Poe.List
+          if @currentLine().index() == @currentParagraph().children.length-1
+            if @currentWord.children().length == 1
+              li = @currentLine()
+              paragraph = new Poe.Paragraph()
+              paragraph.insertAfter @currentParagraph()
+              @moveInside paragraph.child(0).child(0)
+              @textStyle.applyWord()
+              if li.parent.isEmpty()
+                li.parent.remove()
+              else
+                li.remove()
+              break
+
         #Used for backspace over a word wrap
         if @currentWord.index() == 0
           word = @currentWord
-          prev.before @element if prev
-          prev.remove() if prev
+          if @currentWord.children().length != 1
+            prev.before @element if prev
+            prev.remove() if prev
+          console.log @currentLine().index()
+          console.log @element.prevSibling()
           if @currentLine().index() != 0 and not @element.prevSibling()
             prev2 = @currentLine().prev().children.last()
+            if @currentLine().isEmpty()
+              @currentLine().remove()
+
             if prev2
               @currentWord = prev2
               @currentWord.append @element
@@ -316,9 +347,22 @@ class Poe.TextCursor
   paragraph's alignment.
   ###
   paragraphStyleChanged: (style) =>
-    @show
+    @show()
 
-    @update()
+  ###
+  Moves the cursor inside and at the front of word
+  @param word [Poe.Word] the word to move it inside
+  @throws [Error] if the word is not a Poe.Word
+  @return [Poe.TextCursor] this
+  ###
+  moveInside: (word) ->
+    if not word instanceof Poe.Word
+      throw new Error('Can only move inside a Poe.Word')
+
+    word.prepend @element
+    @currentWord = word
+    @show()
+    return this
 
   ###
   Shows the cursor if it is hidden and sets a time to make the cursor blink if

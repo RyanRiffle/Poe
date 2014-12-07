@@ -11,10 +11,11 @@ class Poe.ToolBar
   constructor: (@writer) ->
     if not @writer
       throw new Error('new Poe.Toolbar takes exactly one argument of type Poe.Writer')
-    @textStyle = @writer.document.textCursor.textStyle
+    @textCursor = @writer.document.textCursor
+    @textStyle = @textCursor.textStyle
     @textStyle.changed @textStyleChanged
 
-    @paragraphStyle = @writer.document.textCursor.paragraphStyle
+    @paragraphStyle = @textCursor.paragraphStyle
     @paragraphStyle.changed @paragraphStyleChanged
 
     @element = $ '.toolbar'
@@ -26,6 +27,10 @@ class Poe.ToolBar
       font: $ '#font-select .text'
       fontSize: $ '#font-size-select .text'
       color: $ '#color-pick'
+
+      list:
+        bullet: $ '#list-bullet'
+        number: $ '#list-number'
 
       align:
         left: $ '#align-left'
@@ -45,6 +50,7 @@ class Poe.ToolBar
     $('#font-size-list li').click @handleFontSizeClick
     $('#alignment button').click @handleTextAlignment
     $('#color-list .color-list-item').click @handleFontColor
+    $('#lists button').click @handleList
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -116,6 +122,8 @@ class Poe.ToolBar
       when Poe.key.U
         event.preventDefault()
         toggle @elements.underline
+      else
+        event.preventDefault()
 
   ###
   Event handler for when a new font is clicked. Updates
@@ -183,6 +191,7 @@ class Poe.ToolBar
 
   ###
   Event handler for text color.
+  @param
   ###
   handleFontColor: (event) =>
     target = $(event.target)
@@ -191,3 +200,19 @@ class Poe.ToolBar
     @elements.color.css 'background-color', color
     @textStyle.color = color
     @textStyle.applyChar()
+
+  handleList: (event) =>
+    target = event.target
+    list = new Poe.List()
+    if target == @elements.list.bullet[0]
+      list.setListType Poe.List.ListType.Bullets
+    else if target == @elements.list.number[0]
+      list.setListType Poe.List.ListType.Numbers
+
+    paragraph = @textCursor.currentParagraph()
+    list.insertAfter @textCursor.currentParagraph()
+    @textCursor.moveInside list.child(0).child(0)
+    @textStyle.applyChar()
+
+    if paragraph.isEmpty()
+      paragraph.remove()

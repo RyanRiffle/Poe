@@ -1,6 +1,6 @@
 ###
 Poe.ParagraphStyle handles any kind of style that should
-be applied to a Poe.Line.
+be applied to a Poe.paragraph.
 ###
 class Poe.ParagraphStyle extends Poe.Style
   constructor: (@textCursor) ->
@@ -21,30 +21,30 @@ class Poe.ParagraphStyle extends Poe.Style
     return this
 
   ###
-  Apply style to line.
-  @throws [Error] if line is not a Poe.Line
-  @param line [Poe.Line] Optional. Defaults to textCursor.currentLine.
+  Apply style to paragraph.
+  @throws [Error] if paragraph is not a Poe.Paragraph
+  @param paragraph [Poe.paragraph] Optional. Defaults to textCursor.currentparagraph.
   @return [Poe.ParagraphStyle] this
   ###
-  apply: (line) ->
-    if not line and @textCursor
-      line = @textCursor.currentLine()
+  apply: (paragraph) ->
+    if not paragraph and @textCursor
+      paragraph = @textCursor.currentParagraph()
 
-    if not line instanceof Poe.Line
-      throw new Error('Argument must be a Poe.Line')
+    if not paragraph instanceof Poe.Paragraph
+      throw new Error('Argument must be a Poe.paragraph')
 
-    line.parent.element.attr 'align', @align
+    paragraph.element.attr 'align', @align
     @hasChanged()
     return this
 
-  update: (line) ->
-    if not line and @textCursor
-      line = @textCursor.currentLine()
+  update: (paragraph) ->
+    if not paragraph and @textCursor
+      paragraph = @textCursor.currentParagraph()
 
-    if not line instanceof Poe.Line
-      throw new Error('Argument must be a Poe.Line')
+    if not paragraph instanceof Poe.Paragraph
+      throw new Error('Argument must be a Poe.paragraph')
 
-    element = line.parent.element
+    element = paragraph.element
     if element.attr('align') == Poe.ParagraphStyle.Align.Left
       @align = Poe.ParagraphStyle.Align.Left
     else if element.attr('align') == Poe.ParagraphStyle.Align.Center
@@ -57,7 +57,7 @@ class Poe.ParagraphStyle extends Poe.Style
     @hasChanged()
 
   ###
-  "Enum" of line alignments
+  "Enum" of paragraph alignments
   ###
   @Align =
     Left: 'left'
