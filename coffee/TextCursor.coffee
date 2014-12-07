@@ -221,6 +221,7 @@ class Poe.TextCursor
         paragraph.insertAfter @currentParagraph()
         line = paragraph.child(0)
         word = line.child(0)
+        @textStyle.applyWord word
         while @element.nextSibling()
           word.element.append @element.nextSibling()
 

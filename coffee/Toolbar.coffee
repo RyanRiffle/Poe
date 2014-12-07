@@ -44,6 +44,7 @@ class Poe.ToolBar
     $('#font-list li').click @handleFontClick
     $('#font-size-list li').click @handleFontSizeClick
     $('#alignment button').click @handleTextAlignment
+    $('#color-list .color-list-item').click @handleFontColor
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -179,3 +180,14 @@ class Poe.ToolBar
       @paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
 
     @paragraphStyle.apply()
+
+  ###
+  Event handler for text color.
+  ###
+  handleFontColor: (event) =>
+    target = $(event.target)
+    color = target.css 'background-color'
+
+    @elements.color.css 'background-color', color
+    @textStyle.color = color
+    @textStyle.applyChar()

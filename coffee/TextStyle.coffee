@@ -158,7 +158,7 @@ class Poe.TextStyle extends Poe.Style
 
     @font = element.css('font-family').split('"')[0]
     @font = @font.replace("'", '').replace("'", '')
-    @fontSize = (parseInt(element.css('font-size')) * 72) / 96;
+    @fontSize = Math.floor((parseInt(element.css('font-size')) * 72) / 96)
     @color = element.css('color')
     @background = element.css('background-color')
 
