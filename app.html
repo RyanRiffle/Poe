@@ -103,6 +103,47 @@
             <button id='list-bullet' type='button' class='btn btn-default' name='bullet'><span class='glyphicon glyphicon-th-list'></span></button>
             <button id='list-number' type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>
         </div>
+
+        <div class='dropdown' id='menu-container'>
+          <button id='menu' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expaned='false' type='button'>
+            <span class='glyphicon glyphicon-cog'></span>
+          </button>
+          <ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
+            <li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
+          </ul>
+        </div>
+
+        <div id="dialog-about" class='modal fade bs-example-modal-sm' tabindex='-1' role='dialog'
+        arialabelledby='about-application' aria-hidden='true'>
+          <div class='modal-dialog'>
+            <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal'>
+                  <span aria-hidden='true'>&times;</span>
+                  <span class='sr-only'>Close</span>
+                </button>
+                <h4 class='modal-title' id='about-dialog-title'>Poe</h4>
+              </div>
+
+              <div class='modal-body'>
+                <p>
+                  Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
+                  <br/>
+                </p>
+                <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
+                allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+                <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=follow&count=true"
+                allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+                <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=watch&count=true"
+                allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+                <br/>&copy; 2014 Ryan Riffle
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
     <div id="Poe"></div>
 </body>

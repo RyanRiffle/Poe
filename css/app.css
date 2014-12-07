@@ -212,3 +212,17 @@ html, body {
     width: 100%;
     white-space:pre;
 }
+
+#menu {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#menu-container {
+  float: right;
+  margin-right: 12px;
+}
+
+#menu-container ul {
+  left: -110px;
+}
