@@ -201,6 +201,11 @@ class Poe.ToolBar
     @textStyle.color = color
     @textStyle.applyChar()
 
+  ###
+  Event handler for list buttons. Creates a new list when
+  the button is clicked.
+  @param event [MouseClickEvent] the event that triggered the function
+  ###
   handleList: (event) =>
     target = event.target
     list = new Poe.List()

@@ -3,6 +3,10 @@ Poe.ParagraphStyle handles any kind of style that should
 be applied to a Poe.paragraph.
 ###
 class Poe.ParagraphStyle extends Poe.Style
+  ###
+  Creates a new Poe.ParagraphStyle
+  @param textCursor [Poe.TextCursor] the cursor that this style will operate on
+  ###
   constructor: (@textCursor) ->
     # This stuff is the default style
     @align = Poe.ParagraphStyle.Align.Left
@@ -37,6 +41,14 @@ class Poe.ParagraphStyle extends Poe.Style
     @hasChanged()
     return this
 
+  ###
+  Update this style with the style of paragraph. If paragraph is not
+  specified it default to the textCursor's current paragraph if it has
+  a textCursor
+  @see Poe.Style#setTextCursor
+  @see Poe.ParagraphStyle#constructor
+  @param paragraph [Poe.Paragraph] the paragraph
+  ###
   update: (paragraph) ->
     if not paragraph and @textCursor
       paragraph = @textCursor.currentParagraph()

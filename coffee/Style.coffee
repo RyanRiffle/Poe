@@ -2,6 +2,12 @@
 Base class for all styles including TextStyle and paragraphStyle.
 ###
 class Poe.Style
+  ###
+  Creates a new Poe.Style. This is not meant to instantiated, however is
+  meant to be extended
+  @see Poe.TextStyle
+  @see Poe.ParagraphStyle
+  ###
   constructor: (@textCursor) ->
     @changedCallbacks = []
 
