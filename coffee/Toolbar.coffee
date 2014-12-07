@@ -11,11 +11,12 @@ class Poe.ToolBar
   constructor: (@writer) ->
     if not @writer
       throw new Error('new Poe.Toolbar takes exactly one argument of type Poe.Writer')
-    @textStyle = @writer.document.textCursor.textStyle
+    @textCursor = @writer.document.textCursor
+    @textStyle = @textCursor.textStyle
     @textStyle.changed @textStyleChanged
 
-    @lineStyle = @writer.document.textCursor.lineStyle
-    @lineStyle.changed @lineStyleChanged
+    @paragraphStyle = @textCursor.paragraphStyle
+    @paragraphStyle.changed @paragraphStyleChanged
 
     @element = $ '.toolbar'
     @elements =
@@ -27,6 +28,10 @@ class Poe.ToolBar
       fontSize: $ '#font-size-select .text'
       color: $ '#color-pick'
 
+      list:
+        bullet: $ '#list-bullet'
+        number: $ '#list-number'
+
       align:
         left: $ '#align-left'
         center: $ '#align-center'
@@ -35,7 +40,7 @@ class Poe.ToolBar
 
     # Go ahead and update to match first word
     @textStyleChanged @textStyle
-    @lineStyleChanged @lineStyle
+    @paragraphStyleChanged @paragraphStyle
     @elements.bold.click @clickToggle
     @elements.italic.click @clickToggle
     @elements.underline.click @clickToggle
@@ -44,6 +49,8 @@ class Poe.ToolBar
     $('#font-list li').click @handleFontClick
     $('#font-size-list li').click @handleFontSizeClick
     $('#alignment button').click @handleTextAlignment
+    $('#color-list .color-list-item').click @handleFontColor
+    $('#lists button').click @handleList
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -81,7 +88,7 @@ class Poe.ToolBar
       @textStyle.underline = !@textStyle.underline
 
     @textStyle.applyChar()
-    @styleChanged @textStyle
+    @textStyleChanged @textStyle
 
   ###
   A even handler for toolbar shortcuts. Returns immediately if
@@ -103,7 +110,7 @@ class Poe.ToolBar
         @textStyle.underline = !@textStyle.underline
 
       @textStyle.applyChar()
-      @styleChanged @textStyle
+      @textStyleChanged @textStyle
 
     switch event.keyCode
       when Poe.key.B
@@ -115,6 +122,8 @@ class Poe.ToolBar
       when Poe.key.U
         event.preventDefault()
         toggle @elements.underline
+      else
+        event.preventDefault()
 
   ###
   Event handler for when a new font is clicked. Updates
@@ -141,23 +150,23 @@ class Poe.ToolBar
 
   ###
   Called when the line style changes of the {Poe.TextCursor}
-  @param style [Poe.LineStyle] the style that has changed
+  @param style [Poe.ParagraphStyle] the style that has changed
   @private
   ###
-  lineStyleChanged: (style) =>
+  paragraphStyleChanged: (style) =>
     @elements.align.left.removeClass('active')
     @elements.align.center.removeClass('active')
     @elements.align.right.removeClass('active')
     @elements.align.justify.removeClass('active')
 
     switch style.align
-      when Poe.LineStyle.Align.Left
+      when Poe.ParagraphStyle.Align.Left
         element = @elements.align.left
-      when Poe.LineStyle.Align.Center
+      when Poe.ParagraphStyle.Align.Center
         element = @elements.align.center
-      when Poe.LineStyle.Align.Right
+      when Poe.ParagraphStyle.Align.Right
         element = @elements.align.right
-      when Poe.LineStyle.Align.Justify
+      when Poe.ParagraphStyle.Align.Justify
         element = @elements.align.justify
 
     element.addClass 'active'
@@ -170,12 +179,40 @@ class Poe.ToolBar
   handleTextAlignment: (event) =>
     target = event.target
     if target == @elements.align.left[0]
-      @lineStyle.align = Poe.LineStyle.Align.Left
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Left
     else if target == @elements.align.center[0]
-      @lineStyle.align = Poe.LineStyle.Align.Center
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Center
     else if target == @elements.align.right[0]
-      @lineStyle.align = Poe.LineStyle.Align.Right
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Right
     else if target == @elements.align.justify[0]
-      @lineStyle.align = Poe.LineStyle.Align.Justify
+      @paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
 
-    @lineStyle.apply()
+    @paragraphStyle.apply()
+
+  ###
+  Event handler for text color.
+  @param
+  ###
+  handleFontColor: (event) =>
+    target = $(event.target)
+    color = target.css 'background-color'
+
+    @elements.color.css 'background-color', color
+    @textStyle.color = color
+    @textStyle.applyChar()
+
+  handleList: (event) =>
+    target = event.target
+    list = new Poe.List()
+    if target == @elements.list.bullet[0]
+      list.setListType Poe.List.ListType.Bullets
+    else if target == @elements.list.number[0]
+      list.setListType Poe.List.ListType.Numbers
+
+    paragraph = @textCursor.currentParagraph()
+    list.insertAfter @textCursor.currentParagraph()
+    @textCursor.moveInside list.child(0).child(0)
+    @textStyle.applyChar()
+
+    if paragraph.isEmpty()
+      paragraph.remove()

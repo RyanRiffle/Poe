@@ -16,18 +16,21 @@
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="js/Poe.js"></script>
       <script type="text/javascript" src="js/Style.js"></script>
-      <script type="text/javascript" src="js/LineStyle.js"></script>
+      <script type="text/javascript" src="js/ParagraphStyle.js"></script>
       <script type="text/javascript" src="js/TextStyle.js"></script>
       <script type="text/javascript" src="js/Toolbar.js"></script>
       <script type="text/javascript" src="js/Keymap.js"></script>
       <script type="text/javascript" src="js/TextCursor.js"></script>
       <script type="text/javascript" src="js/TextObject.js"></script>
+
         <script type="text/javascript" src="js/Line.js"></script>
     <script type="text/javascript" src="js/Word.js"></script>
     <script type="text/javascript" src="js/Paragraph.js"></script>
     <script type="text/javascript" src="js/Page.js"></script>
     <script type="text/javascript" src="js/Document.js"></script>
     <script type="text/javascript" src="js/Writer.js"></script>
+    <script type="text/javascript" src="js/ListItem.js"></script>
+    <script type="text/javascript" src="js/List.js"></script>
 </head>
 <body>
     <div class='toolbar'>
@@ -97,8 +100,8 @@
         </div>
 
         <div id='lists' class='btn-group' role='group'>
-            <button type='button' class='btn btn-default' name='bullet'><span class='glyphicon glyphicon-th-list'></span></button>
-            <button type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>
+            <button id='list-bullet' type='button' class='btn btn-default' name='bullet'><span class='glyphicon glyphicon-th-list'></span></button>
+            <button id='list-number' type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>
         </div>
     </div>
     <div id="Poe"></div>

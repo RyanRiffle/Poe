@@ -11,11 +11,9 @@ class Poe.Paragraph extends Poe.TextObject
   ###
   constructor: (page) ->
     @children = []
-    @element = $ '<div class="paragraph"></div>'
+    @element = $ '<p class="paragraph" align="left"></p>'
     $('body').append(@element)
     page.append this if page
 
     line = new Poe.Line()
     @append line
-    console.log "Paragraph child count: #{@children.length}"
-    #@append new Poe.Line()
