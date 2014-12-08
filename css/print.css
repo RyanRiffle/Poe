@@ -1,7 +1,5 @@
 @page {
-    margin: 1in;
-    max-resolution: 96dppi;
-    min-resolution: 96dppi;
+    size: letter;
 }
 
 /*
@@ -9,24 +7,23 @@
     when editing it.
 */
 body {
-    font-size: 150%;
+  margin: 0px;
+  padding: 0px;
 }
 
-/*
-    For some reason it seams that the print line-height needs to be
-    25% less than the editing line-height;
-*/
-.line {
-    line-height: 175% !important;
+.document {
+  position: absolute:
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  transform: scale(1.15);
+  -webkit-device-pixel-ratio: 2;
+  min-resolution: 192px;
 }
 
 .page {
+    width: 100%;
     display: block;
-    min-height: 0px !important;
-    max-height: none !important;
-
-    padding: 0px !important;
-    font-family: 'Open Sans';
     margin: 0px;
 }
 

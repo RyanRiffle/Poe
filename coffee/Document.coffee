@@ -2,7 +2,7 @@
 Poe.Document is the top and contains pages. It also manages
 page margins and page size.
 ###
-class Poe.Document
+class Poe.Document this
   ###
   Create a new Poe.Document. Creating a document is only possible in {Poe.Writer}
   in order for it to be shown in the DOM.
