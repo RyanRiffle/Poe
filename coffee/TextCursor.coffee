@@ -56,6 +56,9 @@ class Poe.TextCursor
   currentPage: ->
     return @currentParagraph().parent
 
+  document: ->
+    return @currentPage().parent
+
   ###
   Gets the next text node after the cursor. This will loop through all parents up to
   the Poe.Document if neccessary. It does not change any members unless applyChanges
@@ -65,7 +68,7 @@ class Poe.TextCursor
   @return [jQuery or null] the next text node found
   ###
   next: (applyChanges = false) ->
-    next = @element.nextSibling()
+    ###next = @element.nextSibling()
     word = @currentWord
     line = word.parent
     paragraph = line.parent
@@ -86,6 +89,13 @@ class Poe.TextCursor
       next = word.children().first()
     @currentWord = word if applyChanges and next
     @textStyle.update word if @currentWord != word
+    return next###
+    next = @element.nextSibling()
+    word = @currentWord
+    if not next
+      word = word.next()
+      next = word?.children().first()
+      @currentWord = word if applyChanges and word
     return next
 
   ###
@@ -100,25 +110,10 @@ class Poe.TextCursor
   prev: (applyChanges = false) ->
     prev = @element.prevSibling()
     word = @currentWord
-    line = word.parent
-    paragraph = line.parent
-    page = paragraph.parent
-    while !prev
-      [old, word] = [word, word.prev()]
-      old.remove() if old.isEmpty()
-      if !word
-        line = line.prev()
-        if !line
-          paragraph = paragraph.prev()
-          if !paragraph
-            page = page.prev()
-            return null if !page
-            paragraph = page.children.last()
-          line = paragraph.children.last()
-        word = line.children.last()
-      prev = word.children().last() if word.children().length > 0
-    @currentWord = word if applyChanges and prev
-    @textStyle.update word if @currentWord != word
+    if not prev
+      word = word.prev()
+      prev = word?.children().last()
+      @currentWord = word if applyChanges and word
     return prev
 
   ###
@@ -191,8 +186,36 @@ class Poe.TextCursor
           child.insertAfter line.children.last()
         else
           hasRoom = false
-
+    @doPageWrap()
     return this
+
+  doPageWrap: ->
+    overflows = (page, paragraph) ->
+      paragraphBottom = paragraph.element.position().top + paragraph.element.height()
+      pageBottom = page.element.position().top + page.element.height()
+      pageBottom += parseInt(page.element.css('padding-top'))
+      return paragraphBottom > pageBottom
+
+    for page in @document().children
+      while overflows(page, page.children.last())
+        if !page.next()
+          newPage = new Poe.Page()
+          newPage.insertAfter @currentPage()
+          newPage.child(0).remove()
+
+        next = @currentPage().next()
+        paragraph = new Poe.Paragraph()
+        paragraph.child(0).remove()
+        next.prepend paragraph
+
+        line = page.children.last().children.last()
+        while overflows(page, line)
+          paragraph.prepend line
+          line = page.children.last().children.last()
+          if page.children.last().isEmpty()
+            page.children.last().remove()
+        @update()
+
 
   ###
   Handles typing. At first it stops the cursor from blinking. Then does anything
@@ -236,11 +259,11 @@ class Poe.TextCursor
         while @element.nextSibling()
           word.element.append @element.nextSibling()
 
-        while @currentWord.next()
+        while @currentWord.element.nextSibling()
           line.append @currentWord.next()
 
         # Move all lines after the current to the new paragraph
-        while @currentLine().next()
+        while @currentLine().element.nextSibling()
           paragraph.append @currentLine().next()
 
         if @currentWord.children().length == 1 and @currentLine().children.length == 1
@@ -251,13 +274,17 @@ class Poe.TextCursor
         @currentWord.element.prepend @element
         @textStyle.apply @currentWord
         @paragraphStyle.update @currentLine()
+        @doPageWrap()
 
       when Poe.key.Backspace
-        # If the currentPage is empty there will be nothing to backspace
-        if @currentPage().isEmpty() and @currentPage().index() == 0
-          break
+        oldWord = @currentWord
+        oldLine = @currentLine()
+        oldParagraph = @currentParagraph()
+        oldPage = @currentPage()
+        prev = @prev(true)
 
-        prev = @prev()
+        if not prev
+          break
 
         if @currentParagraph() instanceof Poe.List
           if @currentLine().index() == @currentParagraph().children.length-1
@@ -273,45 +300,26 @@ class Poe.TextCursor
                 li.remove()
               break
 
-        #Used for backspace over a word wrap
-        if @currentWord.index() == 0
-          word = @currentWord
-          if @currentWord.children().length != 1
-            prev.before @element if prev
-            prev.remove() if prev
-          console.log @currentLine().index()
-          console.log @element.prevSibling()
-          if @currentLine().index() != 0 and not @element.prevSibling()
-            prev2 = @currentLine().prev().children.last()
-            if @currentLine().isEmpty()
-              @currentLine().remove()
-
-            if prev2
-              @currentWord = prev2
-              @currentWord.append @element
-            break
-          else if @currentLine().index() == 0 and not @element.prevSibling()
-            if @currentParagraph().index() == 0 and @currentPage().index() == 0
-              break
-            prev2 = @currentParagraph().prev().children.last().children.last()
-            if prev2
-              @currentWord = prev2
-              @currentWord.append @element
-            word.parent.parent.remove() if word.parent.parent.isEmpty()
-            break
-
+        prev.after @element if prev
         prev.remove() if prev
 
+        if oldPage.isEmpty()
+          oldPage.remove()
+        else if oldParagraph.isEmpty()
+          oldParagraph.remove()
+        else if oldLine.isEmpty()
+          oldLine.remove()
+        else if oldWord.isEmpty()
+          oldWord.remove()
         #If the cursor is at the beginning of the word move
         #it to the previous word and remove cursor containing
         #word if it is empty
-        if not @element.prevSibling()
-          prev2 = @prev()
+        ###if not @element.prevSibling()
+          word = @currentWord
+          prev2 = @prev(true)
           prev2.after @element if prev2
-          word = @currentWord.prev()
-          if @currentWord.isEmpty()
-            @currentWord.remove()
-            @currentWord = word
+          if word.isEmpty()
+            word.remove()###
 
         @doWordWrap()
 

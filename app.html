@@ -8,13 +8,13 @@
     <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
     <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
 
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arimo|Cousine|Tinos|Open+Sans|Droid+Sans|Droid+Serif|Syncopate|Times+New+Roman|Ubuntu"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
 
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="js/Poe.js"></script>
+      <script type="text/javascript" src="js/FontManager.js"></script>
       <script type="text/javascript" src="js/Style.js"></script>
       <script type="text/javascript" src="js/ParagraphStyle.js"></script>
       <script type="text/javascript" src="js/TextStyle.js"></script>
@@ -27,6 +27,9 @@
     <script type="text/javascript" src="js/Word.js"></script>
     <script type="text/javascript" src="js/Paragraph.js"></script>
     <script type="text/javascript" src="js/Page.js"></script>
+    <script type="text/javascript" src="pdfkit.js"></script>
+    <script type="text/javascript" src="blob-stream.js"></script>
+    <script type="text/javascript" src="js/PDF.js"></script>
     <script type="text/javascript" src="js/Document.js"></script>
     <script type="text/javascript" src="js/Writer.js"></script>
     <script type="text/javascript" src="js/ListItem.js"></script>
@@ -49,16 +52,7 @@
                     </ul>
                 </div>
             </button>
-            <ul id='font-list' class='dropdown-menu' role='menu' aria-labelledby='font-select' data-toggle='dropdown' aria-expand='true'>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Arimo";'>Arimo</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Cousine";'>Cousine</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Tinos";'>Tinos</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Raleway";'>Raleway</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Open Sans";'>Open Sans</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Droid Sans";'>Droid Sans</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Arial";'>Droid Serif</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Syncopate";'>Syncopate</a></li>
-                <li role='presentation'><a role='menuitem' tabindex='-1' href='#' style='font-family: "Ubuntu";'>Ubuntu</a></li>
+            <ul id='font-list' class='dropdown-menu' role='menu' aria-labelledby='font-select' data-toggle='dropdown' aria-expand='true' style="max-height: 300px; overflow-y: scroll;">
             </ul>
         </div>
 
@@ -130,12 +124,12 @@
                   Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
                   <br/>
                 </p>
-                <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
+                <!--<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
                 allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
                 <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=follow&count=true"
                 allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
                 <iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=watch&count=true"
-                allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+                allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>-->
                 <br/>&copy; 2014 Ryan Riffle
               </div>
               <div class="modal-footer">

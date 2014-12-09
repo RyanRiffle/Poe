@@ -24,6 +24,7 @@ class Poe.ToolBar
       italic: $ '.italic'
       underline: $ '.underline'
 
+      fonts: $ '#font-list'
       font: $ '#font-select .text'
       fontSize: $ '#font-size-select .text'
       color: $ '#color-pick'
@@ -46,11 +47,15 @@ class Poe.ToolBar
     @elements.underline.click @clickToggle
 
     $('body').keydown @handleShortcut
-    $('#font-list li').click @handleFontClick
+    $('#font-list').on 'click', 'li', @handleFontClick
     $('#font-size-list li').click @handleFontSizeClick
     $('#alignment button').click @handleTextAlignment
     $('#color-list .color-list-item').click @handleFontColor
     $('#lists button').click @handleList
+
+    @fontManager = new Poe.FontManager()
+    @fontManager.on('newFont', @fontAdded)
+    @fontManager.loadDefaults()
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -221,3 +226,8 @@ class Poe.ToolBar
 
     if paragraph.isEmpty()
       paragraph.remove()
+
+  fontAdded: (name) =>
+    item = $("<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>#{name}</a></li>")
+    @elements.fonts.append item
+    item.children('a').css('font-family', name)

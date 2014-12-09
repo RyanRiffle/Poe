@@ -92,7 +92,7 @@ class Poe.TextStyle extends Poe.Style
       element.css(style, value)
 
     apply 'font-family', '"' + @font + '"'
-    size = (@fontSize * 96) / 72;
+    size = ((@fontSize) / .75);
     apply 'font-size', "#{size}px"
     apply 'color', @color
     apply 'background-color', @background
@@ -161,8 +161,8 @@ class Poe.TextStyle extends Poe.Style
 
     @font = element.css('font-family').split('"')[0]
     @font = @font.replace("'", '').replace("'", '')
-    @fontSize = Math.floor((parseInt(element.css('font-size')) * 72) / 96)
-    @color = element.css('color')
+    @fontSize = parseInt(element.css('font-size')) * .75
+    @color = Poe.Style.rgbToHex(element.css('color'))
     @background = element.css('background-color')
 
     if @textCursor

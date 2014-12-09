@@ -27,6 +27,12 @@ class Poe.Line extends Poe.TextObject
     childPos.right = childPos.left + child.element.width()
     pos.right = pos.left + @element.outerWidth(false)
 
+    if child instanceof Poe.Word
+      if child.children().last()[0].textContent == ' '
+        range = document.createRange()
+        range.selectNode child.children().last()[0]
+        childPos.right -= range.getClientRects()[0].width
+
     if (childPos.right > pos.right)
       return false
     return true
