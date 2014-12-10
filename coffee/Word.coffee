@@ -42,3 +42,17 @@ class Poe.Word extends Poe.TextObject
   children: ->
     ret = $ @element[0].childNodes
     return ret
+
+  child: (index) ->
+    if index >= 0 && index < @element[0].childNodes.length
+      return $ @element[0].childNodes[index]
+    return null
+
+  isEmpty: ->
+    if @children().length == 0
+      return true
+
+    if @children().length == 1 && !@child(0).hasClass('textcursor') && @child(0)[0].textContent.charCodeAt(0) == 8203
+      return true
+
+    return false

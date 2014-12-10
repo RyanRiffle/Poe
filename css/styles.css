@@ -32,6 +32,12 @@
     display: inline-block;
 }
 
+
+.list {
+    margin-bottom: 0px;
+    padding-bottom: 0px;    
+}
+
 .list.bullet {
     list-style-type: disc;
 }
@@ -41,7 +47,6 @@
 }
 
 .list > li {
-    padding-left: 10px;
     display: list-item !important;
     width: auto !important;
     overflow: visible;

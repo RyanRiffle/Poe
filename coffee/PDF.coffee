@@ -82,7 +82,9 @@ class Poe.PDF
 	generatePage: (addPage = false, page) ->
 		for paragraph in page.children
 			@generateParagraph paragraph
-		return this
+		if page.index() != @document.children.length-1
+			@doc.addPage 
+				margin: @margins.top
 
 	finalize: =>
 		blob = @stream.toBlobURL('application/pdf')

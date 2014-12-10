@@ -108,7 +108,6 @@ class Poe.TextObject
   fromElement: (element) ->
     for child in @children
       if child.element[0] == element[0]
-        console.log child
         return child
 
     if @children

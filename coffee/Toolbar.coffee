@@ -19,7 +19,10 @@ class Poe.ToolBar
     @paragraphStyle.changed @paragraphStyleChanged
 
     @element = $ '.toolbar'
-    @elements =
+    @elements = 
+      dynamic: $ '#dynamic .text'
+
+    @elements.Paragraph =
       bold: $ '.bold'
       italic: $ '.italic'
       underline: $ '.underline'
@@ -29,22 +32,39 @@ class Poe.ToolBar
       fontSize: $ '#font-size-select .text'
       color: $ '#color-pick'
 
-      list:
-        bullet: $ '#list-bullet'
-        number: $ '#list-number'
+      bullet: $ '#list-bullet'
+      number: $ '#list-number'
 
-      align:
-        left: $ '#align-left'
-        center: $ '#align-center'
-        right: $ '#align-right'
-        justify: $ '#align-justify'
+      alignleft: $ '#align-left'
+      aligncenter: $ '#align-center'
+      alignright: $ '#align-right'
+      alignjustify: $ '#align-justify'
+
+    @elements.Page =
+      Nothing: $()
+
+    @elements.List =
+      bold: @elements.Paragraph.bold
+      italic: @elements.Paragraph.italic
+      underline: @elements.Paragraph.underline
+
+      color: @elements.Paragraph.color
+      fonts: @elements.Paragraph.fonts
+      font: @elements.Paragraph.font
+      fontSize: @elements.Paragraph.fontSize
+
+      alignleft: @elements.Paragraph.alignleft
+      alignright: @elements.Paragraph.alignright
+      aligncenter: @elements.Paragraph.aligncenter
+      alignjustify: @elements.Paragraph.alignjustify
+      removeItem: $ '#list-RemoveItem'
 
     # Go ahead and update to match first word
     @textStyleChanged @textStyle
     @paragraphStyleChanged @paragraphStyle
-    @elements.bold.click @clickToggle
-    @elements.italic.click @clickToggle
-    @elements.underline.click @clickToggle
+    @elements.Paragraph.bold.click @clickToggle
+    @elements.Paragraph.italic.click @clickToggle
+    @elements.Paragraph.underline.click @clickToggle
 
     $('body').keydown @handleShortcut
     $('#font-list').on 'click', 'li', @handleFontClick
@@ -53,10 +73,53 @@ class Poe.ToolBar
     $('#color-list .color-list-item').click @handleFontColor
     $('#lists button').click @handleList
     $('#print-pdf').click @handlePDF
+    $('#dynamic-list li a').click @handleDynamicToolBar
 
     @fontManager = new Poe.FontManager()
     @fontManager.on('newFont', @fontAdded)
     @fontManager.loadDefaults()
+    @currentToolBar = ''
+    for key, value of Poe.ToolBar.DynamicPart
+      for key, elm of @elements[value]
+        if elm.parent()[0] == @element[0]
+          elm.hide()
+        else
+          elm.parent().hide()
+
+    @setToolBar Poe.ToolBar.DynamicPart.Paragraph
+
+  @DynamicPart =
+    Paragraph: 'Paragraph'
+    List: 'List'
+    Page: 'Page'
+
+  setToolBar: (dynamicPart) ->
+    console.log "Changing ToolBar: #{dynamicPart}"
+    oldToolBar = @currentToolBar
+    for key, value of Poe.ToolBar.DynamicPart
+      if value == dynamicPart
+        @elements.dynamic.html(dynamicPart)
+        @currentToolBar = dynamicPart
+        break
+
+    if oldToolBar == @currentToolBar
+      return
+
+    for key, value of @elements[oldToolBar]
+      if value.parent()[0] == @element[0]
+        value.hide()
+      else
+        value.parent().hide()
+
+    for key, value of @elements[@currentToolBar]
+      if value.parent()[0] == @element[0]
+        value.show()
+      else
+        value.parent().show()
+
+  handleDynamicToolBar: (event) =>
+    name = $(event.target).html()
+    @setToolBar name
 
   ###
   A callback given to Poe.TextCursor.textStyle.
@@ -72,13 +135,13 @@ class Poe.ToolBar
         toolItem.removeClass 'active'
 
     @textStyle = style
-    activate @elements.bold, style.bold
-    activate @elements.italic, style.italic
-    activate @elements.underline, style.underline
+    activate @elements.Paragraph.bold, style.bold
+    activate @elements.Paragraph.italic, style.italic
+    activate @elements.Paragraph.underline, style.underline
 
-    @elements.font.html style.font
-    @elements.fontSize.html style.fontSize
-    @elements.color.css 'background-color', style.color
+    @elements.Paragraph.font.html style.font
+    @elements.Paragraph.fontSize.html style.fontSize
+    @elements.Paragraph.color.css 'background-color', style.color
 
   ###
   A event handler for when a button is clicked on the toolbar
@@ -86,11 +149,11 @@ class Poe.ToolBar
   @private
   ###
   clickToggle: (event) =>
-    if event.target == @elements.bold[0]
+    if event.target == @elements.Paragraph.bold[0]
       @textStyle.bold = !@textStyle.bold
-    else if event.target == @elements.italic[0]
+    else if event.target == @elements.Paragraph.italic[0]
       @textStyle.italic = !@textStyle.italic
-    else if event.target == @elements.underline[0]
+    else if event.target == @elements.Paragraph.underline[0]
       @textStyle.underline = !@textStyle.underline
 
     @textStyle.applyChar()
@@ -108,11 +171,11 @@ class Poe.ToolBar
 
     toggle = (button) =>
       button.toggleClass 'active'
-      if button == @elements.bold
+      if button == @elements.Paragraph.bold
         @textStyle.bold = !@textStyle.bold
-      else if button == @elements.italic
+      else if button == @elements.Paragraph.italic
         @textStyle.italic = !@textStyle.italic
-      else if button == @elements.underline
+      else if button == @elements.Paragraph.underline
         @textStyle.underline = !@textStyle.underline
 
       @textStyle.applyChar()
@@ -121,13 +184,13 @@ class Poe.ToolBar
     switch event.keyCode
       when Poe.key.B
         event.preventDefault()
-        toggle @elements.bold
+        toggle @elements.Paragraph.bold
       when Poe.key.I
         event.preventDefault()
-        toggle @elements.italic
+        toggle @elements.Paragraph.italic
       when Poe.key.U
         event.preventDefault()
-        toggle @elements.underline
+        toggle @elements.Paragraph.underline
       else
         event.preventDefault()
 
@@ -139,7 +202,7 @@ class Poe.ToolBar
   ###
   handleFontClick: (event) =>
     name = $(event.target).html()
-    @elements.font.html(name)
+    @elements.Paragraph.font.html(name)
     @textStyle.font = name
     @textStyle.applyChar()
 
@@ -150,7 +213,7 @@ class Poe.ToolBar
   ###
   handleFontSizeClick: (event) =>
     name = $(event.target).html()
-    @elements.fontSize.html(parseInt(name.replace('px', '')))
+    @elements.Paragraph.fontSize.html(parseInt(name.replace('px', '')))
     @textStyle.fontSize = parseInt(name.replace('px', ''))
     @textStyle.applyChar()
 
@@ -160,20 +223,20 @@ class Poe.ToolBar
   @private
   ###
   paragraphStyleChanged: (style) =>
-    @elements.align.left.removeClass('active')
-    @elements.align.center.removeClass('active')
-    @elements.align.right.removeClass('active')
-    @elements.align.justify.removeClass('active')
+    @elements.Paragraph.alignleft.removeClass('active')
+    @elements.Paragraph.aligncenter.removeClass('active')
+    @elements.Paragraph.alignright.removeClass('active')
+    @elements.Paragraph.alignjustify.removeClass('active')
 
     switch style.align
       when Poe.ParagraphStyle.Align.Left
-        element = @elements.align.left
+        element = @elements.Paragraph.alignleft
       when Poe.ParagraphStyle.Align.Center
-        element = @elements.align.center
+        element = @elements.Paragraph.aligncenter
       when Poe.ParagraphStyle.Align.Right
-        element = @elements.align.right
+        element = @elements.Paragraph.alignright
       when Poe.ParagraphStyle.Align.Justify
-        element = @elements.align.justify
+        element = @elements.Paragraph.alignjustify
 
     element.addClass 'active'
 
@@ -184,13 +247,13 @@ class Poe.ToolBar
   ###
   handleTextAlignment: (event) =>
     target = event.target
-    if target == @elements.align.left[0]
+    if target == @elements.Paragraph.alignleft[0]
       @paragraphStyle.align = Poe.ParagraphStyle.Align.Left
-    else if target == @elements.align.center[0]
+    else if target == @elements.Paragraph.aligncenter[0]
       @paragraphStyle.align = Poe.ParagraphStyle.Align.Center
-    else if target == @elements.align.right[0]
+    else if target == @elements.Paragraph.alignright[0]
       @paragraphStyle.align = Poe.ParagraphStyle.Align.Right
-    else if target == @elements.align.justify[0]
+    else if target == @elements.Paragraph.alignjustify[0]
       @paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
 
     @paragraphStyle.apply()
@@ -203,7 +266,7 @@ class Poe.ToolBar
     target = $(event.target)
     color = target.css 'background-color'
 
-    @elements.color.css 'background-color', color
+    @elements.Paragraph.color.css 'background-color', color
     @textStyle.color = color
     @textStyle.applyChar()
 
@@ -215,9 +278,9 @@ class Poe.ToolBar
   handleList: (event) =>
     target = event.target
     list = new Poe.List()
-    if target == @elements.list.bullet[0]
+    if target == @elements.Paragraph.bullet[0]
       list.setListType Poe.List.ListType.Bullets
-    else if target == @elements.list.number[0]
+    else if target == @elements.Paragraph.number[0]
       list.setListType Poe.List.ListType.Numbers
 
     paragraph = @textCursor.currentParagraph()
@@ -233,5 +296,5 @@ class Poe.ToolBar
 
   fontAdded: (name) =>
     item = $("<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>#{name}</a></li>")
-    @elements.fonts.append item
+    @elements.Paragraph.fonts.append item
     item.children('a').css('font-family', name)

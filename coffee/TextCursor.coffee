@@ -24,7 +24,6 @@ class Poe.TextCursor
     @blinkTimer = null
     inside.prepend @element
     $('body').append @visibleCursor
-    @show()
     $('body').keydown(@keyEvent)
     @currentPage().parent.element.click @handleClick
     @textStyle = new Poe.TextStyle(this)
@@ -36,6 +35,7 @@ class Poe.TextCursor
     @document = @currentPage().parent
 
     @capsLock = off
+    @show()
 
   ###
   Convienence function for getting the cursor contiaining word's parent
@@ -71,6 +71,9 @@ class Poe.TextCursor
   ###
   next: (applyChanges = false) ->
     next = @element.nextSibling()
+    if next && next[0].textContent.charCodeAt(0) == 8203
+      next.remove()
+      next = @element.nextSibling()
     word = @currentWord
     if not next
       word = word.next()
@@ -91,6 +94,9 @@ class Poe.TextCursor
   ###
   prev: (applyChanges = false) ->
     prev = @element.prevSibling()
+    if prev && prev[0].textContent.charCodeAt(0) == 8203
+      prev.remove()
+      prev = @element.prevSibling()
     word = @currentWord
     if not prev
       word = word.prev()
@@ -137,6 +143,7 @@ class Poe.TextCursor
     pos = @element.position()
     @visibleCursor.css 'top', "#{pos.top}px"
     @visibleCursor.css 'left', "#{pos.left}px"
+    @visibleCursor.css 'height', "#{@textStyle.fontSize}pt"
     return this
 
   ###
@@ -315,6 +322,8 @@ class Poe.TextCursor
 
         console.log line.children.length
         @currentWord = word
+        if @currentWord.isEmpty() and @currentLine().children.length == 1
+          @currentWord.element.append '&#8203;'
         @currentWord.element.prepend @element
         @textStyle.apply @currentWord
         if event.shiftKey
@@ -330,18 +339,18 @@ class Poe.TextCursor
         prev = @prev(true)
 
         if oldParagraph instanceof Poe.List
-          console.log oldWord.isEmpty()
-          if oldLine.index() == oldParagraph.children.length-1
-            if oldWord.children().length == 1
-              li = oldLine
-              paragraph = new Poe.Paragraph()
-              paragraph.insertAfter oldParagraph
-              @moveInside paragraph.child(0).child(0)
-              @textStyle.applyWord()
-              if li.parent.isEmpty()
-                li.parent.remove()
-              else
-                li.remove()
+          if oldLine instanceof Poe.ListItem
+            if oldLine.children.length == 1 && oldWord.children().length == 1
+              if oldLine.index() == oldParagraph.children.length-1
+                paragraph = new Poe.Paragraph()
+                paragraph.insertAfter oldParagraph
+                @moveInside paragraph.child(0).child(0)
+                @textStyle.applyWord (@currentWord)
+                @paragraphStyle.apply()
+                oldLine.remove()
+
+                if oldParagraph.isEmpty()
+                  oldParagraph.remove()
               break
 
         if not prev
@@ -457,7 +466,7 @@ class Poe.TextCursor
 
       first = page.children().first()
       if y < first.position().top
-        word = first.children().first().children.first()
+        word = first.children().first().children().first()
         word.prepend @element
         @currentWord = @document.objectFromElement(word)
         return
@@ -477,6 +486,8 @@ class Poe.TextCursor
       findInLine(target)
     else if obj instanceof Poe.Word
       findInWord(target)
+    @textStyle.update(@currentWord)
+    @paragraphStyle.update @currentParagraph()
     @show()
 
 
@@ -509,6 +520,13 @@ class Poe.TextCursor
   ###
   show: =>
     @update()
+
+    if Poe.writer
+      if @currentParagraph() instanceof Poe.List
+        Poe.writer.toolbar.setToolBar Poe.ToolBar.DynamicPart.List
+      else if @currentParagraph() instanceof Poe.Paragraph
+        Poe.writer.toolbar.setToolBar Poe.ToolBar.DynamicPart.Paragraph
+
     @visibleCursor.removeClass 'hide'
     pos = @element.position()
     if pos.top > window.innerHeight - (@currentLine().height() * 3)
