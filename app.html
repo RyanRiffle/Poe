@@ -12,7 +12,6 @@
 
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
-    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
       <script type="text/javascript" src="js/Poe.js"></script>
       <script type="text/javascript" src="js/FontManager.js"></script>
       <script type="text/javascript" src="js/Style.js"></script>
@@ -39,8 +38,8 @@
     <div class='toolbar'>
         <div class='dropdown'>
             <button id='font-select' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
-                <span class='text'>Cambria</span>
-                <div class='dropdown'>
+                <span class='text' style="">Cambria</span>
+                <div class='dropdown' style="">
                     <span id='color-pick' class='color-pick dropdown-toggle' type='button' data-toggle='dropdown' aria-expanded='true'>&nbsp;</span>
                     <ul id='color-list' class='dropdown-menu' aria-labelledby='color-pick' role='menu' data-toggle='dropdown' aria-expand='true'>
                         <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: black;'></a></li>
@@ -49,6 +48,10 @@
                         <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #5bc0de;'></a></li>
                         <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #f0ad4e;'></a></li>
                         <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #d9534f;'></a></li>
+
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #333;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #555;'></a></li>
+                        <li role='presentation'><a role='menuitem' tabindex='-1' href='#' class='color-list-item' style='background-color: #777;'></a></li>
                     </ul>
                 </div>
             </button>
@@ -104,6 +107,7 @@
           </button>
           <ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
             <li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
+            <li id="print-pdf"><a href="#">PDF</a></li>
           </ul>
         </div>
 

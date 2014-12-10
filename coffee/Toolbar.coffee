@@ -52,6 +52,7 @@ class Poe.ToolBar
     $('#alignment button').click @handleTextAlignment
     $('#color-list .color-list-item').click @handleFontColor
     $('#lists button').click @handleList
+    $('#print-pdf').click @handlePDF
 
     @fontManager = new Poe.FontManager()
     @fontManager.on('newFont', @fontAdded)
@@ -226,6 +227,9 @@ class Poe.ToolBar
 
     if paragraph.isEmpty()
       paragraph.remove()
+
+  handlePDF: (event) =>
+    @writer.document.pdf.generate()
 
   fontAdded: (name) =>
     item = $("<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>#{name}</a></li>")

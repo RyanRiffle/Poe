@@ -20,12 +20,7 @@ class Poe.PDF
 
 		@totalPos = null
 
-		$('body').keyup @generate
-
-	generate: (event) =>
-		if event.keyCode != Poe.key.Up
-			return
-
+	generate: =>
 		@doc = new PDFDocument
 		@stream = @doc.pipe(blobStream())
 		@stream.on 'finish', @finalize
@@ -46,19 +41,21 @@ class Poe.PDF
 		return this
 
 	generateLine: (line) ->
+		@doc.x = 72
 		for word in line.children
 			textStyle = new Poe.TextStyle()
 			textStyle.update word
 			@doc.fontSize(textStyle.fontSize)
 
 			if not @registeredFonts.contains(textStyle.font)
+				console.log "PDF: Registering '#{textStyle.font}' as a font."
 				@doc.registerFont(textStyle.font, Poe.Fonts[textStyle.font], textStyle.font)
 				@registeredFonts.push textStyle.font
 			@doc.font(textStyle.font)
 
 			if word == line.children.first() and @formatting.align != 'left'
-				wordpos = word.element.position()
-				linepos = line.element.position()
+				wordpos = word.position()
+				linepos = line.position()
 				@doc.x = ((wordpos.left - linepos.left) * 0.75) + @margins.left
 				console.log "px: #{wordpos.left - linepos.left}"
 				console.log "x: #{@doc.x}"
@@ -66,10 +63,20 @@ class Poe.PDF
 			cont = yes
 			cont = no if word == line.children.last()
 
+			if textStyle.italic
+				@doc.save();
+				@doc.transform(1, 0, Math.tan(-10 * Math.PI / 180), 1, 0, 0);
+
 			@doc.fillColor textStyle.color
+				.lineWidth .05
+				.strokeColor textStyle.color
 				.text word.element[0].textContent,
 					continued: cont
 					underline: textStyle.underline
+					stroke: textStyle.bold
+					fill: true
+			if textStyle.italic
+				@doc.restore()
 		return this
 
 	generatePage: (addPage = false, page) ->
@@ -81,3 +88,5 @@ class Poe.PDF
 		blob = @stream.toBlobURL('application/pdf')
 		w = window.open(blob)
 		w.focus()
+
+	progess: (callback) ->

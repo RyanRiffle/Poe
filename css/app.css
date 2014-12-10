@@ -186,6 +186,7 @@ html, body {
 
 ::selection {
     background: #55C1EC;
+    border: 1px solid blue;
     color: white;
 }
 

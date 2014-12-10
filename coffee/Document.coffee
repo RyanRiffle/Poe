@@ -88,6 +88,18 @@ class Poe.Document
     @margins = margins
     return this
 
+
+  objectFromElement: (element) ->
+    for page in @children
+      if page.element[0] == element[0]
+        return page
+      
+      ret = page.fromElement element
+      if ret != null
+        return ret
+
+    return null
+
   ###
   "Enum" of possible page sizes
   ###

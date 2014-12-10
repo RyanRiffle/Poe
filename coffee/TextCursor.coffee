@@ -26,12 +26,14 @@ class Poe.TextCursor
     $('body').append @visibleCursor
     @show()
     $('body').keydown(@keyEvent)
+    @currentPage().parent.element.click @handleClick
     @textStyle = new Poe.TextStyle(this)
     @textStyle.applyWord @currentWord
 
     @paragraphStyle = new Poe.ParagraphStyle(this)
     @paragraphStyle.apply()
     @paragraphStyle.changed @paragraphStyleChanged
+    @document = @currentPage().parent
 
     @capsLock = off
 
@@ -68,34 +70,14 @@ class Poe.TextCursor
   @return [jQuery or null] the next text node found
   ###
   next: (applyChanges = false) ->
-    ###next = @element.nextSibling()
-    word = @currentWord
-    line = word.parent
-    paragraph = line.parent
-    page = paragraph.parent
-    while !next
-      [old, word] = [word, word.next()]
-      old.remove() if old.isEmpty()
-      if !word
-        line = line.next()
-        if !line
-          paragraph = paragraph.next()
-          if !paragraph
-            page = page.next()
-            return null if !page
-            paragraph = page.child 0
-          line = paragraph.child 0
-        word = line.child 0
-      next = word.children().first()
-    @currentWord = word if applyChanges and next
-    @textStyle.update word if @currentWord != word
-    return next###
     next = @element.nextSibling()
     word = @currentWord
     if not next
       word = word.next()
       next = word?.children().first()
       @currentWord = word if applyChanges and word
+    @textStyle.update(word) if word
+    @paragraphStyle.update(word.parent.parent) if word
     return next
 
   ###
@@ -114,6 +96,8 @@ class Poe.TextCursor
       word = word.prev()
       prev = word?.children().last()
       @currentWord = word if applyChanges and word
+    @textStyle.update(word) if word
+    @paragraphStyle.update(word.parent.parent) if word
     return prev
 
   ###
@@ -121,8 +105,13 @@ class Poe.TextCursor
   @return [Poe.TextCursor] this
   ###
   moveLeft: ->
+    oldLine = @currentLine()
     prev = @prev(true)
-    prev.before @element if prev
+    if prev
+      if oldLine == @currentLine()
+        prev.before @element
+      else
+        prev.after @element
     return this
 
   ###
@@ -130,8 +119,13 @@ class Poe.TextCursor
   @return [Poe.TextCursor] this
   ###
   moveRight: ->
+    oldLine = @currentLine()
     next = @next(true)
-    next.after @element if next
+    if next
+      if oldLine == @currentLine()
+        next.after @element
+      else
+        next.before @element
     return this
 
   ###
@@ -140,8 +134,9 @@ class Poe.TextCursor
   @private
   ###
   update: ->
-    @visibleCursor.css 'top', "#{@element.position().top}px"
-    @visibleCursor.css 'left', "#{@element.position().left}px"
+    pos = @element.position()
+    @visibleCursor.css 'top', "#{pos.top}px"
+    @visibleCursor.css 'left', "#{pos.left}px"
     return this
 
   ###
@@ -172,16 +167,16 @@ class Poe.TextCursor
 
       childWidth = 0
       for child in line.children
-        childWidth += child.element.width()
+        childWidth += child.width()
 
-      break if not line.next()
-      break if line.next() instanceof Poe.ListItem
+      break if not line.nextSibling()
+      break if line.nextSibling() instanceof Poe.ListItem
       hasRoom = true
       while hasRoom
-        child = line.next().child(0)
+        child = line.nextSibling().child(0)
         break if not child
 
-        if childWidth + child.element.width() < line.element.outerWidth(false)
+        if childWidth + child.width() < line.element.outerWidth(false)
           hasRoom = true
           child.insertAfter line.children.last()
         else
@@ -191,30 +186,58 @@ class Poe.TextCursor
 
   doPageWrap: ->
     overflows = (page, paragraph) ->
-      paragraphBottom = paragraph.element.position().top + paragraph.element.height()
-      pageBottom = page.element.position().top + page.element.height()
+      paragraphBottom = paragraph.position().top + paragraph.height()
+      pageBottom = page.position().top + page.height()
       pageBottom += parseInt(page.element.css('padding-top'))
       return paragraphBottom > pageBottom
 
-    for page in @document().children
+    for page in @document.children
       while overflows(page, page.children.last())
+        overflowedParagraph = page.children.last()
         if !page.next()
           newPage = new Poe.Page()
           newPage.insertAfter @currentPage()
           newPage.child(0).remove()
 
-        next = @currentPage().next()
+        next = page.next()
         paragraph = new Poe.Paragraph()
+        paragraph.setName page.children.last().name()
         paragraph.child(0).remove()
         next.prepend paragraph
 
-        line = page.children.last().children.last()
+        line = overflowedParagraph.children.last()
         while overflows(page, line)
           paragraph.prepend line
-          line = page.children.last().children.last()
-          if page.children.last().isEmpty()
-            page.children.last().remove()
-        @update()
+          line = overflowedParagraph.children.last()
+          if overflowedParagraph.isEmpty()
+            overflowedParagraph.remove()
+            break
+        @show()
+
+      nextPage = page.next()
+      if not nextPage
+        break
+      availableSpace = 0
+      for child in page.children
+        availableSpace += child.height()
+      pageHeight = page.height() + page.element.css('padding-top') + page.position().top
+      availableSpace = pageHeight - availableSpace
+
+      console.log nextPage
+      for paragraph in nextPage.children
+        console.log paragraph
+        for line in paragraph.children
+          if line.height() < availableSpace
+            console.log "#{line.height()} < #{availableSpace}"
+            if paragraph.name() == page.children.last().name()
+              page.children.last().append line
+            else
+              pgraph = new Poe.Paragraph()
+              pgraph.child(0).remove()
+              pgraph.insertAfter page.children.last()
+              pgraph.append line
+            if paragraph.isEmpty()
+              paragraph.remove()
 
 
   ###
@@ -235,13 +258,34 @@ class Poe.TextCursor
         @capsLock = !@capsLock
 
       when Poe.key.Left
-        if @currentWord.children().length == 1
-          @element.before "&#8203;"
         @moveLeft()
 
       when Poe.key.Right
-
         @moveRight()
+
+      when Poe.key.Down
+        if not @currentLine().next()
+          return
+        pos = @element.position()
+        pos.top = @currentLine().next().position().top
+
+        pos.clientX = pos.left - 2
+        pos.clientY = pos.top + 2
+        pos.target = @currentLine().next().element[0]
+
+        @handleClick pos
+
+      when Poe.key.Up
+        if not @currentLine().prev()
+          return
+        pos = @element.position()
+        pos.top = @currentLine().prev().position().top
+
+        pos.clientX = pos.left + 2
+        pos.clientY = pos.top + 2
+        pos.target = @currentLine().prev().element[0]
+
+        @handleClick pos
 
       when Poe.key.Enter
         if @currentParagraph() instanceof Poe.List
@@ -273,8 +317,10 @@ class Poe.TextCursor
         @currentWord = word
         @currentWord.element.prepend @element
         @textStyle.apply @currentWord
-        @paragraphStyle.update @currentLine()
-        @doPageWrap()
+        if event.shiftKey
+          @paragraphStyle.apply()
+        @paragraphStyle.update @currentParagraph()
+        @doWordWrap()
 
       when Poe.key.Backspace
         oldWord = @currentWord
@@ -283,15 +329,13 @@ class Poe.TextCursor
         oldPage = @currentPage()
         prev = @prev(true)
 
-        if not prev
-          break
-
-        if @currentParagraph() instanceof Poe.List
-          if @currentLine().index() == @currentParagraph().children.length-1
-            if @currentWord.children().length == 1
-              li = @currentLine()
+        if oldParagraph instanceof Poe.List
+          console.log oldWord.isEmpty()
+          if oldLine.index() == oldParagraph.children.length-1
+            if oldWord.children().length == 1
+              li = oldLine
               paragraph = new Poe.Paragraph()
-              paragraph.insertAfter @currentParagraph()
+              paragraph.insertAfter oldParagraph
               @moveInside paragraph.child(0).child(0)
               @textStyle.applyWord()
               if li.parent.isEmpty()
@@ -300,8 +344,11 @@ class Poe.TextCursor
                 li.remove()
               break
 
+        if not prev
+          break
+
         prev.after @element if prev
-        prev.remove() if prev
+        prev.remove() if prev && oldLine == @currentLine()
 
         if oldPage.isEmpty()
           oldPage.remove()
@@ -311,16 +358,6 @@ class Poe.TextCursor
           oldLine.remove()
         else if oldWord.isEmpty()
           oldWord.remove()
-        #If the cursor is at the beginning of the word move
-        #it to the previous word and remove cursor containing
-        #word if it is empty
-        ###if not @element.prevSibling()
-          word = @currentWord
-          prev2 = @prev(true)
-          prev2.after @element if prev2
-          if word.isEmpty()
-            word.remove()###
-
         @doWordWrap()
 
       when Poe.key.Delete
@@ -334,7 +371,7 @@ class Poe.TextCursor
         next = @element.nextSibling()
         while next
           word.append next
-          next = next.nextSibling()
+          next = @element.nextSibling()
         word.prepend @element
         @currentWord = word
         @textStyle.applyWord @currentWord
@@ -349,6 +386,99 @@ class Poe.TextCursor
         @element.before letter
         @doWordWrap()
     @show()
+
+  handleClick: (event) =>
+    [x, y] = [event.clientX, event.clientY]
+    target = $(event.target)
+    console.log target
+
+    self = this
+
+    # Checks if the mouse click was around the right area, only allows for excess on the x axis
+    checkRelative = (element) =>
+      pos = element.offset()
+      pos.bottom = pos.top + element.height()
+
+      if y >= pos.top && y <= pos.bottom
+        return true
+      return false
+
+    checkAbsolute = (element) =>
+      pos = element.offset()
+      pos.bottom = pos.top + element.height()
+      pos.right = pos.left + element.width()
+
+      if x >= pos.left && x <= pos.right && y >= pos.top && y <= pos.bottom
+        return true
+      return false
+
+    findInWord = (word) =>
+      for node in word[0].childNodes
+        range = document.createRange()
+        range.selectNode node
+        rect = range.getClientRects()[0];
+
+        if x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+          self.currentWord = self.currentPage().parent.objectFromElement(word)
+          $(node).before self.element
+          break
+
+    findInLine = (line) =>
+      console.log "#{x} < #{line.children().first().offset().left}"
+      if x < line.children().first().offset().left
+        word = line.children().first()
+        self.currentWord = self.currentPage().parent.objectFromElement(word)
+        word.prepend self.element
+      else if x > line.children().last().offset().left + line.children().last().width()
+        word = line.children().last()
+        self.currentWord = self.currentPage().parent.objectFromElement(word)
+        word.append self.element
+      else
+        for child in line.children()
+          child = $(child)
+          if checkAbsolute(child)
+            findInWord(child)
+            break
+
+    findInParagraph = (paragraph) =>
+      for child in paragraph.children()
+        child = $(child)
+        if checkRelative(child)
+          findInLine(child)
+          break
+
+    findInPage = (page) =>
+      last = page.children().last()
+      if y > last.position().top + last.height()
+        word = last.children().last().children().last()
+        word.append @element
+        @currentWord = @document.objectFromElement(word)
+        return
+
+      first = page.children().first()
+      if y < first.position().top
+        word = first.children().first().children.first()
+        word.prepend @element
+        @currentWord = @document.objectFromElement(word)
+        return
+
+      for child in page.children()
+        child = $(child)
+        if checkRelative(child)
+          findInParagraph(child)
+          break
+
+    obj = @document.objectFromElement(target)
+    if obj instanceof Poe.Page
+      findInPage(target)
+    else if obj instanceof Poe.Paragraph
+      findInParagraph(target)
+    else if obj instanceof Poe.Line
+      findInLine(target)
+    else if obj instanceof Poe.Word
+      findInWord(target)
+    @show()
+
 
   ###
   Callback registered with {Poe.ParagraphStyle} that will update the whole
@@ -377,9 +507,14 @@ class Poe.TextCursor
   it is not already.
   @return [Poe.TextCursor] this
   ###
-  show: ->
+  show: =>
     @update()
     @visibleCursor.removeClass 'hide'
+    pos = @element.position()
+    if pos.top > window.innerHeight - (@currentLine().height() * 3)
+      $('.writer').animate 
+        scrollTop: $('.writer').scrollTop() + (@currentLine().height() * 3)
+      , 200
     return if @blinkTimer
     @blinkTimer = setInterval @blink, 700
     return this
@@ -388,7 +523,7 @@ class Poe.TextCursor
   Hides the cursor if it is visible and stops it from blinking.
   @return [Poe.TextCursor] this
   ###
-  hide: ->
+  hide: =>
     clearInterval @blinkTimer
     @blinkTimer = null
     @visibleCursor.addClass 'hide'
