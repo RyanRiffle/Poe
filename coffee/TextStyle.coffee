@@ -61,7 +61,6 @@ class Poe.TextStyle extends Poe.Style
 
       middleWord = new Poe.Word()
       middleWord.insertAfter word
-      otherStyle = null
       element = middleWord.element
       element.prepend @textCursor.element
       @textCursor.currentWord = middleWord
@@ -141,7 +140,9 @@ class Poe.TextStyle extends Poe.Style
   ###
   update: (word) ->
     element = word.element
+    element = @textCursor.currentWord if not word
     if not word or not element
+
       return
 
     if element.hasClass 'bold'

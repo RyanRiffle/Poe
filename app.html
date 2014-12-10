@@ -37,6 +37,16 @@
 <body>
     <div class='toolbar'>
         <div class='dropdown'>
+            <button id='dynamic' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
+                <span class='text'>Paragraph</span>
+            </button>
+            <ul id="dynamic-list" class='dropdown-menu' aria-labelledby='dynamic' role='menu' data-toggle='dropdown' aria-expand='true'>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Paragraph</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>List</a></li>
+                <li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Page</a></li>
+            </ul>
+        </div>
+        <div class='dropdown'>
             <button id='font-select' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
                 <span class='text' style="">Cambria</span>
                 <div class='dropdown' style="">
@@ -101,6 +111,8 @@
             <button id='list-number' type='button' class='btn btn-default' name='number'><span class='glyphicon glyphicon-list-alt'></span></button>
         </div>
 
+        <button id='list-RemoveItem' type='button' class='btn btn-danger'>Remove Item</button>
+
         <div class='dropdown' id='menu-container'>
           <button id='menu' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expaned='false' type='button'>
             <span class='glyphicon glyphicon-cog'></span>
@@ -120,13 +132,18 @@
                   <span aria-hidden='true'>&times;</span>
                   <span class='sr-only'>Close</span>
                 </button>
-                <h4 class='modal-title' id='about-dialog-title'>Poe</h4>
+                <h4 class='modal-title' id='about-dialog-title'><a href="http://www.github.com/RyanRiffle/Poe">Poe</a></h4>
               </div>
 
               <div class='modal-body'>
                 <p>
                   Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
-                  <br/>
+                </p>
+                <p>
+                Poe uses <i>PDFKit</i> by Devon Govett. PDFKit's license can be viewed on <a href="https://raw.githubusercontent.com/devongovett/pdfkit/master/LICENSE">GitHub</a>.
+                </p>
+                <p>
+                    Poe uses fonts from fonts.google.com. To view each individual license provided by the font creators check it out on <a href="https://github.com/RyanRiffle/Poe/tree/master/fonts">GitHub</a>.
                 </p>
                 <!--<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
                 allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>

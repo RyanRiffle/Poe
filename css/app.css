@@ -70,15 +70,18 @@ html, body {
     outline: none;
 }
 
-.toolbar button {
+.toolbar .btn-default {
     background-color: #FBFBFB !important;
+}
+
+.toolbar button {
     margin-top: 6px;
     margin-bottom: 6px;
     margin-left: 12px;
     padding-left: 6px;
     padding-top: 3px;
     padding-bottom: 3px;
-    padding-right: 3px;
+    padding-right: 6px;
 }
 
 .color-pick {
@@ -137,14 +140,6 @@ html, body {
     margin-bottom: -2px;
     width: 100%;
     overflow: hidden;
-}
-
-/*.line:empty::before {
-    content: '\200B';
-}*/
-
-.line.newline:empty::before {
-    content: '\00a0';
 }
 
 .fontmetrics {
@@ -227,4 +222,8 @@ html, body {
 
 #menu-container ul {
   left: -110px;
+}
+
+.glyphicon {
+    pointer-events: none;
 }

@@ -8,7 +8,7 @@ class Poe.List extends Poe.Paragraph
   Creates a new Poe.List
   ###
   constructor: ->
-    @element = $ '<ul></ul>'
+    @element = $ '<ul class="list"></ul>'
     @children = []
     $('body').append @element
 
