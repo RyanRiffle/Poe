@@ -5,6 +5,21 @@ A word processor built with HTML, CSS, and CoffeeScript. The current goal of Poe
 
 The application is under heavy development. However it is up on [Heroku](https://poejs.herokuapp.com/) for a preview and the heroku page will always be the same as the stable master branch.
 
+### Building
+To build Poe you will need coffeescript installed.
+```
+	npm install -g coffeescript
+```
+In order for the application to work you will need a http server or allow your browser to make cross-origin requests. I use python for a simple http server to develop the application
+```
+	python -m SimpleHTTPServer
+```
+In the root directory of the project compile all of the coffeescript files
+```
+	coffee -cm --output js/ coffee/*
+```
+Open the browser and navigate to the server or app.html page if you enabled cross-origin.
+
 ### Documentation
 The documentation can be generated using codo.
 ```
