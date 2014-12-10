@@ -11,14 +11,15 @@ class Poe.Document
     @children = []
     @element = $ '<div class="document"></div>'
     $('body').append(@element)
-    @append new Poe.Page()
-    @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
     @setPageSize Poe.Document.PageSize.Letter
     @setPageMargins margins =
       top: 96
       bottom: 96
       left: 96
       right: 96
+    @pdf = new Poe.PDF (this)
+    @append new Poe.Page()
+    @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
 
   ###
   Gets the child page at index.
@@ -39,6 +40,9 @@ class Poe.Document
     @children.append page
     @element.append page.element
     page.setParent this
+
+    @setPageMargins @margins
+    @setPageSize @pageSize
     return this
 
   ###
@@ -51,6 +55,9 @@ class Poe.Document
     @children.prepend page
     @element.prepend page.element
     page.setParent this
+
+    @setPageMargins @margins
+    @setPageSize @pageSize
     return this
 
   ###
@@ -62,8 +69,9 @@ class Poe.Document
   ###
   setPageSize: (size) ->
     for page in @children
-      page.element.height(size.height)
-      page.element.width(size.width)
+      page.element.css 'height', "#{size.height}"
+      page.element.css 'width', "#{size.width}"
+    @pageSize = size
     return this
 
   ###
@@ -77,7 +85,20 @@ class Poe.Document
       page.element.css 'padding-right', margins.right
       page.element.css 'padding-top', margins.top
       page.element.css 'padding-bottom', margins.bottom
+    @margins = margins
     return this
+
+
+  objectFromElement: (element) ->
+    for page in @children
+      if page.element[0] == element[0]
+        return page
+      
+      ret = page.fromElement element
+      if ret != null
+        return ret
+
+    return null
 
   ###
   "Enum" of possible page sizes

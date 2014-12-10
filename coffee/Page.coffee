@@ -13,3 +13,8 @@ class Poe.Page extends Poe.TextObject
     @setParent document
 
     @append new Poe.Paragraph()
+
+  insertAfter: (page) ->
+  	super page
+  	@parent.setPageSize @parent.pageSize
+  	@parent.setPageMargins @parent.margins

@@ -134,10 +134,9 @@ html, body {
 
 .line {
     margin: 0px;
-    padding: 0px;
+    margin-bottom: -2px;
     width: 100%;
     overflow: hidden;
-    height: auto;
 }
 
 /*.line:empty::before {
@@ -187,6 +186,7 @@ html, body {
 
 ::selection {
     background: #55C1EC;
+    border: 1px solid blue;
     color: white;
 }
 
@@ -211,6 +211,8 @@ html, body {
 .paragraph {
     width: 100%;
     white-space:pre;
+    margin: 0px;
+    padding: 0px;
 }
 
 #menu {

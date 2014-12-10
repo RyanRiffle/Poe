@@ -105,19 +105,45 @@ class Poe.TextObject
     @element.remove()
     @parent.children.remove this
 
+  fromElement: (element) ->
+    for child in @children
+      if child.element[0] == element[0]
+        console.log child
+        return child
+
+    if @children
+      for child in @children
+        ret = child.fromElement(element)
+        if ret != null
+          return ret
+
+    return null
+
   ###
   Gets the next object in parents children and returns it
   @return [Poe.TextObject or null] next object if it exists
   ###
   next: ->
-    return @parent.children.next this
+    next = @parent.children.next this
+    if not next and @parent instanceof Poe.TextObject
+      next = @parent.next()?.children.first()
+    return if next then next else null
 
   ###
   Gets the previous object in parents children and returns it
   @return [Poe.TextObject or null] previous object if it exists
   ###
   prev: ->
-    return @parent.children.prev this
+    prev = @parent.children.prev this
+    if not prev and @parent instanceof Poe.TextObject
+      prev = @parent.prev()?.children.last()
+    return if prev then prev else null
+
+  nextSibling: ->
+    @parent.children.next this
+
+  prevSibling: ->
+    @parent.children.prev this
 
   ###
   Returns whether or not the object is empty of text
@@ -130,3 +156,12 @@ class Poe.TextObject
     if @element[0].textContent == ''
       return true
     return false
+
+  position: ->
+    @element.position()
+
+  height: ->
+    @element.height()
+
+  width: ->
+    @element.width()

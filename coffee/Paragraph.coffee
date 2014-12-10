@@ -13,7 +13,17 @@ class Poe.Paragraph extends Poe.TextObject
     @children = []
     @element = $ '<p class="paragraph" align="left"></p>'
     $('body').append(@element)
+    @element.attr 'name', "_pgraph#{Poe.Paragraph.Counter}"
+    Poe.Paragraph.Counter += 1
     page.append this if page
 
     line = new Poe.Line()
     @append line
+
+  name: ->
+    @element.attr 'name'
+
+  setName: (name) ->
+    @element.attr 'name', name
+
+  @Counter: 0
