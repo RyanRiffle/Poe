@@ -72,6 +72,7 @@ class Poe.Document
       page.element.css 'height', "#{size.height}"
       page.element.css 'width', "#{size.width}"
     @pageSize = size
+    @textCursor.show() if @textCursor
     return this
 
   ###
@@ -86,6 +87,7 @@ class Poe.Document
       page.element.css 'padding-top', margins.top
       page.element.css 'padding-bottom', margins.bottom
     @margins = margins
+    @textCursor.show() if @textCursor
     return this
 
 
@@ -107,3 +109,15 @@ class Poe.Document
     Letter:
       height: 1056
       width: 816
+
+    Legal:
+      width: 8.5 * 96
+      height: 14 * 96
+
+    Ledger:
+      width: 17 * 96
+      height: 11 * 96
+
+    Tabloid:
+      width: 11 * 96
+      height: 17 * 96
