@@ -69,7 +69,7 @@ class Poe.TextCursor
   @return [null] if no node is found
   @return [jQuery or null] the next text node found
   ###
-  next: (applyChanges = false) ->
+  next: ->
     next = @element.nextSibling()
     if next && next[0].textContent.charCodeAt(0) == 8203
       next.remove()
@@ -78,7 +78,7 @@ class Poe.TextCursor
     if not next
       word = word.next()
       next = word?.children().first()
-      @currentWord = word if applyChanges and word
+      @currentWord = word if word
     @textStyle.update(word) if word
     @paragraphStyle.update(word.parent.parent) if word
     return next
@@ -92,7 +92,7 @@ class Poe.TextCursor
   @return [null] if no node is found
   @return [jQuery or null] the previous text node found
   ###
-  prev: (applyChanges = false) ->
+  prev: ->
     prev = @element.prevSibling()
     if prev && prev[0].textContent.charCodeAt(0) == 8203
       prev.remove()
@@ -101,7 +101,7 @@ class Poe.TextCursor
     if not prev
       word = word.prev()
       prev = word?.children().last()
-      @currentWord = word if applyChanges and word
+      @currentWord = word if word
     @textStyle.update(word) if word
     @paragraphStyle.update(word.parent.parent) if word
     return prev
@@ -112,7 +112,7 @@ class Poe.TextCursor
   ###
   moveLeft: ->
     oldLine = @currentLine()
-    prev = @prev(true)
+    prev = @prev()
     if prev
       if oldLine == @currentLine()
         prev.before @element
@@ -126,7 +126,7 @@ class Poe.TextCursor
   ###
   moveRight: ->
     oldLine = @currentLine()
-    next = @next(true)
+    next = @next()
     if next
       if oldLine == @currentLine()
         next.after @element
@@ -205,6 +205,7 @@ class Poe.TextCursor
           newPage = new Poe.Page()
           newPage.insertAfter @currentPage()
           newPage.child(0).remove()
+          console.log newPage.element
 
         next = page.next()
         paragraph = new Poe.Paragraph()
@@ -230,7 +231,6 @@ class Poe.TextCursor
       pageHeight = page.height() + page.element.css('padding-top') + page.position().top
       availableSpace = pageHeight - availableSpace
 
-      console.log nextPage
       for paragraph in nextPage.children
         console.log paragraph
         for line in paragraph.children
@@ -320,7 +320,6 @@ class Poe.TextCursor
         if @currentWord.children().length == 1 and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
 
-        console.log line.children.length
         @currentWord = word
         if @currentWord.isEmpty() and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
@@ -331,12 +330,13 @@ class Poe.TextCursor
         @paragraphStyle.update @currentParagraph()
         @doWordWrap()
 
+      
       when Poe.key.Backspace
         oldWord = @currentWord
         oldLine = @currentLine()
         oldParagraph = @currentParagraph()
         oldPage = @currentPage()
-        prev = @prev(true)
+        prev = @prev()
 
         if oldParagraph instanceof Poe.List
           if oldLine instanceof Poe.ListItem
@@ -399,7 +399,6 @@ class Poe.TextCursor
   handleClick: (event) =>
     [x, y] = [event.clientX, event.clientY]
     target = $(event.target)
-    console.log target
 
     self = this
 
