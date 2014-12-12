@@ -1,6 +1,16 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    line-height: 1.4 !important;
+    font-family: 'Tinos' !important;
+}
+
 .writer {
     border-top: 1px solid #FCFCFC;
-    background-color: #F8F8F8;
+    background-color: #F4F4F4;
     padding-top: 12px;
     padding-bottom: 24px;
     -webkit-user-select: text;
@@ -21,15 +31,6 @@
     cursor: text;
 
     border: 1px solid #E6E6E6;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    overflow: hidden;
-    line-height: 100%;
 }
 
 .textcursor {
@@ -226,4 +227,46 @@ html, body {
 
 .glyphicon {
     pointer-events: none;
+}
+
+#welcome {
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 3;
+
+    background-color: #F4F4F4;
+}
+
+#welcome > .page-header {
+    margin-bottom: 0px;
+    padding-left: 12px;
+}
+
+#welcome > .panel {
+    width: 100%;
+    height: 100%;
+}
+
+#welcome #documents {
+    margin: 12px;
+}
+
+#documents .doc {
+    display: inline-block;
+    height: 150px;
+    width: 150px;
+
+    background-color: #F1F1F1;
+}
+
+.doc a {
+    width: 100%;
+    font-size: 24px;
+    text-align: center;
+    margin-top: 56px;
+    vertical-align: middle;
 }

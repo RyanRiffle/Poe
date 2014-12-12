@@ -14,6 +14,7 @@ class Poe.List extends Poe.Paragraph
 
     li = new Poe.ListItem()
     @append li
+    listType = Poe.List.ListType.Bullets
 
   ###
   Sets the list bullet type.
@@ -22,6 +23,7 @@ class Poe.List extends Poe.Paragraph
   ###
   setListType: (type=Poe.List.ListType.Bullets) ->
     @element.css 'list-style-type', type
+    @listType = type
     return this
 
   ###

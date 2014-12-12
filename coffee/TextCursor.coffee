@@ -205,6 +205,7 @@ class Poe.TextCursor
           newPage = new Poe.Page()
           newPage.insertAfter @currentPage()
           newPage.child(0).remove()
+          console.log newPage.element
 
         next = page.next()
         paragraph = new Poe.Paragraph()
@@ -230,7 +231,6 @@ class Poe.TextCursor
       pageHeight = page.height() + page.element.css('padding-top') + page.position().top
       availableSpace = pageHeight - availableSpace
 
-      console.log nextPage
       for paragraph in nextPage.children
         console.log paragraph
         for line in paragraph.children
@@ -320,7 +320,6 @@ class Poe.TextCursor
         if @currentWord.children().length == 1 and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
 
-        console.log line.children.length
         @currentWord = word
         if @currentWord.isEmpty() and @currentLine().children.length == 1
           @currentWord.element.append '&#8203;'
@@ -400,7 +399,6 @@ class Poe.TextCursor
   handleClick: (event) =>
     [x, y] = [event.clientX, event.clientY]
     target = $(event.target)
-    console.log target
 
     self = this
 

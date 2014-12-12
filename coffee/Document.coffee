@@ -18,6 +18,7 @@ class Poe.Document
       left: 96
       right: 96
     @pdf = new Poe.PDF (this)
+    @docx = new Poe.Docx (this)
     @append new Poe.Page()
     @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
 

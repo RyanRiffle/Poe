@@ -215,22 +215,7 @@ class Poe.ToolBar
 
 		@dropFonts.setText style.font
 		@dropFontSize.setText style.fontSize
-
-	###
-	A event handler for when a button is clicked on the toolbar
-	@param event [MouseClickEvent] the event that happend
-	@private
-	###
-	clickToggle: (event) =>
-		if event.target == @elements.Paragraph.bold[0]
-			@textStyle.bold = !@textStyle.bold
-		else if event.target == @elements.Paragraph.italic[0]
-			@textStyle.italic = !@textStyle.italic
-		else if event.target == @elements.Paragraph.underline[0]
-			@textStyle.underline = !@textStyle.underline
-
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
+		@dropColor.button.css 'background-color', style.color
 
 	btnBoldClicked: =>
 		@textStyle.bold = !@textStyle.bold
@@ -342,20 +327,6 @@ class Poe.ToolBar
 		@paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
 		@paragraphStyle.apply()
 
-	###
-	Event handler for text color.
-	@param
-	###
-	handleFontColor: (event) =>
-		event.preventDefault()
-		event.stopPropagation()
-		target = $(event.target)
-		color = target.css 'background-color'
-
-		@elements.Paragraph.color.css 'background-color', color
-		@textStyle.color = color
-		@textStyle.applyChar()
-
 	handleColorClicked: (event) =>
 		event.stopPropagation()
 		target = $(event.target)
@@ -365,27 +336,6 @@ class Poe.ToolBar
 		@textStyle.color = color
 		@textStyle.applyChar()
 		@element.click()
-
-	###
-	Event handler for list buttons. Creates a new list when
-	the button is clicked.
-	@param event [MouseClickEvent] the event that triggered the function
-	###
-	handleList: (event) =>
-		target = event.target
-		list = new Poe.List()
-		if target == @elements.Paragraph.bullet[0]
-			list.setListType Poe.List.ListType.Bullets
-		else if target == @elements.Paragraph.number[0]
-			list.setListType Poe.List.ListType.Numbers
-
-		paragraph = @textCursor.currentParagraph()
-		list.insertAfter @textCursor.currentParagraph()
-		@textCursor.moveInside list.child(0).child(0)
-		@textStyle.applyChar()
-
-		if paragraph.isEmpty()
-			paragraph.remove()
 
 	btnListBulletClicked: =>
 		@createList Poe.List.ListType.Bullets

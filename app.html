@@ -2,6 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <meta name="keywords" content="Elementary OS, Word Processor"/>
+  <meta name="author" content="Ryan Riffle"/>
+  <meta name="description" content="A word processor built for Elementary OS."/>
   <title>Poe.js</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
   <link rel="stylesheet" type="text/css" href="css/styles.css"/>
@@ -32,8 +35,10 @@
   <script type="text/javascript" src="js/Paragraph.js"></script>
   <script type="text/javascript" src="js/Page.js"></script>
   <script type="text/javascript" src="pdfkit.js"></script>
+  <script type="text/javascript" src="officegen.js"></script>
   <script type="text/javascript" src="blob-stream.js"></script>
   <script type="text/javascript" src="js/PDF.js"></script>
+  <script type="text/javascript" src="js/Docx.js"></script>
   <script type="text/javascript" src="js/Document.js"></script>
   <script type="text/javascript" src="js/Writer.js"></script>
   <script type="text/javascript" src="js/ListItem.js"></script>
@@ -105,5 +110,19 @@
 	</div>
   </div>
   <div id="Poe"></div>
+
+  <div id="welcome">
+    <div class="page-header">
+      <h1>Poe <small>Word Processor</small></h1>
+    </div>
+      <div class="panel">
+        <div id="documents">
+          <div class="doc">
+            <a href="#">Poe</a>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
 </body>
 </html>
