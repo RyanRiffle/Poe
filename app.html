@@ -38,7 +38,8 @@
   <script type="text/javascript" src="officegen.js"></script>
   <script type="text/javascript" src="blob-stream.js"></script>
   <script type="text/javascript" src="js/PDF.js"></script>
-  <script type="text/javascript" src="js/Docx.js"></script>
+  <script type="text/javascript" src="js/DocxWriter.js"></script>
+  <script type="text/javascript" src="js/DocxReader.js"></script>
   <script type="text/javascript" src="js/Document.js"></script>
   <script type="text/javascript" src="js/Writer.js"></script>
   <script type="text/javascript" src="js/ListItem.js"></script>
@@ -67,8 +68,9 @@
 	  <span class='glyphicon glyphicon-cog'></span>
 	  </button>
 	  <ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
+    <li id="file-open"><input type='file'/></li>
 	  <li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
-	  <li id="print-pdf"><a href="#">PDF</a></li>
+	  <li id="print-pdf"><a href="#">Create PDF</a></li>
 	  </ul>
 	</div>
 

@@ -18,7 +18,7 @@ class Poe.Document
       left: 96
       right: 96
     @pdf = new Poe.PDF (this)
-    @docx = new Poe.Docx (this)
+    @docx = new Poe.DocxWriter (this)
     @append new Poe.Page()
     @textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
 
@@ -96,7 +96,7 @@ class Poe.Document
     for page in @children
       if page.element[0] == element[0]
         return page
-      
+
       ret = page.fromElement element
       if ret != null
         return ret

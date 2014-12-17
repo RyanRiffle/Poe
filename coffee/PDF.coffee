@@ -6,13 +6,13 @@ PDF Generator for {Poe.Document} using jsPDF
 class Poe.PDF
 	constructor: (document) ->
 		@document = document
-		@margins  = 
+		@margins  =
 			top: @document.margins.top * 0.75
 			bottom: @document.margins.bottom * 0.75
 			left: @document.margins.left * 0.75
 			right: @document.margins.right * 0.75
 
-		@lastWordPos = 
+		@lastWordPos =
 			top: @margins.top
 			left: @margins.left
 
@@ -83,7 +83,7 @@ class Poe.PDF
 		for paragraph in page.children
 			@generateParagraph paragraph
 		if page.index() != @document.children.length-1
-			@doc.addPage 
+			@doc.addPage
 				margin: @margins.top
 
 	finalize: =>
