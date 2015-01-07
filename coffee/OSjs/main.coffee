@@ -63,16 +63,21 @@ ApplicationPoeWindow.prototype.init = (vmRef, app) ->
         #@Poe.element.width(wrapper.width())
         @Poe.element.height(wrapper.height() - $(toolbar.$container).height())
         @Poe.document.textCursor.show()
+
+        # The cursor has to have the same z-index + 1 as the window since it is
+        # absolute
+        $('.visiblecursor').css('z-index', "#{@_getZindex()+1}");
     ###
     These are some OSjs specific things. It has to do with
     ###
     @_addHook 'resize', onResize
     @_addHook 'maximize', onResize
     @_addHook 'restore', onResize
+    @_addHook 'minimize', @Poe.document.textCursor.hide()
+    @_addHook 'restore', @Poe.document.textCursor.show()
 
     onResize()
     return root
-
 
 ApplicationPoe = (args, metadata) ->
     Application.apply(this, ['ApplicationPoe', args, metadata])

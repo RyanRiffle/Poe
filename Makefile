@@ -24,4 +24,4 @@ OSjs: clean
 	cp -r css Poe-OSjs/css
 	cp coffee/OSjs/package.json Poe-OSjs/package.json
 	cp -r ./bower_components/jquery/dist/jquery.js ./Poe-OSjs/lib/jquery.js
-	#cp -r ./Poe-OSjs ~/OS.js/OS.js-v2/src/packages/default
+	cp -r ./Poe-OSjs ~/OS.js/OS.js-v2/src/packages/default
