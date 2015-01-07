@@ -3,6 +3,7 @@ all: clean standalone docs OSjs
 clean:
 	rm -rf ./js
 	rm -rf ./Poe-OSjs
+	rm -rf ./doc
 
 build-deps:
 	bower install jquery bootstrap
