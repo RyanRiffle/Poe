@@ -57,11 +57,16 @@ ApplicationPoeWindow.prototype.init = (vmRef, app) ->
 
     toolbar.render();
 
-    console.log toolbar
     onResize = () =>
         wrapper = @Poe.element.parents('.WindowWrapper')
         #@Poe.element.width(wrapper.width())
-        @Poe.element.height(wrapper.height() - $(toolbar.$container).height())
+        heights = 0
+        console.log @Poe.element.parent().children()
+        for elm in @Poe.element.parent().children()
+            if (elm == @Poe.element[0])
+                continue
+            heights += $(elm).outerHeight()
+        @Poe.element.css('height', (wrapper.height() - heights)+'px')
         @Poe.document.textCursor.show()
 
         # The cursor has to have the same z-index + 1 as the window since it is
@@ -75,6 +80,11 @@ ApplicationPoeWindow.prototype.init = (vmRef, app) ->
     @_addHook 'restore', onResize
     @_addHook 'minimize', @Poe.document.textCursor.hide()
     @_addHook 'restore', @Poe.document.textCursor.show()
+
+    @_addHook 'blur', @Poe.document.textCursor.hide()
+    @_addHook 'focus', @Poe.document.textCursor.show()
+
+    @Poe.element.before $(toolbar.$container.parentElement)
 
     onResize()
     return root

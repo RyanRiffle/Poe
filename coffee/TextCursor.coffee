@@ -140,9 +140,12 @@ class Poe.TextCursor
   @private
   ###
   update: ->
-    pos = @element.offset()
-    @visibleCursor.css 'top', "#{pos.top}px"
-    @visibleCursor.css 'left', "#{pos.left}px"
+    offset = @element.offset()
+    offset.top -= @element.offsetParent().offset().top
+    offset.left -= @element.offsetParent().offset().left
+
+    @visibleCursor.css 'top', "#{offset.top}px"
+    @visibleCursor.css 'left', "#{offset.left}px"
     @visibleCursor.css 'height', "#{@textStyle.fontSize}pt"
     return this
 

@@ -17,6 +17,8 @@ html, body {
     width: 100%;
     line-height: 1.4 !important;
     font-family: 'Tinos' !important;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .page {
