@@ -122,7 +122,7 @@ class Poe.ToolBar
 		@textStyle.changed @textStyleChanged
 
 
-		@elements = 
+		@elements =
 			dynamic: $ '#dynamic .text'
 
 		@elements.Paragraph =

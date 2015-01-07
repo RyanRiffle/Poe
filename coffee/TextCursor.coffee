@@ -23,7 +23,6 @@ class Poe.TextCursor
     @currentWord = inside
     @blinkTimer = null
     inside.prepend @element
-    $('body').append @visibleCursor
     $('body').keydown(@keyEvent)
     @currentPage().parent.element.click @handleClick
     @textStyle = new Poe.TextStyle(this)
@@ -33,6 +32,7 @@ class Poe.TextCursor
     @paragraphStyle.apply()
     @paragraphStyle.changed @paragraphStyleChanged
     @document = @currentPage().parent
+    @document.element.append @visibleCursor
 
     @capsLock = off
     @show()
@@ -140,7 +140,7 @@ class Poe.TextCursor
   @private
   ###
   update: ->
-    pos = @element.position()
+    pos = @element.offset()
     @visibleCursor.css 'top', "#{pos.top}px"
     @visibleCursor.css 'left', "#{pos.left}px"
     @visibleCursor.css 'height', "#{@textStyle.fontSize}pt"
@@ -330,7 +330,7 @@ class Poe.TextCursor
         @paragraphStyle.update @currentParagraph()
         @doWordWrap()
 
-      
+
       when Poe.key.Backspace
         oldWord = @currentWord
         oldLine = @currentLine()
@@ -529,7 +529,7 @@ class Poe.TextCursor
     @visibleCursor.removeClass 'hide'
     pos = @element.position()
     if pos.top > window.innerHeight - (@currentLine().height() * 3)
-      $('.writer').animate 
+      $('.writer').animate
         scrollTop: $('.writer').scrollTop() + (@currentLine().height() * 3)
       , 200
     return if @blinkTimer

@@ -1,8 +1,10 @@
-window.Poe = {}
+window.Poe = window.Poe || {}
 
+###
 $(document).ready ->
   Poe.writer = new Poe.Writer('#Poe')
   $('.poe-tooltip').tooltip()
+###
 
 if !Array.prototype.last
   Array.prototype.last = ->

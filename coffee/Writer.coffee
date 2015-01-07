@@ -18,10 +18,15 @@ class Poe.Writer
   ###
   constructor: (parentSelector) ->
     @document = new Poe.Document()
-    @toolbar = new Poe.ToolBar(this)
     @element = $ '<div class="writer"></div>'
-    $(parentSelector).append @element
+    if (!parentSelector)
+        $('body').append @element
+    else
+        $(parentSelector).append @element
     @element.append @document.element
+
+    @toolbarHelper = new Poe.ToolbarHelper(this)
+    
     $('body').resize @windowResized
     @element.scroll @windowResized
     @windowResized()
@@ -31,6 +36,7 @@ class Poe.Writer
   @private
   ###
   windowResized: (event) =>
-    @element.css('width', $('body').width())
-    @element.css('height', $('body').height()-@toolbar.element.height())
+    if (!Poe.OSjs)
+        @element.css('width', $('body').width())
+        @element.css('height', $('body').height()-@toolbar.element.height())
     @document.textCursor.update()

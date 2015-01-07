@@ -6,7 +6,7 @@ class Poe.FontManager
 		@addedCallback = null
 
 	loadDefaults: ->
-		@loadFont('Arimo', 'fonts/Arimo/Arimo-Regular.ttf')
+		###@loadFont('Arimo', 'fonts/Arimo/Arimo-Regular.ttf')
 		@loadFont('Calligraffitti', 'fonts/Calligraffitti/Calligraffitti-Regular.ttf')
 		@loadFont('Cousine', 'fonts/Cousine/Cousine-Regular.ttf')
 		@loadFont('Droid Sans', 'fonts/Droid_Sans/DroidSans.ttf')
@@ -17,7 +17,7 @@ class Poe.FontManager
 		@loadFont('Raleway', 'fonts/Raleway/Raleway-Regular.ttf')
 		@loadFont('Syncopate', 'fonts/Syncopate/Syncopate-Regular.ttf')
 		@loadFont('Tinos', 'fonts/Tinos/Tinos-Regular.ttf')
-		@loadFont('Ubuntu', 'fonts/Ubuntu/Ubuntu-Regular.ttf')
+		@loadFont('Ubuntu', 'fonts/Ubuntu/Ubuntu-Regular.ttf')###
 
 	loadFont: (name, url) ->
 		str = "<style rel='stylesheet' type='text/css'>@font-face {font-family: '#{name}'; src: url(#{url});}</style>"
