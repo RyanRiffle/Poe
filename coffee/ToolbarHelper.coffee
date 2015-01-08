@@ -82,7 +82,7 @@ class Poe.ToolbarHelper
 				event.preventDefault()
 
 	fontClicked: (fontName) =>
-		@textStyle.font = name
+		@textStyle.font = fontName
 		@textStyle.applyChar()
 
 	###

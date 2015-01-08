@@ -28,12 +28,14 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 	@addItem 'FontSelect',
 		type: 'custom',
 		onCreate: (itemName, itemOpts, outerEl, containerEl) ->
-			@window._addGUIElement(@fontSizeSelect, containerEl)
+			@window._addGUIElement(@fontSelect, containerEl)
+			$(containerEl).width(100)
 
 	@addItem 'FontSizeSelect',
 		type: 'custom'
 		onCreate: (itemName, itemOpts, outerEl, containerEl) =>
 			@window._addGUIElement(@fontSizeSelect, containerEl)
+			$(containerEl).width(45)
 
 	@addItem 'bold',
 		toggleable: true
@@ -76,21 +78,20 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 		@fontSizeSelect.addItem size, size
 
 	#Add the fonts
-	console.log OSjs.API.getHandlerInstance().getConfig('Fonts').list
-	for font in OSjs.API.getHandlerInstance().getConfig('Fonts').list
-		console.log font
+	@poe.toolbarHelper.addEventHandler 'fontAdded', (font) =>
 		@fontSelect.addItem font, font
 
+	###for font in OSjs.API.getHandlerInstance().getConfig('Fonts').list
+		console.log font
+		@fontSelect.addItem font, font###
+
 	@fontSizeSelect.setValue '12'
+
 	@fontSelect.setValue OSjs.API.getHandlerInstance().getConfig('Fonts')['default']
-	console.log 'Selected:' + @fontSelect.getValue();
+	@poe.toolbarHelper.fontManager.loadDefaults()
 
 Poe.OSjs.Toolbar.prototype.fontSizeClicked = (selectRef, event, value) ->
-	self.poe.toolbarHelper.fontSizeClicked value
-	self.fontSizeSelect.setValue value
-	sel = document.createAttribute("selected")
-	event.target.setAttributeNode(sel)
+	self.poe.toolbarHelper.fontSizeClicked self.fontSizeSelect.getValue()
 
 Poe.OSjs.Toolbar.prototype.fontSelectClicked = (selectRef, event, value) ->
-	self.poe.toolbarHelper.fontClicked value
-	self.fontSelect.setValue value
+	self.poe.toolbarHelper.fontClicked self.fontSelect.getValue()

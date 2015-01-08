@@ -44,7 +44,7 @@ class Poe.FontManager
 					Poe.Fonts[name] = e.target.response
 					console.log "FontManager: Adding font '#{name}'"
 
-		xhr.send()
+			xhr.send()
 		@addedCallback name if typeof(@addedCallback) == 'function'
 
 	on: (event, callback) ->
