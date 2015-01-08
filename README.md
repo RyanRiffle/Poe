@@ -8,7 +8,7 @@ The application is under heavy development. However it is hosted for a demo on [
 ### Requirements
 Coffeescript
 ```
-npm install -g coffeescript
+npm install -g coffee-script
 ```
 
 Bower
