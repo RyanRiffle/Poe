@@ -69,6 +69,8 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 
 	@addSeparator()
 
+	@render()
+
 	#Add the font sizes
 	for size in @poe.toolbarHelper.fontSizes
 		@fontSizeSelect.addItem size, size
@@ -81,8 +83,7 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 
 	@fontSizeSelect.setValue '12'
 	@fontSelect.setValue OSjs.API.getHandlerInstance().getConfig('Fonts')['default']
-
-	@render()
+	console.log 'Selected:' + @fontSelect.getValue();
 
 Poe.OSjs.Toolbar.prototype.fontSizeClicked = (selectRef, event, value) ->
 	self.poe.toolbarHelper.fontSizeClicked value

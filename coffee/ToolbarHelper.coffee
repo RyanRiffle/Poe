@@ -123,6 +123,9 @@ class Poe.ToolbarHelper
 		list.setListType type
 
 		paragraph = @textCursor.currentParagraph()
-		list.insertAfter paragraph
+		if (paragraph instanceof Poe.List)
+			paragraph.append list
+		else
+			list.insertAfter paragraph
 		@textCursor.moveInside list.child(0).child(0)
 		@textStyle.applyChar()

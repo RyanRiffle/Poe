@@ -107,14 +107,14 @@ class Poe.ToolBar
 		@dropFonts.on 'itemClicked', @handleFontClick
 		@dropFontSize.on 'itemClicked', @handleFontSizeClick
 
-		@btnBold.on 'click', @btnBoldClicked
-		@btnItalic.on 'click', @btnItalicClicked
-		@btnUnderline.on 'click', @btnUnderlineClicked
+		@btnBold.on 'click', @writer.toolbarHelper.btnBoldClicked
+		@btnItalic.on 'click', @writer.toolbarHelper.btnItalicClicked
+		@btnUnderline.on 'click', @writer.toolbarHelper.btnUnderlineClicked
 
-		@btnAlignLeft.on 'click', @btnAlignLeftClicked
-		@btnAlignCenter.on 'click', @btnAlignCenterClicked
-		@btnAlignRight.on 'click', @btnAlignRightClicked
-		@btnAlignJustify.on 'click', @btnAlignJustifyClicked
+		@btnAlignLeft.on 'click', @writer.toolbarHelper.btnAlignLeftClicked
+		@btnAlignCenter.on 'click', @writer.toolbarHelper.btnAlignCenterClicked
+		@btnAlignRight.on 'click', @writer.toolbarHelper.btnAlignRightClicked
+		@btnAlignJustify.on 'click', @writer.toolbarHelper.btnAlignJustifyClicked
 
 		@btnListBullet.on 'click', @btnListBulletClicked
 		@btnListNumber.on 'click', @btnListNumberClicked
@@ -217,21 +217,6 @@ class Poe.ToolBar
 		@dropFontSize.setText style.fontSize
 		@dropColor.button.css 'background-color', style.color
 
-	btnBoldClicked: =>
-		@textStyle.bold = !@textStyle.bold
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
-	btnItalicClicked: =>
-		@textStyle.italic = !@textStyle.italic
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
-	btnUnderlineClicked: =>
-		@textStyle.underline = !@textStyle.underline
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
 	###
 	A even handler for toolbar shortcuts. Returns immediately if
 	the control key is not pressed.
@@ -276,8 +261,7 @@ class Poe.ToolBar
 	handleFontClick: (event) =>
 		name = $(event.target).html()
 		@dropFonts.setText(name)
-		@textStyle.font = name
-		@textStyle.applyChar()
+		@writer.toolbarHelper.fontClicked name
 
 	###
 	Event handler for when a font size is clicked.
@@ -287,8 +271,7 @@ class Poe.ToolBar
 	handleFontSizeClick: (event) =>
 		name = $(event.target).html()
 		@dropFontSize.setText name
-		@textStyle.fontSize = parseInt(name.replace('px', ''))
-		@textStyle.applyChar()
+		@writer.toolbarHelper.fontSizeClicked parseInt(name.replace('px', ''))
 
 	###
 	Called when the line style changes of the {Poe.TextCursor}
@@ -311,30 +294,14 @@ class Poe.ToolBar
 			when Poe.ParagraphStyle.Align.Justify
 				@btnAlignJustify.active true
 
-	btnAlignLeftClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Left
-		@paragraphStyle.apply()
-
-	btnAlignCenterClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Center
-		@paragraphStyle.apply()
-
-	btnAlignRightClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Right
-		@paragraphStyle.apply()
-
-	btnAlignJustifyClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
-		@paragraphStyle.apply()
-
 	handleColorClicked: (event) =>
 		event.stopPropagation()
 		target = $(event.target)
 		color = target.css 'background-color'
 
 		@dropColor.button.css 'background-color', color
-		@textStyle.color = color
-		@textStyle.applyChar()
+		@writer.toolbarHelper.colorClicked color
+		# HACK: This fixes fonts popping up after a color is clicked
 		@element.click()
 
 	btnListBulletClicked: =>
@@ -348,7 +315,10 @@ class Poe.ToolBar
 		list.setListType type
 
 		paragraph = @textCursor.currentParagraph()
-		list.insertAfter @textCursor.currentParagraph()
+		if (paragraph instanceof Poe.List)
+			paragraph.append list
+		else
+			list.insertAfter paragraph
 		@textCursor.moveInside list.child(0).child(0)
 		@textStyle.applyChar()
 
