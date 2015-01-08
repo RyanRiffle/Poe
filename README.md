@@ -18,7 +18,7 @@ npm install -g bower
 
 
 ### Building
-To begin run `make build-deps`. This will use bower to download jQuery and Twitter Bootstrap.
+To begin run `make build-deps`. This will use bower to download jQuery and Twitter Bootstrap. Alternatively if you are just building for OSjs you don't need bootstrap. You can use `bower install jquery`
 
 Then compile for the platform you would like.
 ```
