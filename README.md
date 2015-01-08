@@ -11,7 +11,7 @@ The application is under heavy development. However it is up on [Heroku](https:/
 ### Building
 To build Poe you will need coffeescript installed.
 ```
-	npm install -g coffeescript
+	npm install -g coffee-script
 ```
 In order for the application to work you will need a http server or allow your browser to make cross-origin requests. I use python for a simple http server to develop the application
 ```
