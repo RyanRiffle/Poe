@@ -3,7 +3,7 @@
     a window.
 ###
 window.Poe = window.Poe || {}
-Poe.OSjs = yes
+Poe.OSjs = {}
 
 Application = OSjs.Helpers.DefaultApplication
 Window = OSjs.Helpers.DefaultApplicationWindow
@@ -23,39 +23,7 @@ ApplicationPoeWindow.prototype.init = (vmRef, app) ->
     root = Window.prototype.init.apply(this, arguments)
     @Poe = new Poe.Writer(root)
 
-    toolbar = this._addGUIElement(new OSjs.GUI.ToolBar('PoeToolBar'), root);
-
-    _createIcon = (i) ->
-        return OSjs.API.getThemeResource(i, 'icon')
-
-    toolbar.addItem 'bold',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnBoldClicked
-        icon: _createIcon 'actions/format-text-bold.png'
-
-    toolbar.addItem 'italic',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnItalicClicked
-        icon: _createIcon 'actions/format-text-italic.png'
-    toolbar.addItem 'underline',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnUnderlineClicked
-        icon: _createIcon 'actions/format-text-underline.png'
-    toolbar.addSeparator()
-    toolbar.addItem 'alignLeft',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnAlignLeftClicked
-        icon: _createIcon 'actions/format-justify-left.png'
-    toolbar.addItem 'alignCenter',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnAlignCenterClicked
-        icon: _createIcon 'actions/format-justify-center.png'
-    toolbar.addItem 'alignRight',
-        toggleable: true
-        onClick: @Poe.toolbarHelper.btnAlignRightClicked
-        icon: _createIcon 'actions/format-justify-right.png'
-
-    toolbar.render();
+    toolbar = @_addGUIElement(new Poe.OSjs.Toolbar(@Poe, this, 'PoeToolbar'), root)
 
     onResize = () =>
         wrapper = @Poe.element.parents('.WindowWrapper')

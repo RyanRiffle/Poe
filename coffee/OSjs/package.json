@@ -11,6 +11,7 @@
 	"compability": [],
 	"preload": [
 		{"src": "main.js", "type": "javascript"},
+		{"src": "Toolbar.js", "type": "javascript"},
 		{"src": "lib/jquery.js", "type":"javascript"},
 		{"src": "js/Poe.js", "type": "javascript"},
 		{"src": "js/FontManager.js", "type": "javascript"},

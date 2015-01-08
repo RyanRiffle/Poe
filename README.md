@@ -1,6 +1,3 @@
-# Note
-I am looking for someone to continue development on this application. Starting mid January I will not be able to access a computer for a minimum of two months. If you would be interested in taking over for that time you can email me at ryanriffle@icloud.com or on [Google+](https://plus.google.com/115441007574184937069).
-
 Poe
 ======
 

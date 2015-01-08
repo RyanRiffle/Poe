@@ -89,7 +89,7 @@ class Poe.ToolbarHelper
 	Paragraph alignment button helpers
 	###
 	fontSizeClicked: (size) =>
-		@textStyle.fontSize = parseInt(name.replace('px', ''))
+		@textStyle.fontSize = parseInt(size.replace('px', ''))
 		@textStyle.applyChar()
 
 	btnAlignLeftClicked: =>
