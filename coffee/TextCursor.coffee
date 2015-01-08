@@ -18,6 +18,7 @@ class Poe.TextCursor
     if not inside
       throw new Error('Poe.TextCursor constructor expects one argument of type Poe.Word')
 
+    @hiddenTextArea = $ '<textarea style="position: absolute; opacity: 0; height: 2px; width: 2px;"></textarea>'
     @element = $ '<span class="textcursor">&#8203;</span>'
     @visibleCursor = $ '<div class="visiblecursor"></div>'
     @currentWord = inside
@@ -33,6 +34,9 @@ class Poe.TextCursor
     @paragraphStyle.changed @paragraphStyleChanged
     @document = @currentPage().parent
     @document.element.append @visibleCursor
+    @document.element.append @hiddenTextArea
+
+    @hiddenTextArea.on 'input change', @handleInput
 
     @capsLock = off
     @show()
@@ -146,6 +150,8 @@ class Poe.TextCursor
 
     @visibleCursor.css 'top', "#{offset.top}px"
     @visibleCursor.css 'left', "#{offset.left}px"
+    @hiddenTextArea.css 'top', "#{offset.top}px"
+    @hiddenTextArea.css 'left', "#{offset.left}px"
     @visibleCursor.css 'height', "#{@textStyle.fontSize}pt"
     return this
 
@@ -208,7 +214,6 @@ class Poe.TextCursor
           newPage = new Poe.Page()
           newPage.insertAfter @currentPage()
           newPage.child(0).remove()
-          console.log newPage.element
 
         next = page.next()
         paragraph = new Poe.Paragraph()
@@ -235,10 +240,8 @@ class Poe.TextCursor
       availableSpace = pageHeight - availableSpace
 
       for paragraph in nextPage.children
-        console.log paragraph
         for line in paragraph.children
           if line.height() < availableSpace
-            console.log "#{line.height()} < #{availableSpace}"
             if paragraph.name() == page.children.last().name()
               page.children.last().append line
             else
@@ -259,7 +262,6 @@ class Poe.TextCursor
   keyEvent: (event) =>
     if (event.ctrlKey)
       return
-    event.preventDefault()
     @hide()
     switch event.keyCode
       when Poe.key.Shift then break
@@ -268,12 +270,15 @@ class Poe.TextCursor
         @capsLock = !@capsLock
 
       when Poe.key.Left
+        event.preventDefault()
         @moveLeft()
 
       when Poe.key.Right
+        event.preventDefault()
         @moveRight()
 
       when Poe.key.Down
+        event.preventDefault()
         if not @currentLine().next()
           return
         pos = @element.position()
@@ -286,6 +291,7 @@ class Poe.TextCursor
         @handleClick pos
 
       when Poe.key.Up
+        event.preventDefault()
         if not @currentLine().prev()
           return
         pos = @element.position()
@@ -298,6 +304,7 @@ class Poe.TextCursor
         @handleClick pos
 
       when Poe.key.Enter
+        event.preventDefault()
         if @currentParagraph() instanceof Poe.List
           li = new Poe.ListItem()
           li.insertAfter @currentLine()
@@ -335,6 +342,7 @@ class Poe.TextCursor
 
 
       when Poe.key.Backspace
+        event.preventDefault()
         oldWord = @currentWord
         oldLine = @currentLine()
         oldParagraph = @currentParagraph()
@@ -373,10 +381,12 @@ class Poe.TextCursor
         @doWordWrap()
 
       when Poe.key.Delete
+        event.preventDefault()
         next = @next()
         next.remove() if next
 
       when Poe.key.Space
+        event.preventDefault()
         @element.before " "
         word = new Poe.Word()
         word.insertAfter @currentWord
@@ -389,14 +399,25 @@ class Poe.TextCursor
         @textStyle.applyWord @currentWord
         @doWordWrap()
       else
-        if event.shiftKey and @capsLock
+        ###if event.shiftKey and @capsLock
           event.shiftKey = false
         else if not event.shiftKey and @capsLock and event.keyCode >= 65 and event.keyCode <= 90
           event.shiftKey = true
         letter = Poe.keyMapShift[event.keyCode] if event.shiftKey
         letter = Poe.keyMap[event.keyCode] unless event.shiftKey
         @element.before letter
-        @doWordWrap()
+        @doWordWrap()###
+    @show()
+
+  handleInput: (event) =>
+    text = @hiddenTextArea.val()
+
+    for letter in text
+      @element.before letter
+
+    @hiddenTextArea.val('')
+
+    @doWordWrap()
     @show()
 
   handleClick: (event) =>
@@ -435,7 +456,6 @@ class Poe.TextCursor
           break
 
     findInLine = (line) =>
-      console.log "#{x} < #{line.children().first().offset().left}"
       if x < line.children().first().offset().left
         word = line.children().first()
         self.currentWord = self.currentPage().parent.objectFromElement(word)
@@ -537,6 +557,7 @@ class Poe.TextCursor
       , 200
     return if @blinkTimer
     @blinkTimer = setInterval @blink, 700
+    @hiddenTextArea.focus()
     return this
 
   ###

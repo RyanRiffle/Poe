@@ -19,18 +19,23 @@ class Poe.FontManager
 		@loadFont('Tinos', 'fonts/Tinos/Tinos-Regular.ttf')
 		@loadFont('Ubuntu', 'fonts/Ubuntu/Ubuntu-Regular.ttf')###
 
+	###
+	Loads a font by name, and optionally url. If it is a universal font among
+	all operating systems then url is not necessary.
+	###
 	loadFont: (name, url) ->
-		str = "<style rel='stylesheet' type='text/css'>@font-face {font-family: '#{name}'; src: url(#{url});}</style>"
-		$('head').append str
-		Poe.Fonts[name] = url
-		xhr = new XMLHttpRequest()
-		xhr.responseType = 'arraybuffer'
-		xhr.overrideMimeType 'text/plain; charset=x-user-defined'
-		xhr.open('GET', url, true)
-		xhr.onload = (e) ->
-			if this.status == 200
-				Poe.Fonts[name] = e.target.response
-				console.log "FontManager: Adding font '#{name}'"
+		if (url)
+			str = "<style rel='stylesheet' type='text/css'>@font-face {font-family: '#{name}'; src: url(#{url});}</style>"
+			$('head').append str
+			Poe.Fonts[name] = url
+			xhr = new XMLHttpRequest()
+			xhr.responseType = 'arraybuffer'
+			xhr.overrideMimeType 'text/plain; charset=x-user-defined'
+			xhr.open('GET', url, true)
+			xhr.onload = (e) ->
+				if this.status == 200
+					Poe.Fonts[name] = e.target.response
+					console.log "FontManager: Adding font '#{name}'"
 
 		xhr.send()
 		@addedCallback name if typeof(@addedCallback) == 'function'

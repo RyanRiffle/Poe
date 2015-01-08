@@ -23,6 +23,12 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 		return OSjs.API.getThemeResource(icon, 'icon')
 
 	@fontSizeSelect = new OSjs.GUI.Select("FontSizeSelect", {onChange: @fontSizeClicked})
+	@fontSelect = new OSjs.GUI.Select("FontSelect", {onChange: @fontSelectClicked})
+
+	@addItem 'FontSelect',
+		type: 'custom',
+		onCreate: (itemName, itemOpts, outerEl, containerEl) ->
+			@window._addGUIElement(@fontSizeSelect, containerEl)
 
 	@addItem 'FontSizeSelect',
 		type: 'custom'
@@ -61,16 +67,29 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 		onClick: @poe.toolbarHelper.btnAlignRightClicked
 		icon: _createIcon 'actions/format-justify-right.png'
 
+	@addSeparator()
+
 	#Add the font sizes
 	for size in @poe.toolbarHelper.fontSizes
 		@fontSizeSelect.addItem size, size
 
+	#Add the fonts
+	console.log OSjs.API.getHandlerInstance().getConfig('Fonts').list
+	for font in OSjs.API.getHandlerInstance().getConfig('Fonts').list
+		console.log font
+		@fontSelect.addItem font, font
+
 	@fontSizeSelect.setValue '12'
+	@fontSelect.setValue OSjs.API.getHandlerInstance().getConfig('Fonts')['default']
 
 	@render()
 
-Poe.OSjs.Toolbar.prototype.fontSizeClicked = (selectRef, event, value) =>
+Poe.OSjs.Toolbar.prototype.fontSizeClicked = (selectRef, event, value) ->
 	self.poe.toolbarHelper.fontSizeClicked value
 	self.fontSizeSelect.setValue value
 	sel = document.createAttribute("selected")
 	event.target.setAttributeNode(sel)
+
+Poe.OSjs.Toolbar.prototype.fontSelectClicked = (selectRef, event, value) ->
+	self.poe.toolbarHelper.fontClicked value
+	self.fontSelect.setValue value
