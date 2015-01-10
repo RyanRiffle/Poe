@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="keywords" content="Elementary OS, Word Processor"/>
+  <meta name="author" content="Ryan Riffle"/>
+  <meta name="description" content="A word processor built for Elementary OS."/>
+  <title>Poe</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+  <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+  <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
+  <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
+	<script type="text/javascript" src="js/Poe.js"></script>
+	<script type="text/javascript" src="js/FontManager.js"></script>
+	<script type="text/javascript" src="js/Style.js"></script>
+	<script type="text/javascript" src="js/ParagraphStyle.js"></script>
+	<script type="text/javascript" src="js/TextStyle.js"></script>
+	<script type="text/javascript" src="js/ToolBarItem.js"></script>
+	<script type="text/javascript" src="js/Dropdown.js"></script>
+	<script type="text/javascript" src="js/Button.js"></script>
+	<script type="text/javascript" src="js/ButtonGroup.js"></script>
+	<script type="text/javascript" src="js/Glyphicon.js"></script>
+    <script type="text/javascript" src="js/ToolbarHelper.js"></script>
+	<script type="text/javascript" src="js/Toolbar.js"></script>
+	<script type="text/javascript" src="js/Keymap.js"></script>
+	<script type="text/javascript" src="js/TextCursor.js"></script>
+	<script type="text/javascript" src="js/TextObject.js"></script>
+
+	<script type="text/javascript" src="js/Line.js"></script>
+  <script type="text/javascript" src="js/Word.js"></script>
+  <script type="text/javascript" src="js/Paragraph.js"></script>
+  <script type="text/javascript" src="js/Page.js"></script>
+  <script type="text/javascript" src="pdfkit.js"></script>
+  <script type="text/javascript" src="blob-stream.js"></script>
+  <script type="text/javascript" src="js/PDF.js"></script>
+  <script type="text/javascript" src="js/DocxWriter.js"></script>
+  <script type="text/javascript" src="js/DocxReader.js"></script>
+  <script type="text/javascript" src="js/Document.js"></script>
+  <script type="text/javascript" src="js/Writer.js"></script>
+  <script type="text/javascript" src="js/ListItem.js"></script>
+  <script type="text/javascript" src="js/List.js"></script>
+  <script type="text/javascript" src="js/FileFormat/RTF.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+        window.app = new Poe.Writer('#Poe');
+        //rtf = new Poe.FileFormat.RTF(window.app.document);
+    });
+  </script>
+</head>
+<body>
+  <div class='toolbar'>
+	<div class='dropdown'>
+	  <button id='dynamic' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
+		<span class='text'>Paragraph</span>
+	  </button>
+	  <ul id="dynamic-list" class='dropdown-menu' aria-labelledby='dynamic' role='menu' data-toggle='dropdown' aria-expand='true'>
+		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Paragraph</a></li>
+		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>List</a></li>
+		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Page</a></li>
+	  </ul>
+	</div>
+
+	<!-- For Lists -->
+	<button id='list-RemoveItem' type='button' class='btn btn-danger'>Remove Item</button>
+
+	<!-- For Page -->
+
+	<div class='dropdown' id='menu-container'>
+	  <button id='menu' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expaned='false' type='button'>
+	  <span class='glyphicon glyphicon-cog'></span>
+	  </button>
+	  <ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
+    <li id="file-open"><input type='file'/></li>
+	  <li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
+	  <li id="print-pdf"><a href="#">Create PDF</a></li>
+	  </ul>
+	</div>
+
+	<div id="dialog-about" class='modal fade bs-example-modal-sm' tabindex='-1' role='dialog'
+	arialabelledby='about-application' aria-hidden='true'>
+	  <div class='modal-dialog'>
+	  <div class='modal-content'>
+	  <div class='modal-header'>
+		<button type='button' class='close' data-dismiss='modal'>
+		  <span aria-hidden='true'>&times;</span>
+		  <span class='sr-only'>Close</span>
+		</button>
+		<h4 class='modal-title' id='about-dialog-title'><a href="http://www.github.com/RyanRiffle/Poe">Poe</a></h4>
+		</div>
+
+		<div class='modal-body'>
+		<p>
+		  Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
+		</p>
+		<p>
+		Poe uses <i>PDFKit</i> by Devon Govett. PDFKit's license can be viewed on <a href="https://raw.githubusercontent.com/devongovett/pdfkit/master/LICENSE">GitHub</a>.
+		</p>
+		<p>
+		  Poe uses fonts from fonts.google.com. To view each individual license provided by the font creators check it out on <a href="https://github.com/RyanRiffle/Poe/tree/master/fonts">GitHub</a>.
+		</p>
+		<!--<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
+		allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+		<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=follow&count=true"
+		allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
+		<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=watch&count=true"
+		allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>-->
+		<br/>&copy; 2014 Ryan Riffle
+		</div>
+		<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	  </div>
+	</div>
+  </div>
+  <div id="Poe"></div>
+
+  <div id="welcome">
+    <div class="page-header">
+      <h1>Poe <small>Word Processor</small></h1>
+    </div>
+      <div class="panel">
+        <div id="documents">
+          <div class="doc">
+            <a href="#">Poe</a>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+</body>
+</html>

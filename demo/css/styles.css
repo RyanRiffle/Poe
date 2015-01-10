@@ -1,0 +1,53 @@
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline !important;
+}
+
+/* Nothing has to be done for align-left */
+.align-left {
+
+}
+
+.align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.align-right {
+
+}
+
+.align-justify {
+
+}
+
+.align-right-spacer {
+    display: inline-block;
+}
+
+
+.list {
+    margin-bottom: 0px;
+    padding-bottom: 0px;    
+}
+
+.list.bullet {
+    list-style-type: disc;
+}
+
+.list.number {
+    list-style-type: decimal;
+}
+
+.list > li {
+    display: list-item !important;
+    width: auto !important;
+    overflow: visible;
+}

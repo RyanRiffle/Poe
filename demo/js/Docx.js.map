@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "Docx.js",
+  "sourceRoot": "..",
+  "sources": [
+    "coffee/Docx.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,EAAM,GAAG,CAAC;sBAAV;;gBAAA;;MAAA,CAAA;AAAA"
+}

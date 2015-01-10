@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "DocxReader.js",
+  "sourceRoot": "..",
+  "sources": [
+    "coffee/DocxReader.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA,EAAM,GAAG,CAAC;AACO,IAAA,oBAAC,QAAD,GAAA;AACT,MAAA,IAAC,CAAA,QAAD,GAAY,QAAZ,CAAA;AAAA,MACA,IAAC,CAAA,IAAD,GAAQ,IADR,CADS;IAAA,CAAb;;AAAA,yBAIA,IAAA,GAAM,SAAC,IAAD,GAAA,CAJN,CAAA;;sBAAA;;MADJ,CAAA;AAAA"
+}
