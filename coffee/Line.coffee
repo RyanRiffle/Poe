@@ -24,7 +24,9 @@ class Poe.Line extends Poe.TextObject
   visiblyContains: (child) ->
     childPos = child.position()
     pos = @element.position()
-    childPos.right = childPos.left + child.width()
+	# Allow for a five pixel tolerance (bug #39)
+    # I chose 5 because Poe doesn't allow the font to be that small.
+    childPos.right = (childPos.left + child.width()) - 5
     pos.right = pos.left + @element.outerWidth(false)
 
     if child instanceof Poe.Word
