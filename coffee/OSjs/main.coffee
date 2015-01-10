@@ -23,7 +23,7 @@ ApplicationPoeWindow.prototype.init = (vmRef, app) ->
     root = Window.prototype.init.apply(this, arguments)
     @Poe = new Poe.Writer(root)
 
-    toolbar = @_addGUIElement(new Poe.OSjs.Toolbar(@Poe, this, 'PoeToolbar'), root)
+    toolbar = @_addGUIElement(new Poe.OSjs.ToolBar(@Poe, this, 'PoeToolBar'), root)
 
     onResize = () =>
         wrapper = @Poe.element.parents('.WindowWrapper')

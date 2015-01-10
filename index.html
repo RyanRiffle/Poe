@@ -2,50 +2,55 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <meta name="keywords" content="Elementary OS, Word Processor"/>
+  <meta name="keywords" content="Word Processor"/>
   <meta name="author" content="Ryan Riffle"/>
-  <meta name="description" content="A word processor built for Elementary OS."/>
+  <meta name="description" content="A word processor built for the web"/>
   <title>Poe</title>
   <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
   <link rel="stylesheet" type="text/css" href="css/styles.css"/>
   <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
   <link rel="stylesheet" type="text/css" media="screen" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
-
   <link rel="icon" type="image/png" href="favicon.png"/>
 
+  <!-- External libraries -->
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
   <script src='bower_components/bootstrap/dist/js/bootstrap.js'></script>
-	<script type="text/javascript" src="js/Poe.js"></script>
-	<script type="text/javascript" src="js/FontManager.js"></script>
-	<script type="text/javascript" src="js/Style.js"></script>
-	<script type="text/javascript" src="js/ParagraphStyle.js"></script>
-	<script type="text/javascript" src="js/TextStyle.js"></script>
-	<script type="text/javascript" src="js/ToolBarItem.js"></script>
-	<script type="text/javascript" src="js/Dropdown.js"></script>
-	<script type="text/javascript" src="js/Button.js"></script>
-	<script type="text/javascript" src="js/ButtonGroup.js"></script>
-	<script type="text/javascript" src="js/Glyphicon.js"></script>
-    <script type="text/javascript" src="js/ToolbarHelper.js"></script>
-	<script type="text/javascript" src="js/Toolbar.js"></script>
-	<script type="text/javascript" src="js/Keymap.js"></script>
-	<script type="text/javascript" src="js/TextCursor.js"></script>
-	<script type="text/javascript" src="js/TextObject.js"></script>
-
-	<script type="text/javascript" src="js/Line.js"></script>
+  <script type="text/javascript" src="lib/pdfkit.min.js"></script>
+  <script type="text/javascript" src="lib/blob-stream.min.js"></script>
+  
+  <!-- Core -->
+  <script type="text/javascript" src="js/Poe.js"></script>
+  <script type="text/javascript" src="js/TextObject.js"></script>
+  <script type="text/javascript" src="js/TextCursor.js"></script>
+  <script type="text/javascript" src="js/FontManager.js"></script>
+  <script type="text/javascript" src="js/Style.js"></script>
+  <script type="text/javascript" src="js/ParagraphStyle.js"></script>
+  <script type="text/javascript" src="js/TextStyle.js"></script>
+  <script type="text/javascript" src="js/Keymap.js"></script>
+  <script type="text/javascript" src="js/ToolBarHelper.js"></script>
+  
   <script type="text/javascript" src="js/Word.js"></script>
+  <script type="text/javascript" src="js/Line.js"></script>
   <script type="text/javascript" src="js/Paragraph.js"></script>
+  <script type="text/javascript" src="js/List.js"></script>
+  <script type="text/javascript" src="js/ListItem.js"></script>
   <script type="text/javascript" src="js/Page.js"></script>
-  <script type="text/javascript" src="pdfkit.js"></script>
-  <script type="text/javascript" src="blob-stream.js"></script>
-  <script type="text/javascript" src="js/PDF.js"></script>
-  <script type="text/javascript" src="js/DocxWriter.js"></script>
-  <script type="text/javascript" src="js/DocxReader.js"></script>
   <script type="text/javascript" src="js/Document.js"></script>
   <script type="text/javascript" src="js/Writer.js"></script>
-  <script type="text/javascript" src="js/ListItem.js"></script>
-  <script type="text/javascript" src="js/List.js"></script>
+  
+  <!-- Standalone Only (Not for OS.js)-->
+  <script type="text/javascript" src="js/Standalone/ToolBar.js"></script>
+  <script type="text/javascript" src="js/Standalone/ToolBarItem.js"></script>
+  <script type="text/javascript" src="js/Standalone/Button.js"></script>
+  <script type="text/javascript" src="js/Standalone/ButtonGroup.js"></script>
+  <script type="text/javascript" src="js/Standalone/Glyphicon.js"></script>
+  <script type="text/javascript" src="js/Standalone/Dropdown.js"></script>
+  
+  <!-- File formats -->
+  <script type="text/javascript" src="js/FileFormat/PDF.js"></script>
   <script type="text/javascript" src="js/FileFormat/RTF.js"></script>
 
+  <!-- Setup the application when the document loads. -->
   <script type="text/javascript">
     $(document).ready(function() {
         window.app = new Poe.Writer('#Poe');

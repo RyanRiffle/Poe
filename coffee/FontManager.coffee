@@ -6,7 +6,7 @@ fonts need to be embedded in an exported document.
 class Poe.FontManager
 	###
 	Creates a Poe.FontManager.
-	@note This should be instantiated only once during the course of execution. The {Poe.ToolbarHelper}
+	@note This should be instantiated only once during the course of execution. The {Poe.ToolBarHelper}
 	created in {Poe.Writer} creates an instance of this class.
 	###
 	constructor: () ->
@@ -62,7 +62,6 @@ class Poe.FontManager
 			xhr.onload = (e) ->
 				if this.status == 200
 					Poe.Fonts[name] = e.target.response
-					console.log "FontManager: Adding font '#{name}'"
 
 			xhr.send()
 		else
