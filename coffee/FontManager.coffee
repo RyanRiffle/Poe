@@ -1,10 +1,27 @@
+###
+Poe.FontManager manages fonts for poe. It is used in both the standalone version and the OS.js version.
+It's main goal is to load the fonts that will be used including their font files for use when
+fonts need to be embedded in an exported document.
+###
 class Poe.FontManager
+	###
+	Creates a Poe.FontManager.
+	@note This should be instantiated only once during the course of execution. The {Poe.ToolbarHelper}
+	created in {Poe.Writer} creates an instance of this class.
+	###
 	constructor: () ->
 		@element = $ '<link rel="stylesheet" type="text/css"></link>'
 		$('head').append @element
 		Poe.Fonts = {}
 		@addedCallback = null
 
+	###
+	Loads the default fonts. When Poe is being run as a standalone application it loads fonts
+	from the /fonts directory of the projct. When it is being run as an application inside OS.js
+	the font names are retrieved from the OS.js API.
+	@note This functions stores and object as Poe.Fonts. Where the key is the name of the font
+	and the value is the loaded font file (if any).
+	###
 	loadDefaults: ->
 		fonts = null
 		if (Poe.OSjs)
@@ -29,6 +46,9 @@ class Poe.FontManager
 	###
 	Loads a font by name, and optionally url. If it is a universal font among
 	all operating systems then url is not necessary.
+
+	@param name [string] the name of the font
+	@param url [string] the url of the font file e.g. .ttf .woff
 	###
 	loadFont: (name, url) ->
 		if (url)
@@ -45,8 +65,18 @@ class Poe.FontManager
 					console.log "FontManager: Adding font '#{name}'"
 
 			xhr.send()
+		else
+			Poe.Fonts[name] = null
 		@addedCallback name if typeof(@addedCallback) == 'function'
 
+	###
+	Register an event callback. The current events available are:
+
+	newFont  -  called when a new font is added
+
+	@param event [string] the event to register
+	@param callback [function] the callback to be called when the event is fired.
+	###
 	on: (event, callback) ->
 		if (event == 'newFont')
 			@addedCallback = callback

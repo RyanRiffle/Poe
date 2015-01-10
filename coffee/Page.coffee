@@ -14,6 +14,11 @@ class Poe.Page extends Poe.TextObject
 
     @append new Poe.Paragraph()
 
+  ###
+  Inserts this page after another {Poe.Page}
+
+  @param page [Poe.Page] the page to insert after
+  ###
   insertAfter: (page) ->
   	super page
   	@parent.setPageSize @parent.pageSize

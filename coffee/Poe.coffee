@@ -1,4 +1,5 @@
 window.Poe = window.Poe || {}
+Poe.FileFormat = Poe.FileFormat || {}
 
 ###
 $(document).ready ->

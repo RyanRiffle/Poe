@@ -27,7 +27,7 @@ class Poe.Writer
 
     @toolbarHelper = new Poe.ToolbarHelper(this)
     if (!Poe.OSjs)
-        @toolbar = new Poe.ToolBar(this)
+      @toolbar = new Poe.ToolBar(this)
 
     $('body').resize @windowResized
     @element.scroll @windowResized

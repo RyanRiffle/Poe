@@ -1,9 +1,15 @@
 ###
-PDF Generator for {Poe.Document} using jsPDF
-@see https://parall.ax/products/jspdf
-@see https://mrrio.github.io/jsPDF/doc/symbols/jsPDF.html
+PDF Generator for {Poe.Document} using PDFKit
+@see http://pdfkit.org/docs/getting_started.html
+@see http://pdfkit.org/
 ###
 class Poe.PDF
+	###
+	Creates a PDF writer
+
+	@param document [Poe.Document] the document that will be used to generate
+	the pdf
+	###
 	constructor: (document) ->
 		@document = document
 		@margins  =
@@ -20,6 +26,10 @@ class Poe.PDF
 
 		@totalPos = null
 
+	###
+	Create the PDF and open the blob created in a new window of the browser.
+	@return [Poe.PDF] this
+	###
 	generate: =>
 		@doc = new PDFDocument
 		@stream = @doc.pipe(blobStream())
@@ -32,6 +42,12 @@ class Poe.PDF
 		@doc.end()
 		return this
 
+	###
+	Generate a paragraph in the PDF. This is an internal method used
+	for generating the pdf.
+	@param paragraph [Poe.Paragraph] the paragraph to use
+	@see Poe.PDF#generate
+	###
 	generateParagraph: (paragraph) ->
 		for line in paragraph.children
 			pstyle = new Poe.ParagraphStyle()
@@ -40,6 +56,11 @@ class Poe.PDF
 			@generateLine line
 		return this
 
+	###
+	Generate a line in the PDF. This is an internal method used for generating the PDF.
+
+	@param line [Poe.Line] the line to use
+	###
 	generateLine: (line) ->
 		@doc.x = 72
 		for word in line.children
@@ -79,6 +100,10 @@ class Poe.PDF
 				@doc.restore()
 		return this
 
+	###
+	Generate a page in the PDF. This is for internal use.
+	@param addPage [boolean] Defaults to false. 
+	###
 	generatePage: (addPage = false, page) ->
 		for paragraph in page.children
 			@generateParagraph paragraph
@@ -86,9 +111,15 @@ class Poe.PDF
 			@doc.addPage
 				margin: @margins.top
 
+	###
+	Finalizes the PDF by converting it to a blob url, and opening
+	the url in the browser.
+
+	@note It seems only chrome is able to recognize the blob url as pdf and
+	allow the user to view it inside the browser. Firefox downloads it, and the 
+	others just completely ignore it.
+	###
 	finalize: =>
 		blob = @stream.toBlobURL('application/pdf')
 		w = window.open(blob)
 		w.focus()
-
-	progess: (callback) ->

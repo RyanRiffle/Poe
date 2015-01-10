@@ -91,6 +91,15 @@ class Poe.Document
     return this
 
 
+  ###
+  Gets a {Poe.TextObject} for the jQuery object specified. This function recursively searches
+  all {Poe.TextObject}'s in the document tree. If it finds an object that is for the element it 
+  returns it, otherwise returns null.
+
+  @return [Poe.TextObject] The object that was found, or null otherwise.
+
+  @param element [jQuery] the element to find 
+  ###
   objectFromElement: (element) ->
     for page in @children
       if page.element[0] == element[0]

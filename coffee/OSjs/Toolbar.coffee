@@ -37,35 +37,38 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 			@window._addGUIElement(@fontSizeSelect, containerEl)
 			$(containerEl).width(45)
 
-	@addItem 'bold',
+	@addItem 'ButtonBold',
 		toggleable: true
 		onClick: @poe.toolbarHelper.btnBoldClicked
 		icon: _createIcon 'actions/format-text-bold.png'
 
-	@addItem 'italic',
+	@addItem 'ButtonItalic',
 		toggleable: true
 		onClick: @poe.toolbarHelper.btnItalicClicked
 		icon: _createIcon 'actions/format-text-italic.png'
 
-	@addItem 'underline',
+	@addItem 'ButtonUnderline',
 		toggleable: true
 		onClick: @poe.toolbarHelper.btnUnderlineClicked
 		icon: _createIcon 'actions/format-text-underline.png'
 
 	@addSeparator()
 
-	@addItem 'alignLeft',
+	@addItem 'ButtonAlignLeft',
 		toggleable: true
+		grouped: true
 		onClick: @poe.toolbarHelper.btnAlignLeftClicked
 		icon: _createIcon 'actions/format-justify-left.png'
 
-	@addItem 'alignCenter',
+	@addItem 'ButtonAlignCenter',
 		toggleable: true
+		grouped: true
 		onClick: @poe.toolbarHelper.btnAlignCenterClicked
 		icon: _createIcon 'actions/format-justify-center.png'
 
-	@addItem 'alignRight',
+	@addItem 'ButtonAlignRight',
 		toggleable: true
+		grouped: true
 		onClick: @poe.toolbarHelper.btnAlignRightClicked
 		icon: _createIcon 'actions/format-justify-right.png'
 
@@ -80,6 +83,10 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 	#Add the fonts
 	@poe.toolbarHelper.addEventHandler 'fontAdded', (font) =>
 		@fontSelect.addItem font, font
+		# Set the current font to the first one
+
+	@poe.toolbarHelper.addEventHandler 'textStyleChanged', @handleTextStyleChanged
+	@poe.toolbarHelper.addEventHandler 'paragraphStyleChanged', @handleParagraphStyleChanged
 
 	###for font in OSjs.API.getHandlerInstance().getConfig('Fonts').list
 		console.log font
@@ -87,11 +94,45 @@ Poe.OSjs.Toolbar.prototype.setup = () ->
 
 	@fontSizeSelect.setValue '12'
 
-	@fontSelect.setValue OSjs.API.getHandlerInstance().getConfig('Fonts')['default']
+	defaultFont = OSjs.API.getHandlerInstance().getConfig('Fonts')['default']
+	@fontSelect.setValue defaultFont
+	@poe.toolbarHelper.fontClicked defaultFont
 	@poe.toolbarHelper.fontManager.loadDefaults()
+	#Set the current font to the first on added
 
 Poe.OSjs.Toolbar.prototype.fontSizeClicked = (selectRef, event, value) ->
 	self.poe.toolbarHelper.fontSizeClicked self.fontSizeSelect.getValue()
 
 Poe.OSjs.Toolbar.prototype.fontSelectClicked = (selectRef, event, value) ->
 	self.poe.toolbarHelper.fontClicked self.fontSelect.getValue()
+
+Poe.OSjs.Toolbar.prototype.handleTextStyleChanged = (textStyle) ->
+	self.fontSelect.setValue textStyle.font
+	self.fontSizeSelect.setValue textStyle.fontSize
+	if textStyle.bold
+		$('.ButtonBold').children('button').addClass('Active')
+	else
+		$('.ButtonBold').children('button').removeClass('Active')
+
+	if textStyle.italic
+		$('.ButtonItalic').children('button').addClass('Active')
+	else
+		$('.ButtonItalic').children('button').removeClass('Active');
+
+	if textStyle.underline
+		$('.ButtonUnderline').children('button').addClass('Active')
+	else
+		$('.ButtonUnderline').children('button').removeClass('Active')
+
+Poe.OSjs.Toolbar.prototype.handleParagraphStyleChanged = (pstyle) ->
+	$('.ButtonAlignLeft').children('button').removeClass('Active')
+	$('.ButtonAlignCenter').children('button').removeClass('Active')
+	$('.ButtonAlignRight').children('button').removeClass('Active')
+
+	switch (pstyle.align)
+		when Poe.ParagraphStyle.Align.Left
+			$('.ButtonAlignLeft').children('button').addClass('Active')
+		when Poe.ParagraphStyle.Align.Center
+			$('.ButtonAlignCenter').children('button').addClass('Active')
+		when Poe.ParagraphStyle.AlignRight
+			$('.ButtonAlignRight').children('button').addClass('Active')

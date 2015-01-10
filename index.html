@@ -44,10 +44,12 @@
   <script type="text/javascript" src="js/Writer.js"></script>
   <script type="text/javascript" src="js/ListItem.js"></script>
   <script type="text/javascript" src="js/List.js"></script>
+  <script type="text/javascript" src="js/FileFormat/RTF.js"></script>
 
   <script type="text/javascript">
     $(document).ready(function() {
         window.app = new Poe.Writer('#Poe');
+        rtf = new Poe.FileFormat.RTF(window.app.document);
     });
   </script>
 </head>
