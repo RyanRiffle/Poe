@@ -7,7 +7,6 @@ html, body {
 }
 
 .writer {
-    border-top: 1px solid #FCFCFC;
     background-color: #F4F4F4;
     padding-top: 12px;
     padding-bottom: 24px;
@@ -27,7 +26,7 @@ html, body {
 
     margin-left: auto;
     margin-right: auto;
-    border: 1px solid #B2B2B2;
+    border: 1px solid #CBCBCB;
     background-color: white;
     margin-top: 12px;
     cursor: text;
@@ -55,7 +54,7 @@ html, body {
     background: -ms-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* IE10+ */
     background: linear-gradient(to bottom, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
-    border-bottom: 1px solid #C6C6C6;
+    border-bottom: 1px solid #DDDDDD;
 
     font-family: 'Open Sans';
     -webkit-user-select: none;
@@ -86,6 +85,10 @@ html, body {
     padding-top: 3px;
     padding-bottom: 3px;
     padding-right: 6px;
+}
+
+.btn-group btn {
+    border-radius: 0px !important;
 }
 
 .color-pick {
@@ -158,6 +161,7 @@ html, body {
 
 .btn.btn-default {
     outline: none !important;
+    background-color: transparent !important;
 }
 
 .btn.bold {
