@@ -76,8 +76,11 @@ var electron_path = "/Users/ryan/Downloads/electron-v0.36.2-darwin-x64/Electron"
 
     watch: {
         scripts: {
-            files: ["coffee/*"],
-            tasks: ["default"]
+            files: ["coffee/*.coffee"],
+            tasks: ["default"],
+            options: {
+                spawn: false,
+            }
         }
     },
 
