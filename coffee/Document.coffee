@@ -2,6 +2,7 @@
 Poe.Document is the top and contains pages. It also manages
 page margins and page size.
 ###
+Poe = Poe || {}
 class Poe.Document
   ###
   Create a new Poe.Document. Creating a document is only possible in {Poe.Writer}
@@ -93,12 +94,12 @@ class Poe.Document
 
   ###
   Gets a {Poe.TextObject} for the jQuery object specified. This function recursively searches
-  all {Poe.TextObject}'s in the document tree. If it finds an object that is for the element it 
+  all {Poe.TextObject}'s in the document tree. If it finds an object that is for the element it
   returns it, otherwise returns null.
 
   @return [Poe.TextObject] The object that was found, or null otherwise.
 
-  @param element [jQuery] the element to find 
+  @param element [jQuery] the element to find
   ###
   objectFromElement: (element) ->
     for page in @children

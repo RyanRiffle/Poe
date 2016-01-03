@@ -1,5 +1,7 @@
 window.Poe = window.Poe || {}
-Poe.FileFormat = Poe.FileFormat || {}
+window.Poe.FileFormat = window.Poe.FileFormat || {}
+Poe = window.Poe
+v = '0.1.1'
 
 ###
 $(document).ready ->
