@@ -7,10 +7,10 @@ html, body {
 }
 
 .writer {
-    background-color: #F4F4F4;
+    background-color: #F0F0F0;
     padding-top: 12px;
     padding-bottom: 24px;
-    -webkit-user-select: text;
+    -webkit-user-select: none;
     user-select: none;
     overflow-y: scroll;
     width: 100%;
@@ -31,7 +31,7 @@ html, body {
     margin-top: 12px;
     cursor: text;
 
-    border: 1px solid #E6E6E6;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .textcursor {
@@ -47,12 +47,6 @@ html, body {
     width: 100%;
 
     background: #f8f8f8; /* Old browsers */
-    background: -moz-linear-gradient(top, #f8f8f8 77%, #f8f8f8 77%, #f2f2f2 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(77%,#f8f8f8), color-stop(77%,#f8f8f8), color-stop(100%,#f2f2f2)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* IE10+ */
-    background: linear-gradient(to bottom, #f8f8f8 77%,#f8f8f8 77%,#f2f2f2 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
     border-bottom: 1px solid #DDDDDD;
 
@@ -89,6 +83,11 @@ html, body {
 
 .btn-group btn {
     border-radius: 0px !important;
+}
+
+.btn.btn-default.active {
+    box-shadow: none !important;
+    background-color: rgba(0, 0, 0, 0.035) !important;
 }
 
 .color-pick {
@@ -250,7 +249,7 @@ html, body {
 
 #welcome > .page-header {
     margin-bottom: 0px;
-    padding-left: 12px;
+    margin-top: 0px;
 }
 
 #welcome > .panel {

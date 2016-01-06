@@ -1,7 +1,5 @@
 module.exports = function(grunt) {
 
-var electron_path = "/Users/ryan/Downloads/electron-v0.36.2-darwin-x64/Electron";
-
   // Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -51,7 +49,6 @@ var electron_path = "/Users/ryan/Downloads/electron-v0.36.2-darwin-x64/Electron"
         fileFormats: {
             src: [
                 "coffee/FileFormat/PDF.coffee",
-                "coffee/FileFormat/RTF.coffee"
             ],
             dest: "js/05_FileFormats.coffee"
         }

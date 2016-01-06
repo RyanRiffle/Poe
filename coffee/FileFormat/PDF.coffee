@@ -63,6 +63,7 @@ class Poe.PDF
 	###
 	generateLine: (line) ->
 		@doc.x = 72
+		@doc.y += parseInt(line.element.css('padding-bottom').replace('px','')) * 0.75
 		for word in line.children
 			textStyle = new Poe.TextStyle()
 			textStyle.update word
@@ -89,7 +90,7 @@ class Poe.PDF
 				@doc.transform(1, 0, Math.tan(-10 * Math.PI / 180), 1, 0, 0);
 
 			@doc.fillColor textStyle.color
-				.lineWidth .05
+				.lineWidth .03
 				.strokeColor textStyle.color
 				.text word.element[0].textContent,
 					continued: cont
@@ -102,7 +103,7 @@ class Poe.PDF
 
 	###
 	Generate a page in the PDF. This is for internal use.
-	@param addPage [boolean] Defaults to false. 
+	@param addPage [boolean] Defaults to false.
 	###
 	generatePage: (addPage = false, page) ->
 		for paragraph in page.children
@@ -116,7 +117,7 @@ class Poe.PDF
 	the url in the browser.
 
 	@note It seems only chrome is able to recognize the blob url as pdf and
-	allow the user to view it inside the browser. Firefox downloads it, and the 
+	allow the user to view it inside the browser. Firefox downloads it, and the
 	others just completely ignore it.
 	###
 	finalize: =>

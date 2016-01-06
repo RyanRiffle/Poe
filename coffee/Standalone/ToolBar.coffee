@@ -32,7 +32,7 @@ class Poe.ToolBar
 		@dropFonts.button.css 'width', '125px'
 		@dropFonts.text.css 'float', 'left'
 		@dropFonts.css 'width', '200px'
-		
+
 		@dropFontSize = new Poe.Dropdown(this, '12', 'Font Size')
 		@dropFontSize.addCaret()
 		@dropFontSize.addItem 8
@@ -101,6 +101,11 @@ class Poe.ToolBar
 		@groupParagraphAlign = new Poe.ButtonGroup(this, [@btnAlignLeft, @btnAlignCenter, @btnAlignRight, @btnAlignJustify])
 		@groupParagraphAlign.setRadio true
 
+		@dropLineSpacing = new Poe.Dropdown(this, 'LS', 'Line Spacing')
+		@dropLineSpacing.addItem('1')
+		@dropLineSpacing.addItem('1.5')
+		@dropLineSpacing.addItem('2')
+
 		@btnListBullet = new Poe.Button(this)
 		@btnListNumber = new Poe.Button(this)
 		iconListBullet = new Poe.Glyphicon('list')
@@ -125,6 +130,8 @@ class Poe.ToolBar
 		@btnListNumber.on 'click', @btnListNumberClicked
 		@dropColor.on 'itemClicked', @handleColorClicked
 
+		@dropLineSpacing.on 'itemClicked', @handleLineSpacingClicked
+
 
 		#@elements is for the dynamic toolbar
 		@elements =
@@ -137,6 +144,7 @@ class Poe.ToolBar
 			textFormatting: @groupTextFormat
 			alignment: @groupParagraphAlign
 			lists: @groupList
+			lineSpacing: @dropLineSpacing
 
 		# Items on the Page toolbar
 		@elements.Page =
@@ -156,7 +164,7 @@ class Poe.ToolBar
 		# Add the event handler for fonts being added, and call init which loads the fonts
 		@writer.toolbarHelper.addEventHandler('fontAdded', @fontAdded)
 		@writer.toolbarHelper.init()
-		
+
 		# Loop through and hide every toolbar item.
 		# That way when the toolbar is set below it will only have
 		# the correct items.
@@ -168,11 +176,11 @@ class Poe.ToolBar
 
 		# Set the current toolbar to show paragraph items
 		@setToolBar Poe.ToolBar.DynamicPart.Paragraph
-		
+
 		#Register handlers for when the text/paragraph style changed
 		@writer.toolbarHelper.addEventHandler 'textStyleChanged', @textStyleChanged
 		@writer.toolbarHelper.addEventHandler 'paragraphStyleChanged', @paragraphStyleChanged
-		
+
 		# Go ahead and update to match first word
 		@textStyleChanged @textStyle
 		@paragraphStyleChanged @paragraphStyle
@@ -183,7 +191,7 @@ class Poe.ToolBar
 		Page: 'Page'
 
 	###
-	Sets the current toolbar to the 
+	Sets the current toolbar to the
 	###
 	setToolBar: (dynamicPart) ->
 		if dynamicPart == @currentToolBar
@@ -300,3 +308,13 @@ class Poe.ToolBar
 	fontAdded: (name) =>
 		li = @elements.Paragraph.fonts.addItem(name)
 		li.css('font-family', "'#{name}'")
+
+	handleLineSpacingClicked: (event) =>
+		event.stopPropagation()
+		target = $(event.target)
+		size = parseFloat(target.html())
+		cursor = @writer.document.textCursor
+		pstyle = cursor.paragraphStyle
+		pstyle.setLineSpacing size
+		pstyle.apply()
+		@dropLineSpacing.childContainer.blur()

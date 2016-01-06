@@ -1,0 +1,2 @@
+#!/bin/sh
+/Users/ryan/Downloads/electron-v0.36.2-darwin-x64/Electron.app/Contents/MacOS/Electron ./

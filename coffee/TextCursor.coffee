@@ -150,9 +150,10 @@ class Poe.TextCursor
 
     @visibleCursor.css 'top', "#{offset.top}px"
     @visibleCursor.css 'left', "#{offset.left}px"
+    @visibleCursor.css 'bottom', "#{offset.top}px"
     @hiddenTextArea.css 'top', "#{offset.top}px"
     @hiddenTextArea.css 'left', "#{offset.left}px"
-    @visibleCursor.css 'height', "#{@textStyle.fontSize}pt"
+    @visibleCursor.css 'height', "#{@currentWord.height()}px"
     return this
 
   ###
@@ -317,6 +318,7 @@ class Poe.TextCursor
         line = paragraph.child(0)
         word = line.child(0)
         @textStyle.applyWord word
+
         while @element.nextSibling()
           word.element.append @element.nextSibling()
 
@@ -337,6 +339,7 @@ class Poe.TextCursor
         @textStyle.apply @currentWord
         if event.shiftKey
           @paragraphStyle.apply()
+        @paragraphStyle.apply()
         @paragraphStyle.update @currentParagraph()
         @doWordWrap()
 

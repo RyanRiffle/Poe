@@ -10,6 +10,7 @@ class Poe.ParagraphStyle extends Poe.Style
   constructor: (@textCursor) ->
     # This stuff is the default style
     @align = Poe.ParagraphStyle.Align.Left
+    @lineSpacing = 1
     @changedCallbacks = []
 
   ###
@@ -37,6 +38,13 @@ class Poe.ParagraphStyle extends Poe.Style
     if not paragraph instanceof Poe.Paragraph
       throw new Error('Argument must be a Poe.paragraph')
 
+    paragraph.element.attr 'x-lineSpacing', @lineSpacing
+    for line in paragraph.children
+        padding = @lineSpacing - 1
+        padding *= line.height()
+        console.log padding
+        line.element.css 'padding-bottom', padding + 'px'
+
     paragraph.element.attr 'align', @align
     @hasChanged()
     return this
@@ -56,6 +64,11 @@ class Poe.ParagraphStyle extends Poe.Style
     if not paragraph instanceof Poe.Paragraph
       throw new Error('Argument must be a Poe.paragraph')
 
+    # Line spacing for that paragraph is stored as attribute x-lineSpacing
+    @lineSpacing = paragraph.element.attr('x-lineSpacing')
+    if typeof @lineSpacing == 'undefined'
+      @lineSpacing = 1
+
     element = paragraph.element
     if element.attr('align') == Poe.ParagraphStyle.Align.Left
       @align = Poe.ParagraphStyle.Align.Left
@@ -67,6 +80,9 @@ class Poe.ParagraphStyle extends Poe.Style
       @align = Poe.ParagraphStyle.Align.Justify
 
     @hasChanged()
+
+  setLineSpacing: (spacing) ->
+    @lineSpacing = spacing
 
   ###
   "Enum" of paragraph alignments
