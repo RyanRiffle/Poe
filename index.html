@@ -1,44 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8"/>
-  <meta name="keywords" content="Word Processor"/>
-  <meta name="author" content="Ryan Riffle"/>
-  <meta name="description" content="A word processor built for the web"/>
-  <title>Poe</title>
-  <link rel="icon" type="image/png" href="favicon.png"/>
+	<meta charset="utf-8"/>
+	<meta name="keywords" content="Word Processor"/>
+	<meta name="author" content="Ryan Riffle"/>
+	<meta name="description" content="A word processor built for the web"/>
+	<title>Poe</title>
+	<link rel="icon" type="image/png" href="favicon.png"/>
 
-  <!-- External libraries -->
-  <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-  <script type="text/javascript" src="lib/pdfkit.min.js"></script>
-  <script type="text/javascript" src="lib/blob-stream.min.js"></script>
+	<!-- External libraries -->
+	<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="lib/pdfkit.min.js"></script>
+	<script type="text/javascript" src="lib/blob-stream.min.js"></script>
 
-  <script src='node_modules/bootstrap/dist/js/bootstrap.js'></script>
-  <script type="text/javascript" src="js/Poe.js"></script>
+	<script src='node_modules/bootstrap/dist/js/bootstrap.js'></script>
+	<script type="text/javascript" src="js/Poe.js"></script>
 
-  <!-- Setup the application when the document loads. -->
-  <script type="text/javascript">
-    $(document).ready(function() {
-        window.app = new Poe.Writer('#Poe');
-        //rtf = new Poe.FileFormat.RTF(window.app.document);
-    });
-  </script>
-  <link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
-  <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-  <link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
-  <link rel="stylesheet" type="text/css" media="screen" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
+	<!-- Setup the application when the document loads. -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+				window.app = new Poe.Writer('#Poe');
+				//rtf = new Poe.FileFormat.RTF(window.app.document);
+		});
+	</script>
+	<link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
+	<link rel="stylesheet" type="text/css" href="css/styles.css"/>
+	<link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
+	<link rel="stylesheet" type="text/css" media="screen" href="node_modules/bootstrap/dist/css/bootstrap.css"/>
 </head>
 <body>
-  <div class='toolbar'>
+	<div class='toolbar'>
 	<div class='dropdown'>
-	  <button id='dynamic' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
+		<button id='dynamic' class='btn btn-default dropdown-toggle font-select' type='button' data-toggle='dropdown' aria-expanded='false'>
 		<span class='text'>Paragraph</span>
-	  </button>
-	  <ul id="dynamic-list" class='dropdown-menu' aria-labelledby='dynamic' role='menu' data-toggle='dropdown' aria-expand='true'>
+		</button>
+		<ul id="dynamic-list" class='dropdown-menu' aria-labelledby='dynamic' role='menu' data-toggle='dropdown' aria-expand='true'>
 		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Paragraph</a></li>
 		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>List</a></li>
 		<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>Page</a></li>
-	  </ul>
+		</ul>
 	</div>
 
 	<!-- For Lists -->
@@ -47,37 +47,37 @@
 	<!-- For Page -->
 
 	<div class='dropdown' id='menu-container'>
-	  <button id='menu' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expaned='false' type='button'>
-	  <span class='glyphicon glyphicon-cog'></span>
-	  </button>
-	  <ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
-    <li id="file-open"><input type='file'/></li>
-	  <li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
-	  <li id="print-pdf"><a href="#">Create PDF</a></li>
-	  </ul>
+		<button id='menu' class='btn btn-default dropdown-toggle' data-toggle='dropdown' aria-expaned='false' type='button'>
+		<span class='glyphicon glyphicon-cog'></span>
+		</button>
+		<ul class='dropdown-menu' role='menu' aria-labelledby='menu' data-togle='dropdown' aria-expand='true'>
+		<li id="file-open"><input type='file'/></li>
+		<li id="about-application"><a href='#' data-target="#dialog-about" data-toggle='modal'>About Poe</a></li>
+		<li id="print-pdf"><a href="#">Create PDF</a></li>
+		</ul>
 	</div>
 
 	<div id="dialog-about" class='modal fade bs-example-modal-sm' tabindex='-1' role='dialog'
 	arialabelledby='about-application' aria-hidden='true'>
-	  <div class='modal-dialog'>
-	  <div class='modal-content'>
-	  <div class='modal-header'>
+		<div class='modal-dialog'>
+		<div class='modal-content'>
+		<div class='modal-header'>
 		<button type='button' class='close' data-dismiss='modal'>
-		  <span aria-hidden='true'>&times;</span>
-		  <span class='sr-only'>Close</span>
+			<span aria-hidden='true'>&times;</span>
+			<span class='sr-only'>Close</span>
 		</button>
 		<h4 class='modal-title' id='about-dialog-title'><a href="http://www.github.com/RyanRiffle/Poe">Poe</a></h4>
 		</div>
 
 		<div class='modal-body'>
 		<p>
-		  Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
+			Poe &mdash; A word processor built with HTML, CSS, and CoffeeScript
 		</p>
 		<p>
 		Poe uses <i>PDFKit</i> by Devon Govett. PDFKit's license can be viewed on <a href="https://raw.githubusercontent.com/devongovett/pdfkit/master/LICENSE">GitHub</a>.
 		</p>
 		<p>
-		  Poe uses fonts from fonts.google.com. To view each individual license provided by the font creators check it out on <a href="https://github.com/RyanRiffle/Poe/tree/master/fonts">GitHub</a>.
+			Poe uses fonts from fonts.google.com. To view each individual license provided by the font creators check it out on <a href="https://github.com/RyanRiffle/Poe/tree/master/fonts">GitHub</a>.
 		</p>
 		<!--<iframe style='display: inline-block' src="http://ghbtns.com/github-btn.html?user=RyanRiffle&repo=Poe&type=fork&count=true"
 		allowtransparency="true" frameborder="0" scrolling="0" width="165" height="20"></iframe>
@@ -90,24 +90,24 @@
 		<div class="modal-footer">
 		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		</div>
-	  </div>
-	  </div>
+		</div>
+		</div>
 	</div>
-  </div>
-  <div id="Poe"></div>
+	</div>
+	<div id="Poe"></div>
 
-  <div id="welcome">
-    <div class="page-header">
-      <center><h1>Poe</h1></center>
-    </div>
-      <div class="panel">
-        <div id="documents">
-          <div class="doc">
-            <a href="#">Poe</a>
-          </div>
-        </div>
-      </div>
-  </div>
-  </div>
+	<div id="welcome">
+		<div class="page-header">
+			<center><h1>Poe</h1></center>
+		</div>
+			<div class="panel">
+				<div id="documents">
+					<div class="doc">
+						<a href="#">Poe</a>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
 </body>
 </html>

@@ -1,17 +1,17 @@
 class Poe.ToolBarItem
-  constructor: ->
-    return
+	constructor: ->
+		return
 
-  parent: ->
-    return @element().parent()
+	parent: ->
+		return @element().parent()
 
-  hide: ->
-    return @element().hide()
+	hide: ->
+		return @element().hide()
 
-  show: ->
-    return @element().show()
+	show: ->
+		return @element().show()
 
-  
-  css: (key, value) ->
-    @element().css key, value
-    return this
+
+	css: (key, value) ->
+		@element().css key, value
+		return this

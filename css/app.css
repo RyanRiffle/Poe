@@ -1,278 +1,278 @@
 html, body {
-    width: 100%;
-    height: 100%;
-    padding: 0px;
-    margin: 0px;
-    overflow: hidden;
+		width: 100%;
+		height: 100%;
+		padding: 0px;
+		margin: 0px;
+		overflow: hidden;
 }
 
 .writer {
-    background-color: #F0F0F0;
-    padding-top: 12px;
-    padding-bottom: 24px;
-    -webkit-user-select: none;
-    user-select: none;
-    overflow-y: scroll;
-    width: 100%;
-    line-height: 1.4 !important;
-    font-family: 'Tinos' !important;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
+		background-color: #F0F0F0;
+		padding-top: 12px;
+		padding-bottom: 24px;
+		-webkit-user-select: none;
+		user-select: none;
+		overflow-y: scroll;
+		width: 100%;
+		line-height: 1.4 !important;
+		font-family: 'Tinos' !important;
+		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
 }
 
 .page {
-    -webkit-box-sizing: border-box;
-    outline: none;
+		-webkit-box-sizing: border-box;
+		outline: none;
 
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid #CBCBCB;
-    background-color: white;
-    margin-top: 12px;
-    cursor: text;
+		margin-left: auto;
+		margin-right: auto;
+		border: 1px solid #CBCBCB;
+		background-color: white;
+		margin-top: 12px;
+		cursor: text;
 
-    border: 1px solid rgba(0, 0, 0, 0.2);
+		border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .textcursor {
-    user-select: none;
-    margin-top: -1px;
+		user-select: none;
+		margin-top: -1px;
 }
 
 .textcursor::before {
-    /*content: '\200B';*/
+		/*content: '\200B';*/
 }
 
 .toolbar {
-    width: 100%;
+		width: 100%;
 
-    background: #f8f8f8; /* Old browsers */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
-    border-bottom: 1px solid #DDDDDD;
+		background: #f8f8f8; /* Old browsers */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f8f8', endColorstr='#f2f2f2',GradientType=0 ); /* IE6-9 */
+		border-bottom: 1px solid #DDDDDD;
 
-    font-family: 'Open Sans';
-    -webkit-user-select: none;
-    user-select: none;
-    z-index: 2;
+		font-family: 'Open Sans';
+		-webkit-user-select: none;
+		user-select: none;
+		z-index: 2;
 }
 
 .toolbar input {
-    border-radius: 3px;
-    border: 1px solid #C6C6C6;
-    background-color: transparent;
-    padding: 3px;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    margin-left: 12px;
-    outline: none;
+		border-radius: 3px;
+		border: 1px solid #C6C6C6;
+		background-color: transparent;
+		padding: 3px;
+		margin-top: 12px;
+		margin-bottom: 12px;
+		margin-left: 12px;
+		outline: none;
 }
 
 .toolbar .btn-default {
-    background-color: #FBFBFB !important;
+		background-color: #FBFBFB !important;
 }
 
 .toolbar button {
-    margin-top: 6px;
-    margin-bottom: 6px;
-    margin-left: 12px;
-    padding-left: 6px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    padding-right: 6px;
+		margin-top: 6px;
+		margin-bottom: 6px;
+		margin-left: 12px;
+		padding-left: 6px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		padding-right: 6px;
 }
 
 .btn-group btn {
-    border-radius: 0px !important;
+		border-radius: 0px !important;
 }
 
 .btn.btn-default.active {
-    box-shadow: none !important;
-    background-color: rgba(0, 0, 0, 0.035) !important;
+		box-shadow: none !important;
+		background-color: rgba(0, 0, 0, 0.035) !important;
 }
 
 .color-pick {
-    padding-left: 16px;
-    background-color: black;
-    border-radius: 4px;
-    float: right;
+		padding-left: 16px;
+		background-color: black;
+		border-radius: 4px;
+		float: right;
 }
 
 .font-select {
-    width: 150px;
-    text-align: left !important;
-    padding-right: 0px;
-    font-size: 10pt !important;
+		width: 150px;
+		text-align: left !important;
+		padding-right: 0px;
+		font-size: 10pt !important;
 }
 
 .btn-group {
-    display: inline-block;
-    margin-left: 12px;
+		display: inline-block;
+		margin-left: 12px;
 }
 
 .dropdown {
-    display: inline;
+		display: inline;
 }
 
 .btn-group button {
-    padding-right: 12px;
-    padding-left: 12px;
+		padding-right: 12px;
+		padding-left: 12px;
 }
 
 .visiblecursor {
-    position: absolute;
-    height: 14pt;
-    width: 2px;
-    background-color: black;
-    margin-right: -1px;
-    top: 0px;
-    left: 0px;
+		position: absolute;
+		height: 14pt;
+		width: 2px;
+		background-color: black;
+		margin-right: -1px;
+		top: 0px;
+		left: 0px;
 }
 
 .visiblecursor.hide {
-    display: none;
+		display: none;
 }
 
 .tab {
-    padding-left: 50px;
+		padding-left: 50px;
 }
 
 .selected {
-    background-color: #55C1EC;
-    color: white;
+		background-color: #55C1EC;
+		color: white;
 }
 
 .line {
-    margin: 0px;
-    margin-bottom: -2px;
-    width: 100%;
-    overflow: hidden;
+		margin: 0px;
+		margin-bottom: -2px;
+		width: 100%;
+		overflow: hidden;
 }
 
 .fontmetrics {
-    position: absolute;
-    left: -100px;
-    top: -100px;
+		position: absolute;
+		left: -100px;
+		top: -100px;
 }
 
 .btn {
-    border-radius: 2px !important;
+		border-radius: 2px !important;
 }
 
 .btn.btn-default {
-    outline: none !important;
-    background-color: transparent !important;
+		outline: none !important;
+		background-color: transparent !important;
 }
 
 .btn.bold {
-    font-weight: bold;
+		font-weight: bold;
 }
 
 .btn.italic {
-    font-weight: bold;
-    font-style: italic;
+		font-weight: bold;
+		font-style: italic;
 }
 
 .btn.underline {
-    font-weight: bold;
-    text-decoration: underline;
+		font-weight: bold;
+		text-decoration: underline;
 }
 
 #font-size-select .text {
-    padding-right: 15px;
-    text-align: left;
+		padding-right: 15px;
+		text-align: left;
 }
 
 #font-size-select .caret {
-    text-align: right;
+		text-align: right;
 }
 
 ::selection {
-    background: #55C1EC;
-    border: 1px solid blue;
-    color: white;
+		background: #55C1EC;
+		border: 1px solid blue;
+		color: white;
 }
 
 .color-list-item {
-    height: 48px;
-    width: 48px;
-    padding: 0px !important;
-    margin-left: 12px;
-    margin-bottom: 12px;
-    margin-top: 12px;
-    border-radius: 4px;
+		height: 48px;
+		width: 48px;
+		padding: 0px !important;
+		margin-left: 12px;
+		margin-bottom: 12px;
+		margin-top: 12px;
+		border-radius: 4px;
 }
 
 #color-list {
-    width: 200px;
+		width: 200px;
 }
 
 #color-list > li {
-    float: left;
+		float: left;
 }
 
 .paragraph {
-    width: 100%;
-    white-space:pre;
-    margin: 0px;
-    padding: 0px;
+		width: 100%;
+		white-space:pre;
+		margin: 0px;
+		padding: 0px;
 }
 
 #menu {
-  padding-left: 10px;
-  padding-right: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 #menu-container {
-  float: right;
-  margin-right: 12px;
+	float: right;
+	margin-right: 12px;
 }
 
 #menu-container ul {
-  left: -110px;
+	left: -110px;
 }
 
 .glyphicon {
-    pointer-events: none;
+		pointer-events: none;
 }
 
 #welcome {
-    display: none;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    z-index: 3;
+		display: none;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		z-index: 3;
 
-    background-color: #F4F4F4;
+		background-color: #F4F4F4;
 }
 
 #welcome > .page-header {
-    margin-bottom: 0px;
-    margin-top: 0px;
+		margin-bottom: 0px;
+		margin-top: 0px;
 }
 
 #welcome > .panel {
-    width: 100%;
-    height: 100%;
+		width: 100%;
+		height: 100%;
 }
 
 #welcome #documents {
-    margin: 12px;
+		margin: 12px;
 }
 
 #documents .doc {
-    display: inline-block;
-    height: 150px;
-    width: 150px;
+		display: inline-block;
+		height: 150px;
+		width: 150px;
 
-    background-color: #F1F1F1;
+		background-color: #F1F1F1;
 }
 
 .doc a {
-    width: 100%;
-    font-size: 24px;
-    text-align: center;
-    margin-top: 56px;
-    vertical-align: middle;
+		width: 100%;
+		font-size: 24px;
+		text-align: center;
+		margin-top: 56px;
+		vertical-align: middle;
 }

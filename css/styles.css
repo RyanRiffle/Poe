@@ -1,13 +1,13 @@
 .bold {
-    font-weight: bold;
+		font-weight: bold;
 }
 
 .italic {
-    font-style: italic;
+		font-style: italic;
 }
 
 .underline {
-    text-decoration: underline !important;
+		text-decoration: underline !important;
 }
 
 /* Nothing has to be done for align-left */
@@ -16,8 +16,8 @@
 }
 
 .align-center {
-    margin-left: auto;
-    margin-right: auto;
+		margin-left: auto;
+		margin-right: auto;
 }
 
 .align-right {
@@ -29,25 +29,25 @@
 }
 
 .align-right-spacer {
-    display: inline-block;
+		display: inline-block;
 }
 
 
 .list {
-    margin-bottom: 0px;
-    padding-bottom: 0px;    
+		margin-bottom: 0px;
+		padding-bottom: 0px;		
 }
 
 .list.bullet {
-    list-style-type: disc;
+		list-style-type: disc;
 }
 
 .list.number {
-    list-style-type: decimal;
+		list-style-type: decimal;
 }
 
 .list > li {
-    display: list-item !important;
-    width: auto !important;
-    overflow: visible;
+		display: list-item !important;
+		width: auto !important;
+		overflow: visible;
 }

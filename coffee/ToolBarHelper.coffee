@@ -13,7 +13,7 @@ class Poe.ToolBarHelper
 		$('body').keydown @handleShortcut
 
 	###
-	
+
 	###
 	init: () ->
 		@fontManager.loadDefaults()

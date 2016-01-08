@@ -53,7 +53,7 @@ class Poe.Dropdown extends Poe.ToolBarItem
 	###
 	Register an event callback. Valid events are:
 
-	itemClicked  -  called when an item is clicked
+	itemClicked	-	called when an item is clicked
 	###
 	on: (event, callback) ->
 		if event == 'itemClicked'

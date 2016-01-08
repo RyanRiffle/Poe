@@ -12,7 +12,7 @@ class Poe.PDF
 	###
 	constructor: (document) ->
 		@document = document
-		@margins  =
+		@margins	=
 			top: @document.margins.top * 0.75
 			bottom: @document.margins.bottom * 0.75
 			left: @document.margins.left * 0.75

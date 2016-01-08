@@ -71,7 +71,7 @@ class Poe.FontManager
 	###
 	Register an event callback. The current events available are:
 
-	newFont  -  called when a new font is added
+	newFont	-	called when a new font is added
 
 	@param event [string] the event to register
 	@param callback [function] the callback to be called when the event is fired.
