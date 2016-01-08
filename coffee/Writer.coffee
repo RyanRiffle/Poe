@@ -20,9 +20,9 @@ class Poe.Writer
 		@document = new Poe.Document()
 		@element = $ '<div class="writer"></div>'
 		if (!parentSelector)
-				$('body').append @element
+			$('body').append @element
 		else
-				$(parentSelector).append @element
+			$(parentSelector).append @element
 		@element.append @document.element
 
 		@toolbarHelper = new Poe.ToolBarHelper(this)
@@ -39,6 +39,6 @@ class Poe.Writer
 	###
 	windowResized: (event) =>
 		if (!Poe.OSjs)
-				@element.css('width', $('body').width())
-				@element.css('height', $('body').height()-@toolbar.element.height())
+			@element.css('width', $('body').width())
+			@element.css('height', $('body').height()-@toolbar.element.height())
 		@document.textCursor.update()

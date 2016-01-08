@@ -4,7 +4,7 @@ page margins and page size.
 ###
 Poe = Poe || {}
 class Poe.Document
-  	###
+	###
 	Create a new Poe.Document. Creating a document is only possible in {Poe.Writer}
 	in order for it to be shown in the DOM.
 	###

@@ -8,7 +8,7 @@ class Poe.Page extends Poe.TextObject
 	###
 	constructor: (document) ->
 			@children = []
-			@element = $ '<div class="page"></div>'
+			@element = $ '<div class="page" contentEditable></div>'
 			$('body').append(@element)
 			@setParent document
 

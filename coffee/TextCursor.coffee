@@ -26,8 +26,10 @@ class Poe.TextCursor
 		@mouseIsMoving = false
 		inside.prepend @element
 		$('body').keydown(@keyEvent)
-		@currentPage().parent.element.click @handleClick
-		@currentPage().parent.element.
+		@currentPage().parent.element.mousedown @handleMouseDown
+		@currentPage().parent.element.mouseup @handleMouseUp
+		@currentPage().parent.element.mousemove @handleMouseMove
+
 		@textStyle = new Poe.TextStyle(this)
 		@textStyle.applyWord @currentWord
 
@@ -159,6 +161,19 @@ class Poe.TextCursor
 		@hiddenTextArea.css 'left', "#{offset.left}px"
 		@visibleCursor.css 'height', "#{@currentWord.height()}px"
 		return this
+
+	removeSelection: ->
+		range = document.getSelection()
+		if !range.focusNode.nextSibling || !range.containsNode(range.focusNode.nextSibling)
+			$(range.focusNode).after @element
+			@currentWord = @document.objectFromElement(range.focusNode.parentNode)
+		if !range.baseNode.nextSibling || !range.containsNode(range.baseNode.nextSibling)
+			$(range.baseNode).after @element
+			@currentWord = @document.objectFromElement(range.baseNode.parentNode)
+
+		while range.containsNode(@currentWord.prevSibling().element[0])
+			@currentWord.prevSibling().remove()
+		@show()
 
 	###
 	Fixes word wrap. Starts off by calling {Poe.TextCursor#paragraphStyleChanged} then
@@ -427,14 +442,35 @@ class Poe.TextCursor
 		@doWordWrap()
 		@show()
 
-		handleMouseDown: (event) =>
+	handleMouseDown: (event) =>
+		if @lastClick == null
 			@lastClick = {x: event.clientX, y: event.clientY}
+			@lastClickedWord = @findClickedNode(@lastClick.x, @lastClick.y, $(event.target))
+			console.log @lastClickedWord
+
+	handleMouseMove: (event) =>
+		if @lastClick == null
+			return
+
+		@hide()
 
 	handleMouseUp: (event) =>
-			thisClick = {x: event.clientX, y: event.clientY}
-			target = $(event.target)
-			self = this
+		[x, y] = [event.clientX, event.clientY]
+		thisClick = {x: x, y: y}
+		if thisClick.x != @lastClick.x && thisClick.y != @lastClick.y
+			return
 
+		@lastClick = null
+		target = $(event.target)
+		self = this
+
+		@findClickedNode(x, y, target, true)
+		@textStyle.update(@currentWord)
+		@paragraphStyle.update @currentParagraph()
+		@show()
+
+	findClickedNode: (x, y, target, moveCursor = false) ->
+		self = this
 		# Checks if the mouse click was around the right area, only allows for excess on the x axis
 		checkRelative = (element) =>
 			pos = element.offset()
@@ -461,23 +497,30 @@ class Poe.TextCursor
 
 				if x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
 					self.currentWord = self.currentPage().parent.objectFromElement(word)
-					$(node).before self.element
+					$(node).before self.element if moveCursor
+					return data =
+						rect: rect
+						node: $(node)
 					break
 
 		findInLine = (line) =>
 			if x < line.children().first().offset().left
 				word = line.children().first()
-				self.currentWord = self.currentPage().parent.objectFromElement(word)
-				word.prepend self.element
+				if moveCursor
+					self.currentWord = self.currentPage().parent.objectFromElement(word)
+					word.prepend self.element
+				return word
 			else if x > line.children().last().offset().left + line.children().last().width()
 				word = line.children().last()
-				self.currentWord = self.currentPage().parent.objectFromElement(word)
-				word.append self.element
+				if moveCursor
+					self.currentWord = self.currentPage().parent.objectFromElement(word)
+					word.append self.element
+				return word
 			else
 				for child in line.children()
 					child = $(child)
 					if checkAbsolute(child)
-						findInWord(child)
+						return findInWord(child)
 						break
 
 		findInParagraph = (paragraph) =>
@@ -491,36 +534,34 @@ class Poe.TextCursor
 			last = page.children().last()
 			if y > last.position().top + last.height()
 				word = last.children().last().children().last()
-				word.append @element
-				@currentWord = @document.objectFromElement(word)
-				return
+				if moveCursor
+					word.append @element
+					@currentWord = @document.objectFromElement(word)
+				return word
 
 			first = page.children().first()
 			if y < first.position().top
 				word = first.children().first().children().first()
-				word.prepend @element
-				@currentWord = @document.objectFromElement(word)
-				return
+				if moveCursor
+					word.prepend @element
+					@currentWord = @document.objectFromElement(word)
+				return word
 
 			for child in page.children()
 				child = $(child)
 				if checkRelative(child)
-					findInParagraph(child)
+					return findInParagraph(child)
 					break
 
 		obj = @document.objectFromElement(target)
 		if obj instanceof Poe.Page
-			findInPage(target)
+			return findInPage(target)
 		else if obj instanceof Poe.Paragraph
-			findInParagraph(target)
+			return findInParagraph(target)
 		else if obj instanceof Poe.Line
-			findInLine(target)
+			return findInLine(target)
 		else if obj instanceof Poe.Word
-			findInWord(target)
-		@textStyle.update(@currentWord)
-		@paragraphStyle.update @currentParagraph()
-		@show()
-
+			return findInWord(target)
 
 	###
 	Callback registered with {Poe.ParagraphStyle} that will update the whole

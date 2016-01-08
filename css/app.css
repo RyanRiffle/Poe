@@ -10,8 +10,6 @@ html, body {
 		background-color: #F0F0F0;
 		padding-top: 12px;
 		padding-bottom: 24px;
-		-webkit-user-select: none;
-		user-select: none;
 		overflow-y: scroll;
 		width: 100%;
 		line-height: 1.4 !important;
@@ -250,6 +248,7 @@ html, body {
 #welcome > .page-header {
 		margin-bottom: 0px;
 		margin-top: 0px;
+		z-index: -2;
 }
 
 #welcome > .panel {
