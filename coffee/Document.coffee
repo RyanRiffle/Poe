@@ -21,6 +21,7 @@ class Poe.Document
 		@pdf = new Poe.PDF (this)
 		@append new Poe.Page()
 		@textCursor = new Poe.TextCursor(@children[0].child(0).child(0).child 0)
+		@buffer = []
 
 	###
 	Gets the child page at index.

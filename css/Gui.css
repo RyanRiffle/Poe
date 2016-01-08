@@ -1,0 +1,24 @@
+html, body, #Poe, .writer {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+body * {
+	box-sizing: border-box;
+}
+
+.writer {
+	background-color: #E6E6E6;
+	padding-top: 12px;
+	overflow-y: scroll;
+	overflow-x: auto;
+}
+
+.page {
+	margin-left: auto;
+	margin-right: auto;
+
+	background-color: white;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}

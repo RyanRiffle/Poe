@@ -4,53 +4,17 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		concat: {
-				core: {
-						src: [
-								"coffee/Poe.coffee",
-								"coffee/ToolBarHelper.coffee",
-								"coffee/Standalone/ToolBar.coffee",
-								"coffee/Standalone/ToolBarItem.coffee",
-								"coffee/Standalone/Glyphicon.coffee",
-								"coffee/Standalone/Button.coffee",
-								"coffee/Standalone/ButtonGroup.coffee",
-								"coffee/Standalone/Dropdown.coffee",
+				poe: {
+					src: [
+						"rewrite/Poe.js",
+						"rewrite/DomElement.js",
+						"rewrite/EventHandler.js",
+						"rewrite/TextBuffer.js",
+						"rewrite/Writer.js",
+						"rewrite/Document.js"
+					],
 
-								"coffee/Writer.coffee",
-								"coffee/TextObject.coffee",
-								"coffee/FontManager.coffee",
-						],
-						dest: "js/01_Core.coffee"
-				},
-
-				textObjects: {
-						src: [
-								"coffee/Word.coffee",
-								"coffee/Style.coffee",
-								"coffee/TextStyle.coffee",
-								"coffee/ParagraphStyle.coffee",
-								"coffee/TextCursor.coffee",
-								"coffee/Document.coffee",
-								"coffee/Page.coffee",
-								"coffee/Paragraph.coffee",
-								"coffee/Line.coffee",
-								"coffee/ListItem.coffee",
-								"coffee/List.coffee"
-						],
-						dest: "js/02_TextObjects.coffee"
-				},
-
-				input: {
-						src: [
-								"coffee/Keymap.coffee",
-						],
-						dest: "js/03_Input.coffee"
-				},
-
-				fileFormats: {
-						src: [
-								"coffee/FileFormat/PDF.coffee",
-						],
-						dest: "js/05_FileFormats.coffee"
+					dest: "js/Poe.js"
 				}
 		},
 
@@ -91,6 +55,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Default task(s).
-	grunt.registerTask('default', ['concat', 'coffee']);
+	grunt.registerTask('default', ['concat']);
 	grunt.registerTask('watch', ['watch']);
 };
