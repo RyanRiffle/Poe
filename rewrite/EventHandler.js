@@ -6,9 +6,9 @@ class EventHandler {
 	constructor(acceptedEvents) {
 		this._evtCallbacks = {};
 
-		acceptedCallbacks.forEach(function(evt) {
-			this._evtCallbacks[evt] = [];
-		});
+		for (var i = 0; i < acceptedEvents.length; i++) {
+			this._evtCallbacks[acceptedEvents[i]] = [];
+		}
 	}
 
 	on(evt, cb) {
@@ -21,7 +21,7 @@ class EventHandler {
 
 	emit(evt, args) {
 		this._evtCallbacks[evt].forEach(function(cb) {
-			cb.apply(arguments.callee, args);
+			cb();
 		});
 	}
 }

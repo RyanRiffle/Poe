@@ -7,6 +7,10 @@ class TextBuffer extends Poe.EventHandler {
 		this.buf = [];
 	}
 
+	append(ins) {
+		this.buf.push(ins);
+	}
+
 	insertAt(ins, at) {
 		this.buf.splice(at, 0, ins);
 	}
@@ -15,8 +19,18 @@ class TextBuffer extends Poe.EventHandler {
 		return this.buf.indexOf(it);
 	}
 
+	splice(i, rmCnt, it) {
+		this.buf.splice(i, rmCnt, it);
+		if (rmCnt === 1 && it === undefined)
+		this.buf.splice(i, rmCnt);
+	}
+
 	at(ind) {
 		return this.buf[ind];
+	}
+
+	setDirty() {
+		this.emit('changed');
 	}
 
 	get length() {

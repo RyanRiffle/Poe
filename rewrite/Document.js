@@ -14,6 +14,8 @@ class Document extends Poe.DomElement {
 			right: 1
 		});
 
+		this.buffer = null;
+		this.inputHandler = new Poe.InputHandler();
 		this._init();
 	}
 
@@ -49,15 +51,18 @@ class Document extends Poe.DomElement {
 	}
 
 	append(child) {
-		$css(child, 'height', $pxStr(this._pageSize.h));
-		$css(child, 'width', $pxStr(this._pageSize.w));
+		this._stylePage(child);
 		super.append(child);
 	}
 
 	prepend(child) {
-		$css(child, 'height', $pxStr(this._pageSize.h));
-		$css(child, 'width', $pxStr(this._pageSize.w));
+		this._stylePage(child);
 		super.prepend(child);
+	}
+
+	show() {
+		super.show();
+		this.caret.show();
 	}
 
 	/**************************************************************************
@@ -69,10 +74,31 @@ class Document extends Poe.DomElement {
 		 var line = Poe.ElementGenerator.createLine();
 		 var word = Poe.ElementGenerator.createWord();
 
+		 /*
+		 	The text node is so the caret has something
+			to base it's positions off of when it gets inserted
+			into the DOM.
+		 */
+		 var textNode = document.createTextNode(String.fromCharCode(8203));
+		 $append(textNode, word);
 		 $append(word, line);
 		 $append(line, paragraph);
 		 $append(paragraph, page);
 		 this.append(page, this.elm);
+
+		 this.buffer = new Poe.TextBuffer();
+		 this.caret = new Poe.Caret();
+		 this.caret.setBuffer(this.buffer);
+		 this.inputHandler.setCaret(this.caret);
+	 }
+
+	 _stylePage(page) {
+		 $css(page, 'height', $pxStr(this._pageSize.h));
+		 $css(page, 'width', $pxStr(this._pageSize.w));
+		 $css(page, 'padding-left', $pxStr($inchToPx(this._margins.left)));
+		 $css(page, 'padding-right', $pxStr($inchToPx(this._margins.right)));
+		 $css(page, 'padding-top', $pxStr($inchToPx(this._margins.top)));
+		 $css(page, 'padding-bottom', $pxStr($inchToPx(this._margins.bottom)));
 	 }
 }
 

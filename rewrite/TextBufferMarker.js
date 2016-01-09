@@ -11,37 +11,61 @@ class TextBufferMarker {
 	}
 
 	insertBefore(it) {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.insertAt(it, myIndex);
+		var myIndex = this.remove();
+		return myIndex;
 	}
 
 	insertAfter(it) {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.insertAt(it, myIndex + 1);
+		var myIndex = this.remove();
+		return myIndex + 1;
 	}
 
 	moveLeft() {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.splice(myIndex, 1);
+		var myIndex = this.remove();
 		this.buffer.splice(myIndex - 1, 0, this);
+		return myIndex - 1;
 	}
 
 	moveRight() {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.splice(myIndex, 1);
+		var myIndex = this.remove();
 		this.buffer.splice(myIndex + 1, 0, this);
+
+		return myIndex + 1;
 	}
 
 	moveBeginning() {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.splice(myIndex, 1);
-		this.buffer.splice(0, 0, this);
+		var myIndex = this.remove();
+		this.buffer.splice(1, 0, this);
 	}
 
 	moveEnd() {
-		var myIndex = this.buffer.indexOf(this);
-		this.buffer.splice(myIndex, 1);
+		var myIndex = this.remove();
 		this.buffer.splice(this.buffer.length, 0, this);
+	}
+
+	remove() {
+		var myIndex = this.buffer.indexOf(this);
+		if (myIndex != -1)
+			this.buffer.splice(myIndex, 1);
+		return myIndex;
+	}
+
+	get nextSibling() {
+		var myIndex = this.buffer.indexOf(this);
+		if (myIndex != this.buffer.length - 1) {
+			return this.buffer.at(myIndex + 1);
+		}
+
+		return null;
+	}
+
+	get previousSibling() {
+		var myIndex = this.buffer.indexOf(this);
+		if (myIndex > 0) {
+			return this.buffer.at(myIndex - 1);
+		}
+
+		return null;
 	}
 }
 

@@ -8,7 +8,8 @@ window.Poe = window.Poe || {
 
 Poe.init = function(parentSelector) {
 	window.app = new Poe.Writer(parentSelector);
-	app.setDocument(new Poe.Document());
+	var doc = new Poe.Document();
+	app.setDocument(doc);
 	app.show();
 };
 
