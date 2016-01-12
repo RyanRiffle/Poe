@@ -20,6 +20,7 @@ class Caret extends Poe.TextBufferMarker {
 	setBuffer(buf) {
 		super.setBuffer(buf);
 		this.buffer.on('changed', this._evtBufferChanged);
+		window.addEventHandler
 		if (this.buffer.length != 0)
 			this.moveBeginning();
 		else
@@ -96,6 +97,7 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		return prev;
 	}
 
 	removeNextSibling() {
@@ -107,6 +109,19 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		return next;
+	}
+
+	moveBefore(node) {
+		var nodeIndex = this.buffer.indexOf(node);
+		this.moveTo(nodeIndex);
+		$insertBefore(this.elm, node);
+	}
+
+	moveAfter(node) {
+		var nodeIndex = this.buffer.indexOf(node);
+		this.moveTo(nodeIndex + 1);
+		$insertAfter(this.elm, node);
 	}
 
 	get currentWord() {
@@ -122,7 +137,7 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	_updateGeometry() {
-		var rect = this.elm.getBoundingClientRect();
+		var rect = $getBoundingClientRect(this.elm);
 		$css(this.visibleElm, 'height', $pxStr(rect.height));
 		$css(this.visibleElm, 'top', $pxStr(rect.top));
 		$css(this.visibleElm, 'left', $pxStr(rect.left));

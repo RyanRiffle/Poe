@@ -17,12 +17,19 @@ class InputHandler extends Poe.DomElement {
 		window.addEventListener('keydown', this.onKeyDown);
 		window.addEventListener('mousedown', this.onMouseDown);
 		window.addEventListener('mouseup', this.onMouseUp);
+		window.addEventListener('mousemove', this.onMouseMove);
 		this.elm.focus();
-
+		this._selection = document.createRange();
+		this._selectBox = document.createElement('div');
+		$addClass(this._selectBox, 'select-box');
+		$hide(this._selectBox);
+		$append(this._selectBox, document.body);
+		this._hasSelection = false;
 	}
 
 	setCaret(caret) {
 		this.caret = caret;
+		this.textBuffer = caret.buffer;
 	}
 
 	onInput(event) {
@@ -45,18 +52,40 @@ class InputHandler extends Poe.DomElement {
 
 		switch(event.keyCode) {
 			case Poe.Keysym.Backspace:
+				if (self.hasSelection) {
+					self._deleteSelection();
+					break;
+				}
 				self.caret.removePreviousSibling();
 				break;
 
 			case Poe.Keysym.Delete:
+				if (self.hasSelection) {
+					self._deleteSelection();
+					break;
+				}
 				self.caret.removeNextSibling();
 				break;
 
 			case Poe.Keysym.Left:
+				if (self.hasSelection) {
+					self.caret.moveBefore(self._startNode);
+					self._clearSelection();
+					self.caret.show();
+					break;
+				}
+
 				self.caret.moveLeft();
 				break;
 
 			case Poe.Keysym.Right:
+				if (self.hasSelection) {
+					self.caret.moveAfter(self._endNode);
+					self._clearSelection();
+					self.caret.show();
+					break;
+				}
+
 				self.caret.moveRight();
 				break;
 
@@ -82,16 +111,201 @@ class InputHandler extends Poe.DomElement {
 
 				$append(self.caret.elm, word);
 				break;
+
+			case Poe.Keysym.Enter:
+				var npg = Poe.ElementGenerator.createParagraph();
+				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
+
+				var nl = Poe.ElementGenerator.createLine();
+				var nw = Poe.ElementGenerator.createWord();
+				$insertAfter(npg, cpg);
+				$append(nl, npg);
+				$append(nw, nl);
+				$append(self.caret.elm, nw);
+				break;
 		}
 	}
 
 	onMouseDown(event) {
-		self.elm.focus();
+		if (self._mouseDownPos) {
+			return;
+		}
+
+		self.setHasSelection(false);
+		self._clearSelection();
+		self._mouseDownPos = {
+			x: event.clientX,
+			y: event.clientY
+		};
+
+		self._startNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+		self._baseNode = self._startNode;
+		console.log('_startNode: ', self._startNode);
+	}
+
+	onMouseMove(event) {
+		if (!self._mouseDownPos) {
+			return;
+		}
+
+		if (event.clientX == self._mouseDownPos.x && event.clientY == self._mouseDownPos.y)
+			return;
+
+		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+
+		if (node === self._endNode || node === self._baseNode) {
+			return;
+		}
+
+		if (node === null) {
+			app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+		}
+
+		self.setHasSelection(true);
+		self._endNode = node;
+		self._startNode = self._baseNode;
+		if ($isNodeBeforeNode(self._endNode, self._baseNode)) {
+			let tmp = self._baseNode;
+			self._startNode = self._endNode;
+			self._endNode = tmp;
+		}
+
+		self._clearSelection();
+
+		var currentLine = self._startNode.parentNode.parentNode;
+		var startX = $getBoundingClientRect(self._startNode).left;
+		var lineRect = $getBoundingClientRect(currentLine);
+		var endX;
+		/*
+			If the mideNode is on the same line as the startNode
+			just create a selection around that line.
+		*/
+		if (currentLine.contains(self._endNode)) {
+			endX = $getBoundingClientRect(self._endNode).right - startX;
+			self._createSelection(startX, lineRect.top, endX, lineRect.height);
+			$addClass(currentLine, 'selected');
+			return;
+		}
+
+		self._createSelection(startX, lineRect.top, lineRect.right - startX, lineRect.height);
+		$addClass(currentLine, 'selected');
+		var endIndex = self.textBuffer.indexOf(self._endNode);
+		var startIndex = self.textBuffer.indexOf(self._startNode);
+		var n;
+		while (currentLine === self._startNode.parentNode.parentNode) {
+			n = self.textBuffer.at(startIndex);
+			if (n.parentNode.parentNode !== currentLine) {
+				currentLine = n.parentNode.parentNode;
+				break;
+			}
+			startIndex += 1;
+		}
+
+		for (var i = startIndex; i <= endIndex; i++) {
+			if ((n = self.textBuffer.at(i).parentNode.parentNode) !== currentLine) {
+				currentLine = n;
+			}
+
+			if (!currentLine.contains(self._endNode)) {
+				if (!$hasClass(currentLine, 'selected')) {
+					let lastWord = currentLine.childNodes[currentLine.childNodes.length - 1];
+					lineRect = $getBoundingClientRect(currentLine);
+					endX = $getBoundingClientRect(lastWord).right - lineRect.left;
+					self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
+					$addClass(currentLine, 'selected');
+				}
+			} else {
+				break;
+			}
+		}
+
+		lineRect = $getBoundingClientRect(currentLine);
+		endX = $getBoundingClientRect(self._endNode).right - lineRect.left;
+		self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
+		$addClass(currentLine, 'selected');
 	}
 
 	onMouseUp(event) {
-		self.elm.focus();
-		self.caret._startBlink();
+		if (!self.hasSelection) {
+			self.elm.focus();
+			self.caret._startBlink();
+		}
+		self._mouseDownPos = null;
+	}
+
+	setHasSelection(value) {
+		this._hasSelection = value;
+		if (value) {
+			this.caret.hide();
+		} else {
+			this.caret.show();
+			this._clearSelection();
+		}
+	}
+
+	get hasSelection() {
+		return this._hasSelection;
+	}
+
+	/**************************************************************************
+ 	* PRIVATE FUNCTIONS                                                      *
+ 	**************************************************************************/
+	_selectElement(elm) {
+		var rect = elm.getBoundingClientRect();
+		this._createSelection(rect.left, rect.top, rect.width, rect.height);
+		$addClass(elm, 'selected');
+	}
+
+	_createSelection(x, y, w, h) {
+		var sb = document.createElement('div');
+		$addClass(sb, 'select-box');
+		sb.style.left = $pxStr(x);
+		sb.style.top = $pxStr(y);
+		sb.style.width = $pxStr(w);
+		sb.style.height = $pxStr(h);
+		$append(sb, document.body);
+		$show(sb);
+	}
+
+	_clearSelection() {
+		var selects = document.querySelectorAll('.select-box');
+		for (var i = 0; i < selects.length; i++) {
+			selects[i].remove();
+		}
+
+		var selectedElms = document.querySelectorAll('.selected');
+		for (var i = 0; i < selectedElms.length; i++) {
+			$removeClass(selectedElms[i], 'selected');
+		}
+	}
+
+	_deleteSelection() {
+		if (!this.hasSelection) {
+			return false;
+		}
+
+		this.caret.moveBefore(this._startNode);
+
+		var startI = this.textBuffer.indexOf(this._startNode);
+		var endI = this.textBuffer.indexOf(this._endNode);
+		var node;
+
+		while ((node = this.textBuffer.removeAt(startI))) {
+			if (node === this.caret.elm) {
+				startI += 1;
+				continue;
+			}
+
+			if (node === this._endNode) {
+				node.remove();
+				break;
+			}
+
+			node.remove();
+		}
+
+		this.setHasSelection(false);
+		this.textBuffer.setDirty();
 	}
 }
 

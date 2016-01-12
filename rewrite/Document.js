@@ -65,6 +65,176 @@ class Document extends Poe.DomElement {
 		this.caret.show();
 	}
 
+	getNodeAtPoint(x, y) {
+
+	}
+
+	getNodeClosestToPoint(x, y) {
+		var page, paragraph, line, word, char, range;
+		var bContains;
+		var i;
+		var found = false;
+		for (i = 0; i < this.elm.childNodes.length; i++) {
+			page = this.elm.childNodes[i];
+			bContains = $posInsideNode(x, y, page);
+			if (bContains & Poe.Contains.VERTICAL) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			return null;
+		}
+		found = false;
+
+		var firstParagraph = page.childNodes[0];
+		if ($posAboveNode(y, firstParagraph)) {
+			let firstLine = firstParagraph.childNodes[0];
+			let firstWord = firstLine.childNodes[0]
+			let firstChar = firstWord.childNodes[0];
+
+			if (firstChar === this.caret.elm) {
+				return this.caret.nextSibling;
+			}
+
+			return firstChar;
+		}
+
+		var lastParagraph = page.childNodes[page.childNodes.length - 1];
+		if ($posBelowNode(y, lastParagraph)) {
+			let lastLine = lastParagraph.childNodes[lastParagraph.childNodes.length - 1];
+			let lastWord = lastLine.childNodes[lastLine.childNodes.length - 1];
+			let lastChar = lastWord.childNodes[lastWord.childNodes.length - 1];
+
+			if (lastChar === this.caret.elm) {
+				return this.caret.previousSibling;
+			}
+
+			return lastChar;
+		}
+
+		for (i = 0; i < page.childNodes.length; i++) {
+			paragraph = page.childNodes[i];
+			bContains = $posInsideNode(x, y, paragraph);
+			if (bContains & Poe.Contains.VERTICAL) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			return null;
+		}
+		found = false;
+
+		for (i = 0; i < paragraph.childNodes.length; i++) {
+			line = paragraph.childNodes[i];
+			bContains = $posInsideNode(x, y, line);
+			if (bContains & Poe.Contains.VERTICAL) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			return null;
+		}
+		found = false;
+
+		/*
+			Here we check to see if the click was before the first word
+			on the line or after the last word of the line. If so select
+			the first or last character in the line respectively.
+		*/
+		var firstChild = line.childNodes[0];
+		var lastChild = line.childNodes[line.childNodes.length - 1];
+		var rect = firstChild.getBoundingClientRect();
+		if (x < rect.left) {
+			if (firstChild.childNodes[0]) {
+				if (firstChild.childNodes[0] === this.caret.elm) {
+					return this.caret.nextSibling;
+				}
+				return firstChild.childNodes[0];
+			}
+		}
+		rect = lastChild.getBoundingClientRect();
+		if (x > rect.right) {
+			let wordChildren = lastChild.childNodes;
+			let wordLastChild = wordChildren[wordChildren.length - 1];
+			if (wordLastChild === this.caret.elm) {
+				return this.caret.previousSibling;
+			}
+			return wordLastChild;
+		}
+
+		/*
+			If it made it this far the click was actually within the
+			complete bounds of the line (including words available in line).
+			Keep searching down the tree in words and characters.
+		*/
+		for (i = 0; i < line.childNodes.length; i++) {
+			word = line.childNodes[i];
+			bContains = $posInsideNode(x, y, word);
+			if (bContains === Poe.Contains.BOTH) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			return null;
+		}
+		found = false;
+
+		var rect = null;
+		for (i = 0; i < word.childNodes.length; i++) {
+			char = word.childNodes[i];
+			rect = $getBoundingClientRect(char);
+			if (rect.left <= x && rect.right >= x) {
+				if (rect.top <= y && rect.bottom >= y) {
+					found = true;
+					break;
+				}
+			}
+		}
+
+		if (!found) {
+			return null;
+		}
+
+		return char;
+	}
+
+	findNodeContainingPointInTree(node, x, y, deep, acceptedContains) {
+		var currentNode = node;
+		var bContains = null;
+		var bAcceptedContains = false;
+		var tmpChildNode = null;
+		for (var d = 0; d < deep; d++) {
+			for(var i = 0; i < currentNode.childNodes.length; i++) {
+				tmpChildNode = currentNode.childNodes[i];
+				bContains = $posInsideNode(x, y, tmpChildNode);
+				for (var e = 0; e < acceptedContains.length; e++) {
+					if (bContains === acceptedContains[e]) {
+						bAcceptedContains = true;
+						break;
+					}
+				}
+
+				if (!bAcceptedContains) {
+					return currentNode;
+				}
+				bAcceptedContains = true;
+				currentNode = tmpChildNode;
+			}
+		}
+
+		return (currentNode === node ? null : currentNode);
+	}
+
+
+
 	/**************************************************************************
 	 * PRIVATE FUNCTIONS                                                      *
 	 **************************************************************************/
@@ -90,6 +260,7 @@ class Document extends Poe.DomElement {
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
 		 this.inputHandler.setCaret(this.caret);
+		 this.textLayout = new Poe.TextLayout(this);
 	 }
 
 	 _stylePage(page) {

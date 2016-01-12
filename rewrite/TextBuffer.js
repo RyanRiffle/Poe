@@ -25,6 +25,12 @@ class TextBuffer extends Poe.EventHandler {
 		this.buf.splice(i, rmCnt);
 	}
 
+	removeAt(ind) {
+		var it = this.at(ind);
+		this.buf.splice(ind, 1);
+		return it;
+	}
+
 	at(ind) {
 		return this.buf[ind];
 	}

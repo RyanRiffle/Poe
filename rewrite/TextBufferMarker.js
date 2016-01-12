@@ -11,12 +11,14 @@ class TextBufferMarker {
 	}
 
 	insertBefore(it) {
-		var myIndex = this.remove();
+		var myIndex = this.buffer.indexOf(this);
+		this.buffer.splice(myIndex, 0, it);
 		return myIndex;
 	}
 
 	insertAfter(it) {
-		var myIndex = this.remove();
+		var myIndex = this.buffer.indexOf(this);
+		this.buffer.splice(myIndex + 1, 0, it);
 		return myIndex + 1;
 	}
 
@@ -41,6 +43,11 @@ class TextBufferMarker {
 	moveEnd() {
 		var myIndex = this.remove();
 		this.buffer.splice(this.buffer.length, 0, this);
+	}
+
+	moveTo(index) {
+		this.remove();
+		this.buffer.splice(index, 0, this);
 	}
 
 	remove() {
