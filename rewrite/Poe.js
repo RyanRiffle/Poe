@@ -11,9 +11,16 @@ Poe.init = function(parentSelector) {
 	var doc = new Poe.Document();
 	app.setDocument(doc);
 	app.show();
+
+	var note = new Notification('Title', {
+		body: 'Lorem ipsum dolor sit amet.'
+	});
 };
 
 window.$addClass = function(elm, className) {
+	if (elm.className.indexOf(className) !== -1) {
+		return;
+	}
 	elm.className += ' ' + className;
 };
 
@@ -86,6 +93,99 @@ window.$show = function(elm) {
 
 window.$hide = function(elm) {
 	$addClass(elm, 'hidden');
+};
+
+window.$posAboveNode = function(y, node) {
+	var rect = node.getBoundingClientRect();
+	if (rect.top > y) {
+		return true;
+	}
+	return false;
+};
+
+window.$posBelowNode = function(y, node) {
+	var rect = node.getBoundingClientRect();
+	if (rect.bottom < y) {
+		return true;
+	}
+	return false;
+};
+
+window.$posLeftOfNode = function(x, node) {
+	var rect = node.getBoundingClientRect();
+	if (rect.left > x) {
+		return true;
+	}
+	return false;
+};
+
+window.$posRightOfNode = function(x, node) {
+	var rect = node.getBoundingClientRect();
+	if (rect.right < x) {
+		return true;
+	}
+	return false;
+};
+
+window.$posInsideNode = function(x, y, node) {
+	var rect = node.getBoundingClientRect();
+	var ret = Poe.Contains.NONE;
+	if (rect.left <= x && rect.right >= x) {
+		ret |= Poe.Contains.HORIZONTAL;
+	}
+	if (rect.top <= y && rect.bottom >= y) {
+		ret |= Poe.Contains.VERTICAL;
+	}
+
+	return ret;
+};
+
+window.$isNodeBeforeNode = function(node1, node2) {
+	var nrect;
+	var nrect2;
+
+	if (node1.nodeType === 3) {
+		nrect = $getBoundingClientRect(node1);
+	} else {
+		nrect = node1.getBoundingClientRect();
+	}
+
+	if (node2.nodeType === 3) {
+		nrect2 = $getBoundingClientRect(node2);
+	} else {
+		nrect2 = node2.getBoundingClientRect();
+	}
+
+	if (nrect.top < nrect2.top) {
+		return true;
+	} else if (nrect2.top < nrect.top) {
+		return false;
+	}
+
+	if (nrect.left < nrect2.left) {
+		return true;
+	} else if (nrect2.left < nrect.left) {
+		return false;
+	}
+
+	return undefined;
+};
+
+window._range = document.createRange();
+window.$getBoundingClientRect = function(node) {
+	if (node.nodeType === 3) {
+		window._range.selectNode(node);
+		return window._range.getBoundingClientRect();
+	}
+
+	return node.getBoundingClientRect();
+};
+
+Poe.Contains = {
+	NONE: 0x0,
+	VERTICAL: 0x01,
+	HORIZONTAL: 0x02,
+	BOTH: 0x01 | 0x02
 };
 
 })();

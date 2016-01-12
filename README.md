@@ -57,3 +57,4 @@ The documentation is stored in `doc`
 
 #### Note
 Poe has only been tested in Google Chrome at this time since it is being used in the development process.
+ 

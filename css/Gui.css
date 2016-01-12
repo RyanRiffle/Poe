@@ -13,6 +13,7 @@ body * {
 	padding-top: 12px;
 	overflow-y: scroll;
 	overflow-x: auto;
+	white-space: nowrap;
 }
 
 .page {
@@ -21,6 +22,8 @@ body * {
 
 	background-color: white;
 	border: 1px solid rgba(0, 0, 0, 0.2);
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .visible-caret {
@@ -35,6 +38,11 @@ body * {
 	opacity: 0;
 	position: absolute;
 	user-select: none;
+}
+
+.select-box {
+	background-color: rgba(93, 192, 240, 0.2);
+	position: absolute;
 }
 
 
