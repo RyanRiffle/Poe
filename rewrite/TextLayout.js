@@ -66,7 +66,6 @@ class TextLayout {
 				wordRect = word.getBoundingClientRect();
 				prevLineWordRect = prevLineWord.getBoundingClientRect();
 				lineRect = line.previousSibling.getBoundingClientRect();
-				console.log((wordRect.width + prevLineWordRect.right) + ' < ' + lineRect.right);
 				while (wordRect.width + prevLineWordRect.right < lineRect.right) {
 					$append(word, line.previousSibling);
 

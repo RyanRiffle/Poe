@@ -30,6 +30,12 @@ class InputHandler extends Poe.DomElement {
 	setCaret(caret) {
 		this.caret = caret;
 		this.textBuffer = caret.buffer;
+		this.elm.addEventListener('focus', function() {
+			self.caret.show();
+		});
+		this.elm.addEventListener('blur', function() {
+			self.caret.hide();
+		});
 	}
 
 	onInput(event) {
@@ -37,6 +43,7 @@ class InputHandler extends Poe.DomElement {
 		self.elm.value = '';
 
 		var tNode = document.createTextNode(c);
+
 		if (!self.caret) {
 			console.log('The InputHandler has no caret assigned!');
 			return;
@@ -69,7 +76,7 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Left:
 				if (self.hasSelection) {
-					self.caret.moveBefore(self._startNode);
+					self.caret.moveBefore(self.caret.getStartNode());
 					self._clearSelection();
 					self.caret.show();
 					break;
@@ -80,7 +87,7 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Right:
 				if (self.hasSelection) {
-					self.caret.moveAfter(self._endNode);
+					self.caret.moveAfter(self.caret.getEndNode());
 					self._clearSelection();
 					self.caret.show();
 					break;
@@ -91,7 +98,9 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Space:
 				event.preventDefault();
-				self.caret.insertNode(document.createTextNode(' '));
+				let activeStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+				console.log(activeStyle);
+				self.caret.insertNode(document.createTextNode(String.fromCharCode(160)));
 				var word = Poe.ElementGenerator.createWord();
 				$insertAfter(word, self.caret.elm.parentNode);
 
@@ -110,6 +119,8 @@ class InputHandler extends Poe.DomElement {
 				}
 
 				$append(self.caret.elm, word);
+				console.log(activeStyle);
+				activeStyle.applyStyleToWord(word);
 				break;
 
 			case Poe.Keysym.Enter:
@@ -131,16 +142,16 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		self.setHasSelection(false);
+		self.caret.clearSelection();
 		self._clearSelection();
 		self._mouseDownPos = {
 			x: event.clientX,
 			y: event.clientY
 		};
 
-		self._startNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
-		self._baseNode = self._startNode;
-		console.log('_startNode: ', self._startNode);
+		self._baseNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+		self.caret.setStartNode(self._baseNode);
+		console.log('_startNode: ', self.caret.getStartNode());
 	}
 
 	onMouseMove(event) {
@@ -153,35 +164,27 @@ class InputHandler extends Poe.DomElement {
 
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 
-		if (node === self._endNode || node === self._baseNode) {
+		if (node === self.caret.getEndNode() || node === self._baseNode) {
 			return;
 		}
 
 		if (node === null) {
-			app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+			return;
 		}
 
-		self.setHasSelection(true);
-		self._endNode = node;
-		self._startNode = self._baseNode;
-		if ($isNodeBeforeNode(self._endNode, self._baseNode)) {
-			let tmp = self._baseNode;
-			self._startNode = self._endNode;
-			self._endNode = tmp;
-		}
-
+		self.caret.select(self._baseNode, node);
 		self._clearSelection();
 
-		var currentLine = self._startNode.parentNode.parentNode;
-		var startX = $getBoundingClientRect(self._startNode).left;
+		var currentLine = self.caret.getStartNode().parentNode.parentNode;
+		var startX = $getBoundingClientRect(self.caret.getStartNode()).left;
 		var lineRect = $getBoundingClientRect(currentLine);
 		var endX;
 		/*
 			If the mideNode is on the same line as the startNode
 			just create a selection around that line.
 		*/
-		if (currentLine.contains(self._endNode)) {
-			endX = $getBoundingClientRect(self._endNode).right - startX;
+		if (currentLine.contains(self.caret.getEndNode())) {
+			endX = $getBoundingClientRect(self.caret.getEndNode()).right - startX;
 			self._createSelection(startX, lineRect.top, endX, lineRect.height);
 			$addClass(currentLine, 'selected');
 			return;
@@ -189,10 +192,10 @@ class InputHandler extends Poe.DomElement {
 
 		self._createSelection(startX, lineRect.top, lineRect.right - startX, lineRect.height);
 		$addClass(currentLine, 'selected');
-		var endIndex = self.textBuffer.indexOf(self._endNode);
-		var startIndex = self.textBuffer.indexOf(self._startNode);
+		var endIndex = self.textBuffer.indexOf(self.caret.getEndNode());
+		var startIndex = self.textBuffer.indexOf(self.caret.getStartNode());
 		var n;
-		while (currentLine === self._startNode.parentNode.parentNode) {
+		while (currentLine === self.caret.getStartNode().parentNode.parentNode) {
 			n = self.textBuffer.at(startIndex);
 			if (n.parentNode.parentNode !== currentLine) {
 				currentLine = n.parentNode.parentNode;
@@ -206,7 +209,7 @@ class InputHandler extends Poe.DomElement {
 				currentLine = n;
 			}
 
-			if (!currentLine.contains(self._endNode)) {
+			if (!currentLine.contains(self.caret.getEndNode())) {
 				if (!$hasClass(currentLine, 'selected')) {
 					let lastWord = currentLine.childNodes[currentLine.childNodes.length - 1];
 					lineRect = $getBoundingClientRect(currentLine);
@@ -220,7 +223,7 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		lineRect = $getBoundingClientRect(currentLine);
-		endX = $getBoundingClientRect(self._endNode).right - lineRect.left;
+		endX = $getBoundingClientRect(self.caret.getEndNode()).right - lineRect.left;
 		self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
 		$addClass(currentLine, 'selected');
 	}

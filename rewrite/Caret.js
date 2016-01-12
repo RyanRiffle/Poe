@@ -15,6 +15,7 @@ class Caret extends Poe.TextBufferMarker {
 		this.visibleElm = document.createElement('div');
 		$addClass(this.visibleElm, 'visible-caret');
 		$append(this.visibleElm, document.body);
+		this.clearSelection();
 	}
 
 	setBuffer(buf) {
