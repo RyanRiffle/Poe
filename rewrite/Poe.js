@@ -12,9 +12,11 @@ Poe.init = function(parentSelector) {
 	app.setDocument(doc);
 	app.show();
 
+	/*
 	var note = new Notification('Title', {
 		body: 'Lorem ipsum dolor sit amet.'
 	});
+	*/
 };
 
 window.$addClass = function(elm, className) {

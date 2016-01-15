@@ -35,6 +35,14 @@ class DomElement {
 		return this;
 	}
 
+	addClass(className) {
+		$addClass(this.elm, className);
+	}
+
+	removeClass(className) {
+		$removeClass(this.elm, className);
+	}
+
 	get childNodes() {
 		return this.elm.childNodes;
 	}

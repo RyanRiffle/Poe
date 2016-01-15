@@ -1,0 +1,20 @@
+input {
+	border: 1px solid rgba(0, 0, 0, .15);
+	padding: 4px;
+	outline: none;
+}
+
+button {
+	border: 1px solid rgba(0, 0, 0, .15);
+	background-color: white;
+	outline: none;
+	padding: 4px;
+}
+
+button:hover {
+	background-color: rgba(0, 0, 0, .01);
+}
+
+button:active {
+	background-color: rgba(0, 0, 0, .1);
+}

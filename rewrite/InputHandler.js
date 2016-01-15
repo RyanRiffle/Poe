@@ -14,10 +14,10 @@ class InputHandler extends Poe.DomElement {
 
 		self = this;
 		this.elm.addEventListener('input', this.onInput);
-		window.addEventListener('keydown', this.onKeyDown);
-		window.addEventListener('mousedown', this.onMouseDown);
-		window.addEventListener('mouseup', this.onMouseUp);
-		window.addEventListener('mousemove', this.onMouseMove);
+		this.elm.addEventListener('keydown', this.onKeyDown);
+		app.elm.addEventListener('mousedown', this.onMouseDown);
+		app.elm.addEventListener('mouseup', this.onMouseUp);
+		app.elm.addEventListener('mousemove', this.onMouseMove);
 		this.elm.focus();
 		this._selection = document.createRange();
 		this._selectBox = document.createElement('div');
@@ -59,8 +59,9 @@ class InputHandler extends Poe.DomElement {
 
 		switch(event.keyCode) {
 			case Poe.Keysym.Backspace:
-				if (self.hasSelection) {
+				if (self.caret.hasSelection) {
 					self._deleteSelection();
+					console.log('deleted selection.');
 					break;
 				}
 				self.caret.removePreviousSibling();
@@ -229,10 +230,7 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseUp(event) {
-		if (!self.hasSelection) {
-			self.elm.focus();
-			self.caret._startBlink();
-		}
+		self.elm.focus();
 		self._mouseDownPos = null;
 	}
 
@@ -283,14 +281,14 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	_deleteSelection() {
-		if (!this.hasSelection) {
+		if (!this.caret.hasSelection) {
 			return false;
 		}
 
-		this.caret.moveBefore(this._startNode);
+		this.caret.moveBefore(this.caret.getStartNode());
 
-		var startI = this.textBuffer.indexOf(this._startNode);
-		var endI = this.textBuffer.indexOf(this._endNode);
+		var startI = this.textBuffer.indexOf(this.caret.getStartNode());
+		var endI = this.textBuffer.indexOf(this.caret.getEndNode());
 		var node;
 
 		while ((node = this.textBuffer.removeAt(startI))) {
@@ -299,7 +297,7 @@ class InputHandler extends Poe.DomElement {
 				continue;
 			}
 
-			if (node === this._endNode) {
+			if (node === this.caret.getEndNode()) {
 				node.remove();
 				break;
 			}
@@ -307,8 +305,10 @@ class InputHandler extends Poe.DomElement {
 			node.remove();
 		}
 
-		this.setHasSelection(false);
 		this.textBuffer.setDirty();
+		this.caret.clearSelection();
+		this._clearSelection();
+		this.caret._startBlink();
 	}
 }
 
