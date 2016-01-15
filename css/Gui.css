@@ -1,7 +1,12 @@
+/******************************************************************************
+ **** BASIC INTERFACE
+******************************************************************************/
+
 html, body, #Poe, .writer {
 	height: 100%;
 	width: 100%;
 	margin: 0px;
+	overflow: hidden;
 }
 
 body * {
@@ -14,6 +19,7 @@ body * {
 	overflow-y: scroll;
 	overflow-x: auto;
 	white-space: nowrap;
+	padding-bottom: 12px;
 }
 
 .page {
@@ -38,6 +44,8 @@ body * {
 	opacity: 0;
 	position: absolute;
 	user-select: none;
+	bottom: 0px;
+	width: 2px;
 }
 
 .select-box {
@@ -45,6 +53,53 @@ body * {
 	position: absolute;
 }
 
+
+/******************************************************************************
+ **** RIBBON TOOLBAR
+******************************************************************************/
+
+.tab-bar {
+	width: 100%;
+	background-color: #F8F8F8;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+.tab-bar > .tabs .tab:first {
+	padding-left: 12px;
+}
+
+.tab-bar .tab {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
+	display: inline-block;
+
+	padding: 6px 8px;
+	margin-left: -5px;
+}
+
+.tab-bar .tab:hover {
+	background-color: rgba(0, 0, 0, .1);
+}
+
+.tab-bar .tab.active:hover {
+	background-color: transparent;
+}
+
+.tab-bar .tab.active {
+	border-bottom: 1px solid transparent;
+	margin-bottom: -1px;
+}
+
+.tab-bar > .tab-pane {
+	width: 100%;
+	height: 100px;
+}
+
+.tab-pane > .tab-pane-group {
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
 
 /******************************************************************************
  **** HELPERS
