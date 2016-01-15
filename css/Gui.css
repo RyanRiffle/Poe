@@ -1,3 +1,7 @@
+/******************************************************************************
+ **** BASIC INTERFACE
+******************************************************************************/
+
 html, body, #Poe, .writer {
 	height: 100%;
 	width: 100%;
@@ -14,6 +18,7 @@ body * {
 	overflow-y: scroll;
 	overflow-x: auto;
 	white-space: nowrap;
+	padding-bottom: 12px;
 }
 
 .page {
@@ -45,6 +50,30 @@ body * {
 	position: absolute;
 }
 
+
+/******************************************************************************
+ **** RIBBON TOOLBAR
+******************************************************************************/
+
+.tab-bar {
+	width: 100%;
+	background-color: #F8F8F8;
+	padding-left: 12px;
+}
+
+.tab-bar > .tab {
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	display: inline-block;
+
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+.tab-pane {
+	width: 100%;
+	height: 150px;
+}
 
 /******************************************************************************
  **** HELPERS

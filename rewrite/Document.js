@@ -261,6 +261,8 @@ class Document extends Poe.DomElement {
 		 this.caret.setBuffer(this.buffer);
 		 this.inputHandler.setCaret(this.caret);
 		 this.textLayout = new Poe.TextLayout(this);
+
+		 window.app.elm.addEventListener('scroll', this.caret.show);
 	 }
 
 	 _stylePage(page) {
