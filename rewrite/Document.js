@@ -15,7 +15,7 @@ class Document extends Poe.DomElement {
 		});
 
 		this.buffer = null;
-		this.inputHandler = new Poe.InputHandler();
+		this.InputHandler = new Poe.InputHandler();
 		this._init();
 	}
 
@@ -259,7 +259,7 @@ class Document extends Poe.DomElement {
 		 this.buffer = new Poe.TextBuffer();
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
-		 this.inputHandler.setCaret(this.caret);
+		 this.InputHandler.setCaret(this.caret);
 		 this.textLayout = new Poe.TextLayout(this);
 
 		 window.app.elm.addEventListener('scroll', this.caret.show);
