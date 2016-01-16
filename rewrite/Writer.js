@@ -2,7 +2,7 @@
 'use strict';
 
 
-class Writer extends Poe.DomElement{
+class Writer extends Poe.DomElement {
 	constructor(parentSelector) {
 		super('div');
 		$addClass(this.elm, 'writer');

@@ -56,10 +56,12 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	show() {
-		$show(this.visibleElm);
-		this._evtBufferChanged();
-		if (this._blinkInterval === null)
-			this._blinkInterval = setInterval(this._blink, 400);
+		if (!this.hasSelection) {
+			$show(this.visibleElm);
+			this._evtBufferChanged();
+			if (this._blinkInterval === null)
+				this._blinkInterval = setInterval(this._blink, 400);
+		}
 	}
 
 	hide() {

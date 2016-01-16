@@ -8,6 +8,10 @@
 	<title>Poe</title>
 	<link rel="icon" type="image/png" href="favicon.png"/>
 
+	<!-- Theming -->
+	<link rel="stylesheet" type="text/css" media="screen" href="css/Gui.css"/>
+	<link rel="stylesheet" type="text/css" href="css/glyphicons.css">
+	<link rel="stylesheet" type="text/css" href="css/DefaultTheme.css">
 	<!-- External libraries -->
 	<script type="text/javascript" src="lib/pdfkit.min.js"></script>
 	<script type="text/javascript" src="lib/blob-stream.min.js"></script>
@@ -27,37 +31,63 @@
 	<script type="text/javascript" src="rewrite/TextFormat/TextFormat.js"></script>
 	<script type="text/javascript" src="rewrite/TextFormat/TextStyle.js"></script>
 
+	<script type="text/javascript" src="rewrite/Ribbon/Ribbon.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/TabBar.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/TabPane.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/Button.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/TabPaneGroup.js"></script>
+
+
+	<!--<script type="text/javascript" src="js/Poe.min.js"></script>-->
+
 	<!-- Setup the application when the document loads. -->
 	<script type="text/javascript">
 		window.onload = function() {
 			Poe.init('#Poe');
 		};
 	</script>
-	<!--<link rel="stylesheet" type="text/css" media="screen" href="css/app.css"/>
-	<link rel="stylesheet" type="text/css" href="css/styles.css"/>
-	<link rel="stylesheet" type="text/css" media="print" href="css/print.css"/>
-	<link rel="stylesheet" type="text/css" media="screen" href="node_modules/bootstrap/dist/css/bootstrap.css"/>-->
-	<link rel="stylesheet" type="text/css" media="screen" href="css/Gui.css"/>
 </head>
 <body>
 	<div class="tab-bar">
 		<div class="tabs">
-			<div class="tab menu">
-				M
-			</div>
 			<div class="tab active">
-				Tab 1
+				Text
 			</div>
 			<div class="tab">
-				Tab 2
+				Page
 			</div>
 			<div class="tab">
-				Long Tab 3
+				Export
 			</div>
 		</div>
 
 		<div class="tab-pane">
-
+			<div class="tab-pane-group">
+				<div class="vertical-group">
+					<button><span class="glyphicons glyphicons-eyedropper"></span>&nbsp;Format Painter</button>
+					<button><span class="glyphicons glyphicons-erase"></span>&nbsp;Clear Format</button>
+				</div>
+			</div>
+			<div class="tab-pane-group">
+				<div class="vertical-group">
+					<input type="text" id="iFontSelect">
+				</div>
+			</div>
+			<div class="tab-pane-group">
+				<div class="vertical-group">
+					<input type="text" id="iFontSelect">
+				</div>
+			</div>
+			<div class="tab-pane-group">
+				<div class="vertical-group">
+					<input type="text" id="iFontSelect">
+				</div>
+			</div>
+			<div class="tab-pane-group">
+				<div class="vertical-group">
+					<input type="text" id="iFontSelect">
+				</div>
+			</div>
 		</div>
 	</div>
 	<div id="Poe"></div>
