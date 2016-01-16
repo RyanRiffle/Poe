@@ -60,8 +60,11 @@ body * {
 
 .tab-bar {
 	width: 100%;
-	background-color: #F8F8F8;
+	background-color: white;
 	border-bottom: 1px solid rgba(0, 0, 0, .15);
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: default;
 }
 
 .tab-bar > .tabs .tab:first {
@@ -78,7 +81,7 @@ body * {
 }
 
 .tab-bar .tab:hover {
-	background-color: rgba(0, 0, 0, .1);
+	background-color: rgba(0, 0, 0, .05);
 }
 
 .tab-bar .tab.active:hover {

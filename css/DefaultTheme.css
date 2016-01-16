@@ -5,16 +5,17 @@ input {
 }
 
 button {
-	border: 1px solid rgba(0, 0, 0, .15);
+	border: 1px solid transparent;
 	background-color: white;
 	outline: none;
 	padding: 4px;
 }
 
 button:hover {
+	border: 1px solid rgba(0, 0, 0, .15);
 	background-color: rgba(0, 0, 0, .01);
 }
 
 button:active {
-	background-color: rgba(0, 0, 0, .1);
+	background-color: rgba(0, 0, 0, .04);
 }

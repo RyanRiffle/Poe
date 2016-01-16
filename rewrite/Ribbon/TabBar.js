@@ -3,8 +3,8 @@
 
 class TabBar extends Poe.DomElement {
 	constructor(ribbon) {
-		this._ribbon = ribbon;
 		super('div');
+		this._ribbon = ribbon;
 		this.addClass('tab-bar');
 		this._tabPanes = [];
 	}

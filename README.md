@@ -1,60 +1,18 @@
-Poe
-======
+# Poe
+> Thank you for showing interest in this project. I would really love to hear what you think about Poe so send me an email to Ryan Riffle <ryanriffle@icloud.com> and let me know what you think.
 
-A word processor built with HTML, CSS, and CoffeeScript. The current goal of Poe is to have a working word processor base. Then loading and saving will be implemented. This application is following [Writer Concept](http://bassultra.deviantart.com/art/Writer-Concept-351501580) by spiceofdesign on DeviantArt.
+A word processor created with web technologies. Poe is written to be used with
+Google Chrome or Electron. It could theoretically be used in any standards
+compliant browser however other browsers have not been tested.
 
-The application is under heavy development. However it is hosted for a demo on [Github Pages](http://ryanriffle.github.io/Poe/demo/app.html).
+To see an overview of how Poe works internally check out the [wiki](https://www.github.com/RyanRiffle/Poe/wiki). The wiki has important information about the design of the project and the direction in which the project is going.
 
-### Requirements
-Coffeescript
+## Usage
+Open your web browser and use  `Control + O` or `Cmd + O` to open the `index.html` file. If it is broken in your browser please create an issue in Poe's [issue tracker](https://www.github.com/RyanRiffle/Poe/issues).
+
+## Building
 ```
-npm install -g coffee-script
+cd Poe
+npm install
+grunt
 ```
-
-Bower
-```
-npm install -g bower
-```
-
-
-### Building
-To begin run `make build-deps`. This will use bower to download jQuery and Twitter Bootstrap. Alternatively if you are just building for OSjs you don't need bootstrap. You can use `bower install jquery`
-
-Then compile for the platform you would like.
-```
-//Compile for use on web server
-make standalone
-
-//Compile for OS.js
-make OSjs
-```
-
-##### Standalone
-In order for the application to work you will need a http server or allow your browser to make cross-origin requests. I use python for a simple http server to develop the application
-```
-python -m SimpleHTTPServer
-```
-Open the browser and navigate to the server or index.html page if you enabled cross-origin.
-
-##### OS.js
-The package will be located in `Poe/Poe-OSjs`
-
-In order to then use it copy the package folder into your local copy of OS.js to `OS.js-v2/src/packages/default/` then run the server from inside OS.js-v2 folder
-```
-~/OS.js-v2$ node src/server-node/server.js dist-dev
-```
-
-### Documentation
-The documentation can be generated using codo.
-```
-//Install codo
-npm install -g codo
-
-//Generate docs
-make docs
-```
-The documentation is stored in `doc`
-
-#### Note
-Poe has only been tested in Google Chrome at this time since it is being used in the development process.
- 

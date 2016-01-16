@@ -183,6 +183,30 @@ window.$getBoundingClientRect = function(node) {
 	return node.getBoundingClientRect();
 };
 
+window.mixin = function(one, two, three) {
+	var o = Object.create(one.prototype);
+	if (two) {
+		o = window.mix(o, two);
+	}
+
+	if (three) {
+		o = window.mix(o, three);
+	}
+
+	return o;
+};
+
+window.mix = function(one, two) {
+	var o = Object.create(one.prototype);
+	for (var k in two) {
+		if (two.hasOwnProperty(k)) {
+			o[k] = two[k];
+		}
+	}
+
+	return o;
+};
+
 Poe.Contains = {
 	NONE: 0x0,
 	VERTICAL: 0x01,
