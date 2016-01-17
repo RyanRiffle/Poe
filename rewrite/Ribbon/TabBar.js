@@ -5,23 +5,54 @@ class TabBar extends Poe.DomElement {
 	constructor(ribbon) {
 		super('div');
 		this._ribbon = ribbon;
+		this._ribbon.append(this.elm);
 		this.addClass('tab-bar');
 		this._tabPanes = [];
+		this.show();
 	}
 
 	createTab(text) {
 		var tab = $createElm('div');
-		tab.addClass('tab');
+		$addClass(tab, 'tab');
 		tab.innerHTML = text;
 
-		this._tabPanes.push(new Ribbon.TabPane(this._ribbon));
+		var tabPane = new Ribbon.TabPane(this._ribbon);
+		this._tabPanes.push(tabPane);
+
+		var self = this;
+		tab.addEventListener('click', function(evt) {
+			self.setTab.call(self, [tab, tabPane]);
+		});
 
 		this.append(tab);
+		tabPane.tab = tab;
+		return tabPane;
 	}
 
 	getTab(index) {
 
 	}
+
+	setTab(tab, tabPane) {
+		for (var i = 0; i < this.elm.childNodes.length; i++) {
+			if ($hasClass(this.elm.childNodes[i], 'active')) {
+				$removeClass(this.elm.childNodes[i], 'active');
+			}
+		}
+
+		$addClass(tab, 'active');
+		var pane = null;
+		for (var i = 0; i < this._tabPanes.length; i++) {
+			pane = this._tabPanes[i];
+			if (pane.isVisible) {
+				pane.hide();
+			}
+		}
+
+		tabPane.show();
+	}
 }
+
+Ribbon.TabBar = TabBar;
 
 })(window.Poe, window.Poe.Ribbon);

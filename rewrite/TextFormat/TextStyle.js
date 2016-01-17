@@ -79,6 +79,9 @@ class TextStyle {
 
 	applyStyleImmediate(marker) {
 		var start = marker.getStartNode();
+		if (start === null) {
+			throw new Error('Start is null. It should be the cursor...');
+		}
 		var startWord = start.parentNode;
 		var tmpWord = Poe.ElementGenerator.createWord();
 		var tmpChar = start;
@@ -116,6 +119,35 @@ class TextStyle {
 		return this.setDecoration(TextStyle.Decoration.STRIKE, bool);
 	}
 
+	setFontSize(pt) {
+		this._fontSize = pt;
+	}
+
+	getFont() {
+		return this._fontFace;
+	}
+
+	setFont(f) {
+		this._fontFace = f;
+		return this;
+	}
+
+	isBold() {
+		return this._decoration & TextStyle.Decoration.BOLD;
+	}
+
+	isItalic() {
+		return this._decoration & TextStyle.Decoration.ITALIC;
+	}
+
+	isUnderline() {
+		return this._decoration & TextStyle.Decoration.UNDERLINE;
+	}
+
+	isStrike() {
+		return this._decoration & TextStyle.Decoration.STRIKE;
+	}
+
 	setDecoration(dec, on) {
 		if (on) {
 			this._decoration |= dec;
@@ -136,24 +168,25 @@ class TextStyle {
 			$removeClass(word, 'i');
 			$removeClass(word, 'u');
 			$removeClass(word, 's');
-			return;
+		} else {
+			if (this._decoration & TextStyle.Decoration.BOLD) {
+				$addClass(word, 'b');
+			}
+
+			if (this._decoration & TextStyle.Decoration.ITALIC) {
+				$addClass(word, 'i');
+			}
+
+			if (this._decoration & TextStyle.Decoration.UNDERLINE) {``
+				$addClass(word, 'u');
+			}
+
+			if (this._decoration & TextStyle.Decoration.STRIKE) {
+				$addClass(word, 's');
+			}
 		}
 
-		if (this._decoration & TextStyle.Decoration.BOLD) {
-			$addClass(word, 'b');
-		}
-
-		if (this._decoration & TextStyle.Decoration.ITALIC) {
-			$addClass(word, 'i');
-		}
-
-		if (this._decoration & TextStyle.Decoration.UNDERLINE) {``
-			$addClass(word, 'u');
-		}
-
-		if (this._decoration & TextStyle.Decoration.STRIKE) {
-			$addClass(word, 's');
-		}
+		word.style['font-family'] = this._fontFace;
 	}
 }
 
@@ -177,6 +210,8 @@ TextStyle.getStyle = function(caret) {
 	if ($hasClass(node, 's')) {
 		s.setStrike(true);
 	}
+
+	s.setFont(window.getComputedStyle(node).getPropertyValue('font-family'));
 
 	return s;
 }

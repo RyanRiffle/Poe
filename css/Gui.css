@@ -14,7 +14,7 @@ body * {
 }
 
 .writer {
-	background-color: #E6E6E6;
+	background-color: #F8F8F8;
 	padding-top: 12px;
 	overflow-y: scroll;
 	overflow-x: auto;
@@ -57,6 +57,9 @@ body * {
 /******************************************************************************
  **** RIBBON TOOLBAR
 ******************************************************************************/
+.ribbon {
+	border-bottom: 1px solid #E6E6E6;
+}
 
 .tab-bar {
 	width: 100%;
@@ -73,11 +76,9 @@ body * {
 
 .tab-bar .tab {
 	border-right: 1px solid rgba(0, 0, 0, .2);
-	border-bottom: 1px solid rgba(0, 0, 0, .2);
 	display: inline-block;
 
 	padding: 6px 12px;
-	margin-left: -5px;
 }
 
 .tab-bar .tab:hover {
@@ -100,10 +101,9 @@ body * {
 
 .tab-pane > .tab-pane-group {
 	display: inline-block;
-	height: 100%;
-	max-width: 150px;
+	height: 100px;
+	min-width: 100px;
 	border-right: 1px solid rgba(0, 0, 0, .1);
-	margin-left: -5px;
 
 	padding-left: 2px;
 	padding-right: 2px;

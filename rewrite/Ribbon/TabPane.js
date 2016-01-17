@@ -2,12 +2,12 @@
 'use strict';
 
 class TabPane extends Poe.DomElement{
-	constructor(ribbon) {
+	constructor() {
 		super('div');
 		this.addClass('tab-pane');
-		ribbon.append(this);
 
 		this._groups = {};
+		this.show();
 	}
 
 	addGroup(group) {
@@ -18,4 +18,6 @@ class TabPane extends Poe.DomElement{
 		return this._groups[name];
 	}
 }
+
+Ribbon.TabPane = TabPane;
 })(window.Poe.DomElement, window.Poe.Ribbon);

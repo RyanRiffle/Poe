@@ -34,6 +34,7 @@ class Caret extends Poe.TextBufferMarker {
 		super.moveLeft();
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveRight() {
@@ -41,6 +42,7 @@ class Caret extends Poe.TextBufferMarker {
 		super.moveRight();
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveBeginning() {
@@ -48,11 +50,13 @@ class Caret extends Poe.TextBufferMarker {
 		super.moveBeginning();
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveEnd() {
 		super.moveEnd();
 		this._evtBufferChanged();
+		this.emit('moved');
 	}
 
 	show() {
@@ -117,14 +121,14 @@ class Caret extends Poe.TextBufferMarker {
 
 	moveBefore(node) {
 		var nodeIndex = this.buffer.indexOf(node);
-		this.moveTo(nodeIndex);
 		$insertBefore(this.elm, node);
+		this.moveTo(nodeIndex);
 	}
 
 	moveAfter(node) {
 		var nodeIndex = this.buffer.indexOf(node);
-		this.moveTo(nodeIndex + 1);
 		$insertAfter(this.elm, node);
+		this.moveTo(nodeIndex + 1);
 	}
 
 	get currentWord() {

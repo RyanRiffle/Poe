@@ -1,8 +1,12 @@
 (function(Poe) {
 'use strict';
 
-class TextBufferMarker {
+class TextBufferMarker extends Poe.EventHandler{
+	/*
+		TODO: TextBufferMarker should have a element in the DOM like a Caret
+	*/
 	constructor() {
+		super(['moved']);
 		this.buffer = null;
 		this._selection = {
 			start: null,
@@ -18,6 +22,7 @@ class TextBufferMarker {
 	insertBefore(it) {
 		var myIndex = this.buffer.indexOf(this);
 		this.buffer.splice(myIndex, 0, it);
+		this.start
 		return myIndex;
 	}
 
@@ -53,6 +58,7 @@ class TextBufferMarker {
 	moveTo(index) {
 		this.remove();
 		this.buffer.splice(index, 0, this);
+		this.emit('moved');
 	}
 
 	remove() {
@@ -86,14 +92,24 @@ class TextBufferMarker {
 	}
 
 	getStartNode() {
+		if (!this.hasSelection) {
+			return this.elm;
+		}
+
 		return this._selection.start;
 	}
 
 	getEndNode() {
+		if (!this.hasSelection) {
+			return this.elm;
+		}
 		return this._selection.end;
 	}
 
 	getBaseNode() {
+		if (!this.hasSelection) {
+			return this.elm;
+		}
 		return this._selection.base;
 	}
 
@@ -138,6 +154,40 @@ class TextBufferMarker {
 
 	get hasSelection() {
 		return (this._selection.base !== this._selection.end);
+	}
+
+	deleteSelection() {
+		/*if (!this.hasSelection) {
+			return;
+		}
+
+		this.insertBefore(this.getStartNode());
+		var i = this.buffer.indexOf(this.getStartNode());
+		while (this.buffer[i] !== this.getEndNode()) {
+			this.buffer.removeAt(i);
+		}
+		this.removeAt(i);
+		return this;*/
+	}
+
+	splitWordAtMarker(marker) {
+		marker = (marker.elm ? marker.elm : marker);
+		var word = marker.parentNode;
+		var newWord = Poe.ElementGenerator.createWord();
+
+		while (marker.nextSibling) {
+			newWord.appendChild(marker.nextSibling);
+		}
+		newWord.insertBefore(marker, newWord.childNodes[0]);
+		$insertAfter(newWord, word);
+	}
+
+	splitStartNode() {
+		this.splitWordAtMarker(this.getStartNode());
+	}
+
+	splitEndNode() {
+		this.splitWordAtMarker(this.getEndNode());
 	}
 
 	_setNode(node) {

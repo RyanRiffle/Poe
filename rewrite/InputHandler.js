@@ -25,6 +25,7 @@ class InputHandler extends Poe.DomElement {
 		$hide(this._selectBox);
 		$append(this._selectBox, document.body);
 		this._hasSelection = false;
+		this._lastKey = null;
 	}
 
 	setCaret(caret) {
@@ -50,18 +51,48 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		self.caret.insertNode(tNode);
+		self._lastKey = null;
 	}
 
 	onKeyDown(event) {
-		if (event.ctrlKey) {
+		if (event.ctrlKey || self._lastKey === 91) {
+			var textStyle;
+			switch(event.keyCode) {
+				case Poe.Keysym.B:
+					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+					textStyle.setBold(!textStyle.isBold());
+					textStyle.applyStyle(self.caret);
+					self.caret.emit('moved');
+					self._lastKey = null;
+					event.preventDefault();
+					break;
+
+				case Poe.Keysym.I:
+					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+					textStyle.setItalic(!textStyle.isItalic());
+					textStyle.applyStyle(self.caret);
+					self.caret.emit('moved');
+					self._lastKey = null;
+					event.preventDefault();
+					break;
+
+				case Poe.Keysym.U:
+					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+					textStyle.setUnderline(!textStyle.isUnderline());
+					textStyle.applyStyle(self.caret);
+					self.caret.emit('moved');
+					self._lastKey = null;
+					event.preventDefault();
+					break;
+			}
 			return;
 		}
 
+		self._lastKey = event.keyCode;
 		switch(event.keyCode) {
 			case Poe.Keysym.Backspace:
 				if (self.caret.hasSelection) {
 					self._deleteSelection();
-					console.log('deleted selection.');
 					break;
 				}
 				self.caret.removePreviousSibling();
@@ -100,7 +131,6 @@ class InputHandler extends Poe.DomElement {
 			case Poe.Keysym.Space:
 				event.preventDefault();
 				let activeStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
-				console.log(activeStyle);
 				self.caret.insertNode(document.createTextNode(String.fromCharCode(160)));
 				var word = Poe.ElementGenerator.createWord();
 				$insertAfter(word, self.caret.elm.parentNode);
@@ -120,11 +150,11 @@ class InputHandler extends Poe.DomElement {
 				}
 
 				$append(self.caret.elm, word);
-				console.log(activeStyle);
 				activeStyle.applyStyleToWord(word);
 				break;
 
 			case Poe.Keysym.Enter:
+				var textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
 				var npg = Poe.ElementGenerator.createParagraph();
 				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
 
@@ -134,6 +164,7 @@ class InputHandler extends Poe.DomElement {
 				$append(nl, npg);
 				$append(nw, nl);
 				$append(self.caret.elm, nw);
+				textStyle.applyStyleToWord(nw);
 				break;
 		}
 	}
@@ -152,7 +183,6 @@ class InputHandler extends Poe.DomElement {
 
 		self._baseNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 		self.caret.setStartNode(self._baseNode);
-		console.log('_startNode: ', self.caret.getStartNode());
 	}
 
 	onMouseMove(event) {
@@ -280,7 +310,7 @@ class InputHandler extends Poe.DomElement {
 		}
 	}
 
-	_deleteSelection() {
+	 _deleteSelection() {
 		if (!this.caret.hasSelection) {
 			return false;
 		}
