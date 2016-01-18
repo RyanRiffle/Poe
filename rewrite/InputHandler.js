@@ -108,6 +108,7 @@ class InputHandler extends Poe.DomElement {
 					break;
 				}
 				self.caret.removePreviousSibling();
+				event.preventDefault();
 				break;
 
 			case Poe.Keysym.Delete:
@@ -116,6 +117,7 @@ class InputHandler extends Poe.DomElement {
 					break;
 				}
 				self.caret.removeNextSibling();
+				event.preventDefault();
 				break;
 
 			case Poe.Keysym.Left:
@@ -127,6 +129,7 @@ class InputHandler extends Poe.DomElement {
 				}
 
 				self.caret.moveLeft();
+				event.preventDefault();
 				break;
 
 			case Poe.Keysym.Right:

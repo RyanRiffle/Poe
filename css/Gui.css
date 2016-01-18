@@ -7,6 +7,7 @@ html, body, #Poe, .writer {
 	width: 100%;
 	margin: 0px;
 	overflow: hidden;
+	box-sizing: border-box;
 }
 
 body * {
@@ -20,11 +21,15 @@ body * {
 	overflow-x: auto;
 	white-space: nowrap;
 	padding-bottom: 12px;
+	height: 100%;
+	width: 100%;
+	padding-bottom: 150px;
 }
 
 .page {
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 12px;
 
 	background-color: white;
 	border: 1px solid rgba(0, 0, 0, 0.2);

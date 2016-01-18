@@ -60,11 +60,11 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	show() {
-		if (!this.hasSelection) {
-			$show(this.visibleElm);
-			this._evtBufferChanged();
-			if (this._blinkInterval === null)
-				this._blinkInterval = setInterval(this._blink, 400);
+		if (!self.hasSelection) {
+			$show(self.visibleElm);
+			self._evtBufferChanged();
+			if (self._blinkInterval === null)
+				self._blinkInterval = setInterval(self._blink, 400);
 		}
 	}
 
@@ -133,6 +133,14 @@ class Caret extends Poe.TextBufferMarker {
 
 	get currentWord() {
 		return this.elm.parentNode;
+	}
+
+	get currentLine() {
+		return this.currentWord.parentNode;
+	}
+
+	get currentParagraph() {
+		return this.currentLine.parentNode;
 	}
 
 	/**************************************************************************

@@ -1,12 +1,23 @@
-(function(Poe, FileFormat) {
+(function(Poe, FileFormatNS) {
 'use strict';
 
 class FileFormat {
 	constructor() {
-		
+
 	}
 
+	save(doc) {
 
+	}
+
+	open(data) {
+
+	}
+
+	openUrl(url) {
+
+	}
 }
 
-})(window.Poe, window.Poe.FileFormat);
+FileFormatNS.FileFormat = FileFormat;
+})(window.Poe, window.Poe.FileFormat = {});
