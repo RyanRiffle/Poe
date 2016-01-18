@@ -22,6 +22,10 @@ class DomElement extends Poe.EventHandler {
 		return $hasClass(this.elm, 'hidden');
 	}
 
+	get style() {
+		return this.elm.style;
+	}
+
 	child(index) {
 		return childNodes[index];
 	}

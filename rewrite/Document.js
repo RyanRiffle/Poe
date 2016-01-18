@@ -3,7 +3,7 @@
 
 class Document extends Poe.DomElement {
 	constructor() {
-		super('div');
+		super('div', ['click', 'mousedown', 'mousemove']);
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
@@ -16,6 +16,10 @@ class Document extends Poe.DomElement {
 
 		this.buffer = null;
 		this.InputHandler = new Poe.InputHandler();
+		var self = this;
+		this.InputHandler.on('click', function(node) { self.emit('click', [node]); });
+		this.InputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
+		this.InputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
 		this._init();
 	}
 

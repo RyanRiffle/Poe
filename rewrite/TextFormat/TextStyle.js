@@ -191,30 +191,35 @@ class TextStyle {
 }
 
 TextStyle.getStyle = function(caret) {
-	var s = new TextStyle();
 	var node = caret.getBaseNode();
 	node = node.parentNode;
 
-	if ($hasClass(node, 'b')) {
-		s.setBold(true);
-	}
-
-	if ($hasClass(node, 'i')) {
-		s.setItalic(true);
-	}
-
-	if ($hasClass(node, 'u')) {
-		s.setUnderline(true);
-	}
-
-	if ($hasClass(node, 's')) {
-		s.setStrike(true);
-	}
-
-	s.setFont(window.getComputedStyle(node).getPropertyValue('font-family'));
-
-	return s;
+	return TextStyle.getStyleOfWord(node);
 }
+
+TextStyle.getStyleOfWord = function(word) {
+		var s = new TextStyle();
+
+		if ($hasClass(word, 'b')) {
+			s.setBold(true);
+		}
+
+		if ($hasClass(word, 'i')) {
+			s.setItalic(true);
+		}
+
+		if ($hasClass(word, 'u')) {
+			s.setUnderline(true);
+		}
+
+		if ($hasClass(word, 's')) {
+			s.setStrike(true);
+		}
+
+		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family'));
+
+		return s;
+};
 
 TextStyle.Decoration = {
 	NONE: 0x0,

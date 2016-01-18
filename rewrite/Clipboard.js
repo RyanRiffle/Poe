@@ -27,7 +27,7 @@ class Clipboard extends Poe.EventHandler {
 	}
 
 	hasData() {
-		return (this._data !== []);
+		return (this._data.length !== 0);
 	}
 
 	pasteSelection() {

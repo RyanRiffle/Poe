@@ -5,7 +5,7 @@ var self = null;
 
 class InputHandler extends Poe.DomElement {
 	constructor() {
-		super('textarea');
+		super('textarea', ['click', 'mousedown', 'mousemove']);
 		$addClass(this.elm, 'user-input');
 		$prepend(this.elm, document.body);
 		this.show();
@@ -82,6 +82,18 @@ class InputHandler extends Poe.DomElement {
 					textStyle.applyStyle(self.caret);
 					self.caret.emit('moved');
 					self._lastKey = null;
+					event.preventDefault();
+					break;
+
+				case Poe.Keysym.C:
+					Poe.Clipboard.copySelection();
+					break;
+
+				case Poe.Keysym.V:
+					Poe.Clipboard.pasteSelection(app.doc.caret);
+					break;
+
+				case Poe.Keysym.S:
 					event.preventDefault();
 					break;
 			}
@@ -183,6 +195,7 @@ class InputHandler extends Poe.DomElement {
 
 		self._baseNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 		self.caret.setStartNode(self._baseNode);
+		self.emit('mousedown', [self._baseNode]);
 	}
 
 	onMouseMove(event) {
@@ -257,11 +270,14 @@ class InputHandler extends Poe.DomElement {
 		endX = $getBoundingClientRect(self.caret.getEndNode()).right - lineRect.left;
 		self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
 		$addClass(currentLine, 'selected');
+		self.emit('mousemove', [node]);
 	}
 
 	onMouseUp(event) {
 		self.elm.focus();
 		self._mouseDownPos = null;
+		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
+		self.emit('click', [node]);
 	}
 
 	setHasSelection(value) {

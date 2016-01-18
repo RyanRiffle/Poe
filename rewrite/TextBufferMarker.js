@@ -157,7 +157,7 @@ class TextBufferMarker extends Poe.EventHandler{
 	}
 
 	deleteSelection() {
-		/*if (!this.hasSelection) {
+		if (!this.hasSelection) {
 			return;
 		}
 
@@ -167,7 +167,7 @@ class TextBufferMarker extends Poe.EventHandler{
 			this.buffer.removeAt(i);
 		}
 		this.removeAt(i);
-		return this;*/
+		return this;
 	}
 
 	splitWordAtMarker(marker) {

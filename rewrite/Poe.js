@@ -13,11 +13,7 @@ Poe.init = function(parentSelector) {
 	var doc = new Poe.Document();
 	app.setDocument(doc);
 	app.show();
-	app.doc.caret.on('moved', function() {
-		ribbon.updateStyleButtons.call(ribbon);
-	});
-	ribbon.updateStyleButtons.call(ribbon);
-
+	ribbon.setupEventHandlers();
 	/*
 	var note = new Notification('Title', {
 		body: 'Lorem ipsum dolor sit amet.'

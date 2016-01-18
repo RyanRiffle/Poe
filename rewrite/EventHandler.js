@@ -17,11 +17,18 @@ class EventHandler {
 		}
 
 		this._evtCallbacks[evt].push(cb);
+		return cb;
+	}
+
+	removeOn(evt, cb) {
+		var index = this._evtCallbacks[evt].indexOf(cb);
+		this._evtCallbacks[evt].splice(index, 1);
+		return this;
 	}
 
 	emit(evt, args) {
 		this._evtCallbacks[evt].forEach(function(cb) {
-			cb();
+			cb.apply(this, args);
 		});
 	}
 }

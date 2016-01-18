@@ -17,11 +17,16 @@ class TabBar extends Poe.DomElement {
 		tab.innerHTML = text;
 
 		var tabPane = new Ribbon.TabPane(this._ribbon);
+		if (this._tabPanes.length !== 0) {
+			tabPane.hide();
+		} else {
+			$addClass(tab, 'active');
+		}
 		this._tabPanes.push(tabPane);
 
 		var self = this;
 		tab.addEventListener('click', function(evt) {
-			self.setTab.call(self, [tab, tabPane]);
+			self.setTab.apply(self, [tab, tabPane]);
 		});
 
 		this.append(tab);
@@ -44,9 +49,7 @@ class TabBar extends Poe.DomElement {
 		var pane = null;
 		for (var i = 0; i < this._tabPanes.length; i++) {
 			pane = this._tabPanes[i];
-			if (pane.isVisible) {
-				pane.hide();
-			}
+			pane.hide();
 		}
 
 		tabPane.show();
