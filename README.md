@@ -1,3 +1,5 @@
+[![bitHound Overall Score](https://www.bithound.io/github/RyanRiffle/Poe/badges/score.svg)](https://www.bithound.io/github/RyanRiffle/Poe)
+[![bitHound Code](https://www.bithound.io/github/RyanRiffle/Poe/badges/code.svg)](https://www.bithound.io/github/RyanRiffle/Poe)
 # Poe
 > Thank you for showing interest in this project. I would really love to hear what you think about Poe so send me an email to Ryan Riffle <ryanriffle@icloud.com> and let me know what you think.
 
