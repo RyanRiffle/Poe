@@ -48,6 +48,7 @@ class Caret extends Poe.TextBufferMarker {
 	moveBeginning() {
 		this._stopBlink();
 		super.moveBeginning();
+		$insertBefore(this.elm, this.buffer.at(0));
 		this._evtBufferChanged();
 		this._startBlink();
 		this.emit('moved');

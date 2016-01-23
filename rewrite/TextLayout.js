@@ -8,9 +8,17 @@ class TextLayout {
 		this.document = document;
 		this.document.buffer.on('changed', this.relayout);
 		self = this;
+		this._isDisabled = false;
+	}
+
+	setDisabled(isDisabled) {
+		this._isDisabled = isDisabled;
 	}
 
 	relayout() {
+		if (self._isDisabled) {
+			return false;
+		}
 		var paragraph = self.document.caret.currentParagraph;
 		var wordRect, lineRect, line, word;
 		var i;
@@ -115,6 +123,7 @@ class TextLayout {
 		}
 
 		self.document.caret.show();
+		return true;
 	}
 }
 

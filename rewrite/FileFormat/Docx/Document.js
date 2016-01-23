@@ -10,16 +10,21 @@ class Document {
 	}
 
 	parse() {
-		var body = this._document.body;
-		for (var i = 0; i < body.childNodes.length; i++) {
-			var node = body.childNodes[i];
+		var self = this;
+		setTimeout(function() {
+			var time = Date.now();
+			var body = self._document.body;
+			for (var i = 0; i < body.childNodes.length; i++) {
+				var node = body.childNodes[i];
 
-			if (node.tagName === 'p') {
-				this._parsePargraph(node, (i === body.childNodes.length - 1 ? true : false));
+				if (node.tagName === 'p') {
+					self._parsePargraph(node, (i === body.childNodes.length - 1 ? true : false));
+				}
 			}
-		}
 
-		app.doc.caret.moveEnd();
+			console.log(Date.now() - time);
+			app.doc.caret.moveBeginning();
+		}, 10);
 	}
 
 	_parsePargraph(node, isLast) {
@@ -79,6 +84,25 @@ class Document {
 					if (prChild.tagName === 'rFonts') {
 						textStyle.setFont(prChild.getAttribute('ascii'));
 						textStyle.applyStyle(app.doc.caret);
+						continue;
+					}
+
+					if (prChild.tagName === 'b') {
+						var isBold = (prChild.getAttribute('val') === 'true' ? true : false);
+						textStyle.setBold(isBold);
+						continue;
+					}
+
+					if (prChild.tagName === 'i') {
+						var isItalic = (prChild.getAttribute('val') === 'true' ? true: false);
+						textStyle.setItalic(isItalic);
+						continue;
+					}
+
+					if (prChild.tagName === 'u') {
+						var isUnderline = (prChild.getAttribute('val') === 'true' ? true : false);
+						textStyle.setUnderline(isUnderline);
+						continue;
 					}
 				}
 				continue;
