@@ -55,6 +55,10 @@ class DomElement extends Poe.EventHandler {
 	get childNodes() {
 		return this.elm.childNodes;
 	}
+
+	remove() {
+		this.elm.remove();
+	}
 }
 
 Poe.DomElement = DomElement;
