@@ -32,10 +32,10 @@ class DefaultRibbon extends Ribbon {
 		var btnBold = new Poe.Ribbon.Button('<b>B</b>');
 		var btnItalic = new Poe.Ribbon.Button('<b><i>I</i></b>');
 		var btnUnderline = new Poe.Ribbon.Button('<b><u>U</u></b>');
-		this.buttons['bold'] = btnBold;
-		this.buttons['italic'] = btnItalic;
-		this.buttons['underline'] = btnUnderline;
-		this.input['font'] = inputFont;
+		this.buttons.bold = btnBold;
+		this.buttons.italic = btnItalic;
+		this.buttons.underline = btnUnderline;
+		this.input.font = inputFont;
 
 		fontBtnGroupH.appendChild(btnBold.elm);
 		fontBtnGroupH.appendChild(btnItalic.elm);
@@ -52,8 +52,8 @@ class DefaultRibbon extends Ribbon {
 		btnFormatPainter.elm.style['font-size'] = '16px';
 		var clipboardGroupH = $createElmWithClass('div', 'horizontal-group');
 
-		this.buttons['copyPaste'] = btnCopyPaste;
-		this.buttons['formatPainter'] = btnFormatPainter;
+		this.buttons.copyPaste = btnCopyPaste;
+		this.buttons.formatPainter = btnFormatPainter;
 		clipboardGroupH.appendChild(btnFormatPainter.elm);
 		clipboardGroup.append(btnCopyPaste);
 		clipboardGroup.append(clipboardGroupH);
@@ -136,35 +136,35 @@ class DefaultRibbon extends Ribbon {
 			/*
 				Make the button's icon paste
 			*/
-			this.buttons['copyPaste'].elm.innerHTML = '<span class="glyphicons glyphicons-paste" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Paste</div>';
+			this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-paste" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Paste</div>';
 			return;
 		}
 
-		this.buttons['copyPaste'].elm.innerHTML = '<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>';
+		this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>';
 	}
 
 	updateStyleButtons() {
 		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
 		if (textStyle.isBold()) {
-			self.buttons['bold'].addClass('active');
+			self.buttons.bold.addClass('active');
 		} else {
-			self.buttons['bold'].removeClass('active');
+			self.buttons.bold.removeClass('active');
 		}
 
 		if (textStyle.isItalic()) {
-			self.buttons['italic'].addClass('active');
+			self.buttons.italic.addClass('active');
 		} else {
-			self.buttons['italic'].removeClass('active');
+			self.buttons.italic.removeClass('active');
 		}
 
 		if (textStyle.isUnderline()) {
-			self.buttons['underline'].addClass('active');
+			self.buttons.underline.addClass('active');
 		} else {
-			self.buttons['underline'].removeClass('active');
+			self.buttons.underline.removeClass('active');
 		}
 
-		this.input['font'].elm.style['font-family'] = textStyle.getFont();
-		this.input['font'].setText(textStyle.getFont().replace("'", ""));
+		this.input.font.elm.style['font-family'] = textStyle.getFont();
+		this.input.font.setText(textStyle.getFont().replace("'", ""));
 	}
 }
 

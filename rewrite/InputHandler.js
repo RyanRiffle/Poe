@@ -55,8 +55,8 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onKeyDown(event) {
+		var textStyle;
 		if (event.ctrlKey || self._lastKey === 91) {
-			var textStyle;
 			switch(event.keyCode) {
 				case Poe.Keysym.B:
 					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
@@ -169,7 +169,7 @@ class InputHandler extends Poe.DomElement {
 				break;
 
 			case Poe.Keysym.Enter:
-				var textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+				textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
 				var npg = Poe.ElementGenerator.createParagraph();
 				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
 
@@ -324,7 +324,7 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		var selectedElms = document.querySelectorAll('.selected');
-		for (var i = 0; i < selectedElms.length; i++) {
+		for (i = 0; i < selectedElms.length; i++) {
 			$removeClass(selectedElms[i], 'selected');
 		}
 	}

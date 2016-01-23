@@ -95,7 +95,7 @@ class Document extends Poe.DomElement {
 		var firstParagraph = page.childNodes[0];
 		if ($posAboveNode(y, firstParagraph)) {
 			let firstLine = firstParagraph.childNodes[0];
-			let firstWord = firstLine.childNodes[0]
+			let firstWord = firstLine.childNodes[0];
 			let firstChar = firstWord.childNodes[0];
 
 			if (firstChar === this.caret.elm) {
@@ -191,7 +191,7 @@ class Document extends Poe.DomElement {
 		}
 		found = false;
 
-		var rect = null;
+		rect = null;
 		for (i = 0; i < word.childNodes.length; i++) {
 			char = word.childNodes[i];
 			rect = $getBoundingClientRect(char);
