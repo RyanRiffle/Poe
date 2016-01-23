@@ -45,6 +45,18 @@ class DefaultRibbon extends Ribbon {
 		this.append(insertPane);
 		this.append(pageLayoutPane);
 
+		var alignBtnGroupH = $createElmWithClass('div', 'horizontal-group');
+		var btnAlignLeft = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-align-left"></span>');
+		var btnAlignCenter = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-align-center"></span>');
+		var btnAlignRight = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-align-right"></span>');
+		alignBtnGroupH.appendChild(btnAlignLeft.elm);
+		alignBtnGroupH.appendChild(btnAlignCenter.elm);
+		alignBtnGroupH.appendChild(btnAlignRight.elm);
+		this.buttons.alignLeft = btnAlignLeft;
+		this.buttons.alignCenter = btnAlignCenter;
+		this.buttons.alignRight = btnAlignRight;
+		fontGroup.append(alignBtnGroupH);
+
 		var clipboardGroup = new Poe.Ribbon.TabPaneGroup();
 		clipboardGroup.addClass('vertical-group');
 		var btnCopyPaste = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>');
@@ -96,6 +108,24 @@ class DefaultRibbon extends Ribbon {
 
 		btnCopyPaste.on('click', function() {
 			Poe.Clipboard.copySelection();
+		});
+
+		btnAlignLeft.on('click', function() {
+			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
+			pstyle.setTextAlign('left');
+			pstyle.applyStyle(app.doc.caret);
+		});
+
+		btnAlignRight.on('click', function() {
+			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
+			pstyle.setTextAlign('right');
+			pstyle.applyStyle(app.doc.caret);
+		});
+
+		btnAlignCenter.on('click', function() {
+			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
+			pstyle.setTextAlign('center');
+			pstyle.applyStyle(app.doc.caret);
 		});
 
 		btnFormatPainter.on('click', function() {

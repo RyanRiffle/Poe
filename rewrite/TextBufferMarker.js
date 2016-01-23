@@ -22,7 +22,6 @@ class TextBufferMarker extends Poe.EventHandler{
 	insertBefore(it) {
 		var myIndex = this.buffer.indexOf(this);
 		this.buffer.splice(myIndex, 0, it);
-		this.start
 		return myIndex;
 	}
 
