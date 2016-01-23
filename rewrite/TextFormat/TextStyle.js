@@ -123,6 +123,10 @@ class TextStyle {
 		this._fontSize = pt;
 	}
 
+	getFontSize() {
+		return $pxStr(this._fontSize * 1.25);
+	}
+
 	getFont() {
 		return this._fontFace;
 	}

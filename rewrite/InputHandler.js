@@ -170,6 +170,10 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Enter:
 				textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+				console.log(self.caret.currentLine.childNodes.length);
+				if (self.caret.currentLine.childNodes.length === 1) {
+					self.caret.currentLine.style['min-height'] = textStyle.getFontSize();
+				}
 				var npg = Poe.ElementGenerator.createParagraph();
 				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
 

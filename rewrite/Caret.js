@@ -9,6 +9,7 @@ class Caret extends Poe.TextBufferMarker {
 		self = this;
 		this.elm = document.createElement('span');
 		this.elm.appendChild(document.createTextNode(String.fromCharCode(8203)));
+		$addClass(this.elm, 'caret');
 
 		this._blinkInterval = null;
 		this._blinkStartTimer = null;

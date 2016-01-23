@@ -68,7 +68,8 @@ class Document extends Poe.DomElement {
 
 	show() {
 		super.show();
-		this.caret.show();
+		if (this.caret)
+			this.caret.show();
 	}
 
 	getNodeAtPoint(x, y) {
@@ -275,6 +276,9 @@ class Document extends Poe.DomElement {
 		}
 
 		 this.buffer = new Poe.TextBuffer();
+		 if (opts.bufferInit) {
+			opts.bufferInit(this, this.buffer);
+		 }
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
 		 this.InputHandler.setCaret(this.caret);
