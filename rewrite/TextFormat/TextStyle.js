@@ -49,7 +49,7 @@ class TextStyle {
 		if (start !== startWord.childNodes[0]) {
 			tmpWord = Poe.ElementGenerator.createWord();
 			tmpChar = start;
-			while (tmpChar2 = tmpChar.nextSibling) {
+			while ((tmpChar2 = tmpChar.nextSibling)) {
 				$append(tmpChar, tmpWord);
 				tmpChar = tmpChar2;
 			}
@@ -61,7 +61,7 @@ class TextStyle {
 		if (end !== endWord.childNodes[endWord.childNodes.length - 1]) {
 			tmpWord = Poe.ElementGenerator.createWord();
 			tmpChar = end;
-			while (tmpChar2 = tmpChar.previousSibling) {
+			while ((tmpChar2 = tmpChar.previousSibling)) {
 				$prepend(tmpChar, tmpWord);
 				tmpChar = tmpChar2;
 			}
@@ -86,7 +86,7 @@ class TextStyle {
 		var tmpWord = Poe.ElementGenerator.createWord();
 		var tmpChar = start;
 		var tmpChar2;
-		while(tmpChar2 = tmpChar.nextSibling) {
+		while((tmpChar2 = tmpChar.nextSibling)) {
 			$append(tmpChar, tmpWord);
 			tmpChar = tmpChar2;
 		}
@@ -117,6 +117,14 @@ class TextStyle {
 
 	setStrike(bool) {
 		return this.setDecoration(TextStyle.Decoration.STRIKE, bool);
+	}
+
+	setSuperscript(bool) {
+		return this.setDecoration(TextStyle.Decoration.SUPERSCRIPT, bool);
+	}
+
+	setSubscript(bool) {
+		return this.setDecoration(TextStyle.Decoration.SUBSCRIPT, bool);
 	}
 
 	setFontSize(pt) {
@@ -152,6 +160,14 @@ class TextStyle {
 		return this._decoration & TextStyle.Decoration.STRIKE;
 	}
 
+	isSubscript() {
+		return this._decoration & TextStyle.Decoration.SUBSCRIPT;
+	}
+
+	isSuperscript() {
+		return this._decoration & TextStyle.Decoration.SUPERSCRIPT;
+	}
+
 	setDecoration(dec, on) {
 		if (on) {
 			this._decoration |= dec;
@@ -172,6 +188,8 @@ class TextStyle {
 			$removeClass(word, 'i');
 			$removeClass(word, 'u');
 			$removeClass(word, 's');
+			$removeClass(word, 'sub');
+			$removeClass(word, 'sup');
 		} else {
 			if (this._decoration & TextStyle.Decoration.BOLD) {
 				$addClass(word, 'b');
@@ -181,12 +199,20 @@ class TextStyle {
 				$addClass(word, 'i');
 			}
 
-			if (this._decoration & TextStyle.Decoration.UNDERLINE) {``
+			if (this._decoration & TextStyle.Decoration.UNDERLINE) {
 				$addClass(word, 'u');
 			}
 
 			if (this._decoration & TextStyle.Decoration.STRIKE) {
 				$addClass(word, 's');
+			}
+
+			if (this._decoration & TextStyle.Decoration.SUBSCRIPT) {
+				$addClass(word, 'sub');
+			}
+
+			if (this._decoration & TextStyle.Decoration.SUPERSCRIPT) {
+				$addClass(word, sub);
 			}
 		}
 
@@ -199,7 +225,7 @@ TextStyle.getStyle = function(caret) {
 	node = node.parentNode;
 
 	return TextStyle.getStyleOfWord(node);
-}
+};
 
 TextStyle.getStyleOfWord = function(word) {
 		var s = new TextStyle();
@@ -220,6 +246,14 @@ TextStyle.getStyleOfWord = function(word) {
 			s.setStrike(true);
 		}
 
+		if ($hasClass(word, 'sub')) {
+			s.setSubscript(true);
+		}
+
+		if ($hasClass(word, 'sup')) {
+			s.setSuperscript(true);
+		}
+
 		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family'));
 
 		return s;
@@ -230,7 +264,9 @@ TextStyle.Decoration = {
 	BOLD: 0x1,
 	ITALIC: 0x2,
 	UNDERLINE: 0x4,
-	STRIKE: 0x8
+	STRIKE: 0x8,
+	SUPERSCRIPT: 0x10,
+	SUBSCRIPT: 0x20
 };
 
 TextFormat.TextStyle = TextStyle;

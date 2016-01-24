@@ -243,6 +243,7 @@ class Document extends Poe.DomElement {
 	remove() {
 		super.remove();
 		this.caret.setBuffer(null);
+		this.InputHandler.setCaret(null);
 		this.buffer = null;
 		this.InputHandler = null;
 		this.caret = null;

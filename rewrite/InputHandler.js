@@ -19,6 +19,7 @@ class InputHandler extends Poe.DomElement {
 		app.elm.addEventListener('mousedown', this.onMouseDown);
 		app.elm.addEventListener('mouseup', this.onMouseUp);
 		app.elm.addEventListener('mousemove', this.onMouseMove);
+		app.elm.addEventListener('mouseout', this.onMouseUp);
 		this.elm.focus();
 		this._selection = document.createRange();
 		this._selectBox = document.createElement('div');
@@ -30,13 +31,20 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	setCaret(caret) {
+		if (caret === null) {
+			this.elm.removeEventListener(this._focusEvent);
+			this.elm.removeEventListener(this._blurEvent);
+			return;
+		}
 		this.caret = caret;
 		this.textBuffer = caret.buffer;
-		this.elm.addEventListener('focus', function() {
-			self.caret.show();
+		this._focusEvent = this.elm.addEventListener('focus', function() {
+			if (self.caret)
+				self.caret.show();
 		});
-		this.elm.addEventListener('blur', function() {
-			self.caret.hide();
+		this._blurEvent = this.elm.addEventListener('blur', function() {
+			if(self.caret)
+				self.caret.hide();
 		});
 	}
 

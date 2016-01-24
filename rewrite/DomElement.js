@@ -52,12 +52,24 @@ class DomElement extends Poe.EventHandler {
 		$removeClass(this.elm, className);
 	}
 
+	toggleClass(className, on) {
+		if (on) {
+			$addClass(this.elm, className);
+		} else {
+			$removeClass(this.elm, className);
+		}
+	}
+
 	get childNodes() {
 		return this.elm.childNodes;
 	}
 
 	remove() {
 		this.elm.remove();
+	}
+
+	focus() {
+		this.elm.focus();
 	}
 }
 

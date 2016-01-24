@@ -15,8 +15,8 @@ Poe.init = function(parentSelector) {
 	app.show();
 	ribbon.setupEventHandlers();
 
-	var pd = new Poe.FileFormat.Pml();
-	pd.openFile('/Users/ryan/Desktop/Untitled.pml');
+	/*var pd = new Poe.FileFormat.Pml();
+	pd.openFile('/Users/ryan/Desktop/Untitled.pml');*/
 	/*
 	var note = new Notification('Title', {
 		body: 'Lorem ipsum dolor sit amet.'

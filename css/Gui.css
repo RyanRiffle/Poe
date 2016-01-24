@@ -10,6 +10,10 @@ html, body, #Poe, .writer {
 	box-sizing: border-box;
 }
 
+p {
+	margin: 0px;
+}
+
 @media screen {
 	body * {
 		box-sizing: border-box;
@@ -25,6 +29,8 @@ html, body, #Poe, .writer {
 		height: 100%;
 		width: 100%;
 		padding-bottom: 150px;
+		padding-left: 12px;
+		padding-right: 12px;
 	}
 
 	.page {
@@ -37,6 +43,14 @@ html, body, #Poe, .writer {
 		user-select: none;
 		-webkit-user-select: none;
 	}
+	/*
+	.line {
+		-webkit-filter: blur(1px) opacity(50%);
+	}
+
+	.line.current {
+		-webkit-filter: none;
+	}*/
 
 	.visible-caret {
 		background-color: black;
@@ -140,6 +154,7 @@ html, body, #Poe, .writer {
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-top: 2px;
+	vertical-align: top;
 }
 
 .tab-pane > .tab-pane-group:first-child {
@@ -177,6 +192,7 @@ html, body, #Poe, .writer {
 
 .horizontal-group > * {
 	display: inline-block;
+	vertical-align: top;
 }
 
 /******************************************************************************
@@ -219,4 +235,23 @@ ul.menu li {
 
 .u {
 	text-decoration: underline;
+}
+
+.s {
+	text-decoration: line-through;
+}
+
+.u.s {
+	text-decoration: line-through underline;
+}
+
+.sub {
+	font-variant-position: sub;
+	font-size: 80%;
+	position: relative;
+	top: 4px;
+}
+
+.sup {
+	font-variant-position: super;
 }
