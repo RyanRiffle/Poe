@@ -28,3 +28,15 @@ button:active, button.active {
 input {
 	font-size: 14px;
 }
+
+select {
+	border: 1px solid rgba(0, 0, 0, .15);
+	padding: 4px;
+	border-radius: 0px!important;
+	background-color: transparent;
+	outline: none;
+}
+
+select:active {
+	outline:none;
+}

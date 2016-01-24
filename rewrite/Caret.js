@@ -69,9 +69,9 @@ class Caret extends Poe.TextBufferMarker {
 	show() {
 		if (!self.hasSelection) {
 			$show(self.visibleElm);
-			self._evtBufferChanged();
 			if (self._blinkInterval === null)
 				self._blinkInterval = setInterval(self._blink, 400);
+			self._evtBufferChanged();
 		}
 	}
 
@@ -160,6 +160,11 @@ class Caret extends Poe.TextBufferMarker {
 
 	_updateGeometry() {
 		var rect = $getBoundingClientRect(this.elm);
+		if (rect.top < $getBoundingClientRect(app.elm).top) {
+			this.hide();
+			return;
+		}
+
 		$css(this.visibleElm, 'height', $pxStr(rect.height));
 		$css(this.visibleElm, 'top', $pxStr(rect.top));
 		$css(this.visibleElm, 'left', $pxStr(rect.left));

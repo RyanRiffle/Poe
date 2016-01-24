@@ -29,8 +29,8 @@ class Document extends Poe.DomElement {
 		var page = null;
 		for (var i = 0; i < this.childNodes.length; i++) {
 			page = this.childNodes[i];
-			$css(page, 'height', size.h.toString());
-			$css(page, 'width', size.w.toString());
+			$css(page, 'height', $pxStr(size.h));
+			$css(page, 'width', $pxStr(size.w));
 		}
 
 		this._pageSize = size;
@@ -250,12 +250,17 @@ class Document extends Poe.DomElement {
 		window.app.elm.removeEventListener(this._scrollEventListener);
 	}
 
+	reset() {
+		this.elm.innerHTML = "";
+		this._init();
+	}
 
 
 	/**************************************************************************
 	 * PRIVATE FUNCTIONS                                                      *
 	 **************************************************************************/
 	 _init(opts) {
+		opts = opts || {};
 		if (opts.createElements !== false)
 		{
 			var page = Poe.ElementGenerator.createPage();

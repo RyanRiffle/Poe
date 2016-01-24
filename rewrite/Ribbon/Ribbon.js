@@ -21,10 +21,65 @@ class DefaultRibbon extends Ribbon {
 	}
 
 	init() {
-		var homePane = this.tabBar.createTab('Home');
+		var homePane = this.createHomePane();
+		var pageLayoutPane = this.createPageLayoutPane();
 		var insertPane = this.tabBar.createTab('Insert');
-		var pageLayoutPane = this.tabBar.createTab('Page Layout');
 
+		this.append(homePane);
+		this.append(insertPane);
+		this.append(pageLayoutPane);
+	}
+
+	setupEventHandlers() {
+		var self = this;
+		Poe.Clipboard.on('changed', function() {
+			self.updateCopyPasteButton.call(self);
+		});
+
+		app.doc.caret.on('moved', function() {
+			self.updateStyleButtons.call(self);
+		});
+		self.updateStyleButtons.call(self);
+	}
+
+	updateCopyPasteButton() {
+		if (Poe.Clipboard.hasData()) {
+			/*
+				Make the button's icon paste
+			*/
+			this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-paste" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Paste</div>';
+			return;
+		}
+
+		this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>';
+	}
+
+	updateStyleButtons() {
+		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
+		if (textStyle.isBold()) {
+			self.buttons.bold.addClass('active');
+		} else {
+			self.buttons.bold.removeClass('active');
+		}
+
+		if (textStyle.isItalic()) {
+			self.buttons.italic.addClass('active');
+		} else {
+			self.buttons.italic.removeClass('active');
+		}
+
+		if (textStyle.isUnderline()) {
+			self.buttons.underline.addClass('active');
+		} else {
+			self.buttons.underline.removeClass('active');
+		}
+
+		this.input.font.elm.style['font-family'] = textStyle.getFont();
+		this.input.font.setText(textStyle.getFont().replace("'", ""));
+	}
+
+	createHomePane() {
+		var homePane = this.tabBar.createTab('Home');
 		var fontBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var inputFont = new Poe.Ribbon.InputText();
 		var fontGroup = new Poe.Ribbon.TabPaneGroup('Font');
@@ -41,9 +96,6 @@ class DefaultRibbon extends Ribbon {
 		fontBtnGroupH.appendChild(btnItalic.elm);
 		fontBtnGroupH.appendChild(btnUnderline.elm);
 		fontGroup.appendMultiple([inputFont, fontBtnGroupH]);
-		this.append(homePane);
-		this.append(insertPane);
-		this.append(pageLayoutPane);
 
 		var alignBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var btnAlignLeft = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-align-left"></span>');
@@ -147,54 +199,26 @@ class DefaultRibbon extends Ribbon {
 				}
 			});
 		});
+		return homePane;
 	}
 
-	setupEventHandlers() {
-		var self = this;
-		Poe.Clipboard.on('changed', function() {
-			self.updateCopyPasteButton.call(self);
+	createPageLayoutPane() {
+		var pageLayoutPane = this.tabBar.createTab('Page Layout');
+		var pageSizeGroup = new Poe.Ribbon.TabPaneGroup('Page Size');
+		var selectSize = new Poe.Ribbon.Select();
+		selectSize.addItems(['Letter', 'Legal', 'Ledger', 'Tabloid']);
+		pageSizeGroup.append(selectSize);
+		pageLayoutPane.append(pageSizeGroup);
+
+		selectSize.on('change', function(val) {
+			if (!Poe.Document.PageSize[val]) {
+				throw new Error('Invalid page size');
+			}
+
+			app.doc.setPageSizeIn(Poe.Document.PageSize[val]);
 		});
 
-		app.doc.caret.on('moved', function() {
-			self.updateStyleButtons.call(self);
-		});
-		self.updateStyleButtons.call(self);
-	}
-
-	updateCopyPasteButton() {
-		if (Poe.Clipboard.hasData()) {
-			/*
-				Make the button's icon paste
-			*/
-			this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-paste" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Paste</div>';
-			return;
-		}
-
-		this.buttons.copyPaste.elm.innerHTML = '<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>';
-	}
-
-	updateStyleButtons() {
-		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
-		if (textStyle.isBold()) {
-			self.buttons.bold.addClass('active');
-		} else {
-			self.buttons.bold.removeClass('active');
-		}
-
-		if (textStyle.isItalic()) {
-			self.buttons.italic.addClass('active');
-		} else {
-			self.buttons.italic.removeClass('active');
-		}
-
-		if (textStyle.isUnderline()) {
-			self.buttons.underline.addClass('active');
-		} else {
-			self.buttons.underline.removeClass('active');
-		}
-
-		this.input.font.elm.style['font-family'] = textStyle.getFont();
-		this.input.font.setText(textStyle.getFont().replace("'", ""));
+		return pageLayoutPane;
 	}
 }
 
