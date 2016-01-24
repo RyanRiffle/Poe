@@ -90,6 +90,29 @@ class TextBufferMarker extends Poe.EventHandler{
 		}
 	}
 
+	expandSelectLeft() {
+		var sindex = this.buffer.indexOf(this._selection.start);
+		if (!this.hasSelection) {
+			this._selection.end = this.previousSibling;
+			this._selection.base = this.buffer.at(sindex);
+		}
+
+		if (sindex !== 0) {
+			sindex -= 2;
+		}
+
+		this._selection.start = this.buffer.at(sindex);
+	}
+
+	expandSelectRight() {
+		var eindex = this.buffer.indexOf(this._selection.end);
+		if (eindex !== this.buffer.length - 1) {
+			eindex += 2;
+		}
+
+		this._selection.end = this.buffer.at(eindex);
+	}
+
 	getStartNode() {
 		if (!this.hasSelection) {
 			return this.elm;

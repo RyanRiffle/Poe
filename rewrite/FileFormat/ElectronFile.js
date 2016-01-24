@@ -13,37 +13,52 @@ class ElectronFile extends FileFormat.FileFormatBase {
 		super();
 	}
 
-	openFile() {
-		this._doOpen();
+	openFile(fileName) {
+		this._doOpen({
+			file: fileName
+		});
+	}
+
+	saveFile(opts) {
+		this._doSave(opts);
 	}
 
 	_doSave(opts) {
-		var filePath = Dialog.showSaveDialog({
-			properties: ['saveFile'],
-			filters: [
-				{name: 'Poe Documents', extensions: ['pml']}
-			]
-		});
+		var filePath = opts.file || null;
+		if (!filePath) {
+			filePath = Dialog.showSaveDialog({
+				properties: ['saveFile'],
+				filters: [
+					{name: 'Poe Documents', extensions: ['pml']}
+				]
+			});
+		}
 
 		fs.writeFile(filePath, opts.data, function(err) {
 			if (err) {
 				console.log(err);
 				return;
 			}
-			alert('Saved Successfully!');
+			new Notification('Poe', {
+				body: 'Save complete!'
+			});
 		});
 	}
 
 	_doOpen(opts) {
-		var filePath = Dialog.showOpenDialog({
-			properties: ['openFile'],
-			filters: [
-				{name: 'Poe Documents', extensions: ['pml']},
-				{name: 'All Files', extensions: ['*']}
-			]
-		});
+		var filePath = opts.file || null;
+		if (!filePath) {
+			filePath = Dialog.showOpenDialog({
+				properties: ['openFile'],
+				filters: [
+					{name: 'Poe Documents', extensions: ['pml']},
+					{name: 'All Files', extensions: ['*']}
+				]
+			});
+			filePath = filePath[0];
+		}
 
-		fs.readFile(filePath[0], function(err, data) {
+		fs.readFile(filePath, function(err, data) {
 			if (err) {
 				console.log(err);
 			}

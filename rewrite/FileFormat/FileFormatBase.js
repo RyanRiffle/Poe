@@ -19,7 +19,11 @@ class FileFormat {
 		console.log('Opening document: ' + url);
 	}
 
-	openFile() {
+	openFile(fileName) {
+
+	}
+
+	saveFile(fileName) {
 		
 	}
 

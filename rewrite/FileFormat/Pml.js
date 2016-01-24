@@ -26,6 +26,16 @@ class Pml extends FileFormat.FileFormat {
 	openUrl(dataUrl) {
 		super.open(dataUrl);
 	}
+
+	saveFile(fileName) {
+		var d = new Poe.FileFormat.PoeDocumentPrivate(app.doc);
+		var data = d.serialize();
+		super.saveFile({
+			file: fileName,
+			name: 'Untitled',
+			data: data
+		});
+	}
 }
 FileFormat.Pml = Pml;
 })(window.Poe.FileFormat, window.Poe);

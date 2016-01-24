@@ -14,6 +14,9 @@ Poe.init = function(parentSelector) {
 	app.setDocument(doc);
 	app.show();
 	ribbon.setupEventHandlers();
+
+	var pd = new Poe.FileFormat.Pml();
+	pd.openFile('/Users/ryan/Desktop/Untitled.pml');
 	/*
 	var note = new Notification('Title', {
 		body: 'Lorem ipsum dolor sit amet.'
@@ -217,6 +220,15 @@ window.mix = function(one, two) {
 	}
 
 	return o;
+};
+
+/*
+	NOTE: This function is only for testing. It is not
+	a part of the API.
+*/
+window.save = function() {
+	var pml = new Poe.FileFormat.Pml();
+	pml.saveFile('/Users/ryan/Desktop/Untitled.pml');
 };
 
 Poe.Contains = {
