@@ -1,0 +1,10 @@
+{
+	"defaults": {
+		"font": {
+			"family": "Times New Roman",
+			"size": "12",
+		},
+
+		"line-spacing": 1
+	}
+}
