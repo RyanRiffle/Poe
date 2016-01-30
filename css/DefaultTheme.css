@@ -40,3 +40,8 @@ select {
 select:active {
 	outline:none;
 }
+
+.ribbon input {
+	font-size: 12px;
+	
+}

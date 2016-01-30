@@ -27,6 +27,7 @@ class ParagraphStyle {
 }
 
 ParagraphStyle.getStyle = function(marker) {
+	marker = marker || app.doc.caret;
 	var style = new ParagraphStyle();
 	var pgraph = marker.currentWord.parentNode.parentNode;
 	var firstLine = pgraph.childNodes[0];

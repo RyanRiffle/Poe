@@ -132,7 +132,7 @@ class TextStyle {
 	}
 
 	getFontSize() {
-		return $pxStr(this._fontSize * 1.25);
+		return Math.floor(this._fontSize);
 	}
 
 	getFont() {
@@ -217,11 +217,13 @@ class TextStyle {
 		}
 
 		word.style['font-family'] = this._fontFace;
+		word.style['font-size'] = $pxStr(Math.fround(this._fontSize * 1.33333333333333));
 	}
 }
 
 TextStyle.getStyle = function(caret) {
-	var node = caret.getBaseNode();
+	caret = caret || app.doc.caret;
+	var node = caret.elm;
 	node = node.parentNode;
 
 	return TextStyle.getStyleOfWord(node);
@@ -254,7 +256,10 @@ TextStyle.getStyleOfWord = function(word) {
 			s.setSuperscript(true);
 		}
 
-		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family'));
+		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family').replace(/\'/g, ''));
+		var sizeInPx = parseFloat(window.getComputedStyle(word).getPropertyValue('font-size').replace('px', ''));
+		var sizeInPt = (Math.fround(sizeInPx * 0.75));
+		s.setFontSize(sizeInPt);
 
 		return s;
 };

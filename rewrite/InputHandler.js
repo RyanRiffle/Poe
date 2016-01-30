@@ -16,10 +16,9 @@ class InputHandler extends Poe.DomElement {
 		this.elm.addEventListener('input', this.onInput);
 		this.elm.addEventListener('keydown', this.onKeyDown);
 		this.elm.addEventListener('keyup', this.onKeyUp);
-		app.elm.addEventListener('mousedown', this.onMouseDown);
-		app.elm.addEventListener('mouseup', this.onMouseUp);
-		app.elm.addEventListener('mousemove', this.onMouseMove);
-		app.elm.addEventListener('mouseout', this.onMouseUp);
+		this._mouseDownEvent = app.elm.addEventListener('mousedown', this.onMouseDown);
+		this._mouseUpEvent = app.elm.addEventListener('mouseup', this.onMouseUp);
+		this._mouseOutEvent = app.elm.addEventListener('mouseout', this.onMouseUp);
 		this.elm.focus();
 		this._selection = document.createRange();
 		this._selectBox = document.createElement('div');
@@ -130,6 +129,8 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		self._lastKey = event.keyCode;
+		var caretRect;
+		var caretPos;
 		switch(event.keyCode) {
 			case Poe.Keysym.Backspace:
 				if (self.caret.hasSelection) {
@@ -189,13 +190,30 @@ class InputHandler extends Poe.DomElement {
 				self.caret.moveRight();
 				break;
 
+			case Poe.Keysym.Up:
+				caretRect = $getBoundingClientRect(self.caret.elm);
+				caretPos = {
+					x: caretRect.left,
+					y: caretRect.top - 5
+				};
+				self.caret.moveAfter(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
+				break;
+
+			case Poe.Keysym.Down:
+				caretRect = $getBoundingClientRect(self.caret.elm);
+				caretPos = {
+					x: caretRect.left,
+					y: caretRect.bottom + 5
+				};
+				self.caret.moveBefore(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
+				break;
+
 			case Poe.Keysym.Space:
 				event.preventDefault();
-				let activeStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
+				let activeStyle = Poe.TextFormat.TextStyle.getStyle();
 				self.caret.insertNode(document.createTextNode(String.fromCharCode(160)));
 				var word = Poe.ElementGenerator.createWord();
 				$insertAfter(word, self.caret.elm.parentNode);
-
 				/*
 					If there are letters after the cursor in the
 					current word, move them to the new word as well.
@@ -210,7 +228,8 @@ class InputHandler extends Poe.DomElement {
 					}
 				}
 
-				$append(self.caret.elm, word);
+				$prepend(self.caret.elm, word);
+				self.caret.show();
 				activeStyle.applyStyleToWord(word);
 				break;
 
@@ -232,6 +251,7 @@ class InputHandler extends Poe.DomElement {
 				textStyle.applyStyleToWord(nw);
 				break;
 		}
+		self.caret.show();
 	}
 
 	onKeyUp(event) {
@@ -255,6 +275,7 @@ class InputHandler extends Poe.DomElement {
 		self._baseNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 		self.caret.setStartNode(self._baseNode);
 		self.emit('mousedown', [self._baseNode]);
+		self._registerMouseMoveEvent(true);
 	}
 
 	onMouseMove(event) {
@@ -281,14 +302,21 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseUp(event) {
-		self.elm.focus();
-		if (event.clientX == self._mouseDownPos.x && event.clientY == self._mouseDownPos.y) {
-			self.caret.moveBefore(app.doc.getNodeClosestToPoint(event.clientX, event.clientY));
-			self.caret.show();
+		self._registerMouseMoveEvent(false);
+		if (event.target === app.elm || self._mouseDownPos === null) {
+			self.elm.focus();
+			self._mouseDownPos = null;
+			return;
 		}
-		self._mouseDownPos = null;
+
+		self.elm.focus();
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
-		self.emit('click', [node]);
+		if (event.clientX === self._mouseDownPos.x && event.clientY === self._mouseDownPos.y && node) {
+			self.caret.moveBefore(node);
+			self.caret.show();
+			self._mouseDownPos = null;
+			self.emit('click', [node]);
+		}
 	}
 
 	setHasSelection(value) {
@@ -422,6 +450,14 @@ class InputHandler extends Poe.DomElement {
 		endX = $getBoundingClientRect(self.caret.getEndNode()).right - lineRect.left;
 		self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
 		$addClass(currentLine, 'selected');
+	}
+
+	_registerMouseMoveEvent(bool) {
+		if (bool){
+			self._mouseMoveEvent = app.elm.addEventListener('mousemove', self.onMouseMove);
+		} else {
+			app.elm.removeEventListener(self._mouseMoveEvent);
+		}
 	}
 }
 

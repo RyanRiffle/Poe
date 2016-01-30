@@ -1,10 +1,12 @@
 (function(Poe) {
 'use strict';
 
+var self;
 class Document extends Poe.DomElement {
 	constructor(opts) {
 		opts = opts || {};
 		super('div', ['click', 'mousedown', 'mousemove']);
+		self = this;
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
@@ -16,11 +18,11 @@ class Document extends Poe.DomElement {
 		});
 
 		this.buffer = null;
-		this.InputHandler = new Poe.InputHandler();
+		this.inputHandler = new Poe.InputHandler();
 		var self = this;
-		this.InputHandler.on('click', function(node) { self.emit('click', [node]); });
-		this.InputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
-		this.InputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
+		this.inputHandler.on('click', function(node) { self.emit('click', [node]); });
+		this.inputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
+		this.inputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
 		if (opts.init !== false)
 			this._init(opts);
 	}
@@ -243,9 +245,9 @@ class Document extends Poe.DomElement {
 	remove() {
 		super.remove();
 		this.caret.setBuffer(null);
-		this.InputHandler.setCaret(null);
+		this.inputHandler.setCaret(null);
 		this.buffer = null;
-		this.InputHandler = null;
+		this.inputHandler = null;
 		this.caret = null;
 		this.textLayout = null;
 		window.app.elm.removeEventListener(this._scrollEventListener);
@@ -254,6 +256,11 @@ class Document extends Poe.DomElement {
 	reset() {
 		this.elm.innerHTML = "";
 		this._init();
+	}
+
+	focus() {
+		app.doc.inputHandler.focus();
+		app.doc.caret.show();
 	}
 
 
@@ -274,8 +281,6 @@ class Document extends Poe.DomElement {
 			to base it's positions off of when it gets inserted
 			into the DOM.
 			*/
-			var textNode = document.createTextNode(String.fromCharCode(8203));
-			$append(textNode, word);
 			$append(word, line);
 			$append(line, paragraph);
 			$append(paragraph, page);
@@ -288,10 +293,10 @@ class Document extends Poe.DomElement {
 		 }
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
-		 this.InputHandler.setCaret(this.caret);
+		 this.inputHandler.setCaret(this.caret);
 		 this.textLayout = new Poe.TextLayout(this);
 
-		 this.scrollEventListener = window.app.elm.addEventListener('scroll', this.caret.show);
+		 this.scrollEventListener = window.app.elm.addEventListener('scroll', this.focus);
 	 }
 
 	 _stylePage(page) {

@@ -28,15 +28,17 @@ class Caret extends Poe.TextBufferMarker {
 
 		super.setBuffer(buf);
 		this.buffer.on('changed', this._evtBufferChanged);
-		if (this.buffer.length != 0)
+		if (this.buffer.length !== 0)
 			this.moveBeginning();
 		else
 			this.buffer.append(this);
 		this.show();
+		this.emit('moved');
 	}
 
 	moveLeft() {
 		this._stopBlink();
+		$insertBefore(this.elm, this.previousSibling);
 		super.moveLeft();
 		this._evtBufferChanged();
 		this._startBlink();
@@ -45,6 +47,7 @@ class Caret extends Poe.TextBufferMarker {
 
 	moveRight() {
 		this._stopBlink();
+		$insertAfter(this.elm, this.nextSibling);
 		super.moveRight();
 		this._evtBufferChanged();
 		this._startBlink();
@@ -54,7 +57,7 @@ class Caret extends Poe.TextBufferMarker {
 	moveBeginning() {
 		this._stopBlink();
 		super.moveBeginning();
-		$insertBefore(this.elm, this.buffer.at(0));
+		$insertBefore(this.elm, this.buffer.at(1));
 		this._evtBufferChanged();
 		this._startBlink();
 		this.emit('moved');
@@ -62,7 +65,8 @@ class Caret extends Poe.TextBufferMarker {
 
 	moveEnd() {
 		super.moveEnd();
-		this._evtBufferChanged();
+		$insertAfter(this.elm, this.previousSibling);
+		this.show();
 		this.emit('moved');
 	}
 
@@ -111,6 +115,7 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		this.emit('moved');
 		return prev;
 	}
 
@@ -123,6 +128,7 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		this.emit('moved');
 		return next;
 	}
 
@@ -171,16 +177,8 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	_updateDomNode() {
-		if (this.elm.parentNode && this.elm.parentNode.childNodes.length === 1) {
-			return;
-		}
-
-		if (this.nextSibling) {
-			$insertBefore(this.elm, this.nextSibling);
-		} else if (this.previousSibling) {
-			$insertAfter(this.elm, this.previousSibling);
-		} else {
-			$append(this.elm, document.querySelector('.word'));
+		if (!this.elm.parentNode) {
+			$prepend(this.elm, document.querySelector('.word'));
 		}
 	}
 

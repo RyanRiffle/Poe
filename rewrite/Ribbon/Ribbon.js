@@ -39,7 +39,6 @@ class DefaultRibbon extends Ribbon {
 		app.doc.caret.on('moved', function() {
 			self.updateStyleButtons.call(self);
 		});
-		self.updateStyleButtons.call(self);
 	}
 
 	updateCopyPasteButton() {
@@ -55,7 +54,8 @@ class DefaultRibbon extends Ribbon {
 	}
 
 	updateStyleButtons() {
-		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
+		var textStyle = Poe.TextFormat.TextStyle.getStyle();
+		var paragraphStyle = Poe.TextFormat.ParagraphStyle.getStyle();
 
 		self.buttons.bold.toggleClass('active', textStyle.isBold());
 		self.buttons.italic.toggleClass('active', textStyle.isItalic());
@@ -66,16 +66,16 @@ class DefaultRibbon extends Ribbon {
 
 		this.input.font.elm.style['font-family'] = textStyle.getFont();
 		this.input.font.setText(textStyle.getFont().replace("'", ""));
+		this.input.fontSize.setText(Math.floor(textStyle.getFontSize()));
 	}
 
 	createHomePane() {
 		var homePane = this.tabBar.createTab('Home');
 		var fontBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var inputFont = new Poe.Ribbon.InputText();
-		inputFont.elm.style['font-size'] = '12px';
 		var inputFontSize = new Poe.Ribbon.InputText();
 		inputFontSize.elm.style.width = '25px';
-		inputFontSize.elm.style['font-size'] = '12px';
+
 		var fontGroup = new Poe.Ribbon.TabPaneGroup('Font');
 		fontGroup.addClass('vertical-group');
 
@@ -97,6 +97,7 @@ class DefaultRibbon extends Ribbon {
 		this.buttons.sub = btnSub;
 		this.buttons.sup = btnSup;
 		this.input.font = inputFont;
+		this.input.fontSize = inputFontSize;
 
 		fontBtnGroupH.appendChild(btnBold.elm);
 		fontBtnGroupH.appendChild(btnItalic.elm);
@@ -141,7 +142,7 @@ class DefaultRibbon extends Ribbon {
 			textStyle[set](flip);
 			btn.setActive(flip);
 			textStyle.applyStyle(app.doc.caret);
-			app.doc.InputHandler.focus();
+			app.doc.inputHandler.focus();
 		};
 
 		btnBold.on('click', function() {
@@ -176,7 +177,7 @@ class DefaultRibbon extends Ribbon {
 			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
 			pstyle.setTextAlign(align);
 			pstyle.applyStyle(app.doc.caret);
-			app.doc.InputHandler.focus();
+			app.doc.inputHandler.focus();
 		};
 
 		btnAlignLeft.on('click', function() {
@@ -192,11 +193,18 @@ class DefaultRibbon extends Ribbon {
 		});
 
 		inputFont.on('change', function() {
-			var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
+			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFont(inputFont.getText());
 			textStyle.applyStyle(app.doc.caret);
 			inputFont.style['font-family'] = inputFont.getText();
-			app.doc.InputHandler.elm.focus();
+			app.doc.inputHandler.focus();
+		});
+
+		inputFontSize.on('change', function() {
+			var textStyle = Poe.TextFormat.TextStyle.getStyle();
+			textStyle.setFontSize(parseInt(inputFontSize.getText()));
+			textStyle.applyStyle(app.doc.caret);
+			app.doc.inputHandler.focus();
 		});
 
 		btnFormatPainter.on('click', function() {
