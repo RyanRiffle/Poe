@@ -15,6 +15,9 @@ Poe.Keysym = {
 	I: 73,
 	U: 85,
 	Shift: 16,
-	CapsLock: 20
+	CapsLock: 20,
+	V: 86,
+	C: 67,
+	S: 83
 };
 })(window.Poe);

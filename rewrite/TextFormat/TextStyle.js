@@ -49,7 +49,7 @@ class TextStyle {
 		if (start !== startWord.childNodes[0]) {
 			tmpWord = Poe.ElementGenerator.createWord();
 			tmpChar = start;
-			while (tmpChar2 = tmpChar.nextSibling) {
+			while ((tmpChar2 = tmpChar.nextSibling)) {
 				$append(tmpChar, tmpWord);
 				tmpChar = tmpChar2;
 			}
@@ -61,7 +61,7 @@ class TextStyle {
 		if (end !== endWord.childNodes[endWord.childNodes.length - 1]) {
 			tmpWord = Poe.ElementGenerator.createWord();
 			tmpChar = end;
-			while (tmpChar2 = tmpChar.previousSibling) {
+			while ((tmpChar2 = tmpChar.previousSibling)) {
 				$prepend(tmpChar, tmpWord);
 				tmpChar = tmpChar2;
 			}
@@ -79,11 +79,14 @@ class TextStyle {
 
 	applyStyleImmediate(marker) {
 		var start = marker.getStartNode();
+		if (start === null) {
+			throw new Error('Start is null. It should be the cursor...');
+		}
 		var startWord = start.parentNode;
 		var tmpWord = Poe.ElementGenerator.createWord();
 		var tmpChar = start;
 		var tmpChar2;
-		while(tmpChar2 = tmpChar.nextSibling) {
+		while((tmpChar2 = tmpChar.nextSibling)) {
 			$append(tmpChar, tmpWord);
 			tmpChar = tmpChar2;
 		}
@@ -116,6 +119,55 @@ class TextStyle {
 		return this.setDecoration(TextStyle.Decoration.STRIKE, bool);
 	}
 
+	setSuperscript(bool) {
+		return this.setDecoration(TextStyle.Decoration.SUPERSCRIPT, bool);
+	}
+
+	setSubscript(bool) {
+		return this.setDecoration(TextStyle.Decoration.SUBSCRIPT, bool);
+	}
+
+	setFontSize(pt) {
+		this._fontSize = pt;
+	}
+
+	getFontSize() {
+		return Math.floor(this._fontSize);
+	}
+
+	getFont() {
+		return this._fontFace;
+	}
+
+	setFont(f) {
+		this._fontFace = f;
+		return this;
+	}
+
+	isBold() {
+		return this._decoration & TextStyle.Decoration.BOLD;
+	}
+
+	isItalic() {
+		return this._decoration & TextStyle.Decoration.ITALIC;
+	}
+
+	isUnderline() {
+		return this._decoration & TextStyle.Decoration.UNDERLINE;
+	}
+
+	isStrike() {
+		return this._decoration & TextStyle.Decoration.STRIKE;
+	}
+
+	isSubscript() {
+		return this._decoration & TextStyle.Decoration.SUBSCRIPT;
+	}
+
+	isSuperscript() {
+		return this._decoration & TextStyle.Decoration.SUPERSCRIPT;
+	}
+
 	setDecoration(dec, on) {
 		if (on) {
 			this._decoration |= dec;
@@ -136,57 +188,90 @@ class TextStyle {
 			$removeClass(word, 'i');
 			$removeClass(word, 'u');
 			$removeClass(word, 's');
-			return;
+			$removeClass(word, 'sub');
+			$removeClass(word, 'sup');
+		} else {
+			if (this._decoration & TextStyle.Decoration.BOLD) {
+				$addClass(word, 'b');
+			}
+
+			if (this._decoration & TextStyle.Decoration.ITALIC) {
+				$addClass(word, 'i');
+			}
+
+			if (this._decoration & TextStyle.Decoration.UNDERLINE) {
+				$addClass(word, 'u');
+			}
+
+			if (this._decoration & TextStyle.Decoration.STRIKE) {
+				$addClass(word, 's');
+			}
+
+			if (this._decoration & TextStyle.Decoration.SUBSCRIPT) {
+				$addClass(word, 'sub');
+			}
+
+			if (this._decoration & TextStyle.Decoration.SUPERSCRIPT) {
+				$addClass(word, sub);
+			}
 		}
 
-		if (this._decoration & TextStyle.Decoration.BOLD) {
-			$addClass(word, 'b');
-		}
-
-		if (this._decoration & TextStyle.Decoration.ITALIC) {
-			$addClass(word, 'i');
-		}
-
-		if (this._decoration & TextStyle.Decoration.UNDERLINE) {``
-			$addClass(word, 'u');
-		}
-
-		if (this._decoration & TextStyle.Decoration.STRIKE) {
-			$addClass(word, 's');
-		}
+		word.style['font-family'] = this._fontFace;
+		word.style['font-size'] = $pxStr(Math.fround(this._fontSize * 1.33333333333333));
 	}
 }
 
 TextStyle.getStyle = function(caret) {
-	var s = new TextStyle();
-	var node = caret.getBaseNode();
+	caret = caret || app.doc.caret;
+	var node = caret.elm;
 	node = node.parentNode;
 
-	if ($hasClass(node, 'b')) {
-		s.setBold(true);
-	}
+	return TextStyle.getStyleOfWord(node);
+};
 
-	if ($hasClass(node, 'i')) {
-		s.setItalic(true);
-	}
+TextStyle.getStyleOfWord = function(word) {
+		var s = new TextStyle();
 
-	if ($hasClass(node, 'u')) {
-		s.setUnderline(true);
-	}
+		if ($hasClass(word, 'b')) {
+			s.setBold(true);
+		}
 
-	if ($hasClass(node, 's')) {
-		s.setStrike(true);
-	}
+		if ($hasClass(word, 'i')) {
+			s.setItalic(true);
+		}
 
-	return s;
-}
+		if ($hasClass(word, 'u')) {
+			s.setUnderline(true);
+		}
+
+		if ($hasClass(word, 's')) {
+			s.setStrike(true);
+		}
+
+		if ($hasClass(word, 'sub')) {
+			s.setSubscript(true);
+		}
+
+		if ($hasClass(word, 'sup')) {
+			s.setSuperscript(true);
+		}
+
+		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family').replace(/\'/g, ''));
+		var sizeInPx = parseFloat(window.getComputedStyle(word).getPropertyValue('font-size').replace('px', ''));
+		var sizeInPt = (Math.fround(sizeInPx * 0.75));
+		s.setFontSize(sizeInPt);
+
+		return s;
+};
 
 TextStyle.Decoration = {
 	NONE: 0x0,
 	BOLD: 0x1,
 	ITALIC: 0x2,
 	UNDERLINE: 0x4,
-	STRIKE: 0x8
+	STRIKE: 0x8,
+	SUPERSCRIPT: 0x10,
+	SUBSCRIPT: 0x20
 };
 
 TextFormat.TextStyle = TextStyle;

@@ -1,9 +1,12 @@
 (function(Poe) {
 'use strict';
 
+var self;
 class Document extends Poe.DomElement {
-	constructor() {
-		super('div');
+	constructor(opts) {
+		opts = opts || {};
+		super('div', ['click', 'mousedown', 'mousemove']);
+		self = this;
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
@@ -15,16 +18,21 @@ class Document extends Poe.DomElement {
 		});
 
 		this.buffer = null;
-		this.InputHandler = new Poe.InputHandler();
-		this._init();
+		this.inputHandler = new Poe.InputHandler();
+		var self = this;
+		this.inputHandler.on('click', function(node) { self.emit('click', [node]); });
+		this.inputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
+		this.inputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
+		if (opts.init !== false)
+			this._init(opts);
 	}
 
 	setPageSizeIn(size) {
 		var page = null;
 		for (var i = 0; i < this.childNodes.length; i++) {
 			page = this.childNodes[i];
-			$css(page, 'height', size.h.toString());
-			$css(page, 'width', size.w.toString());
+			$css(page, 'height', $pxStr(size.h));
+			$css(page, 'width', $pxStr(size.w));
 		}
 
 		this._pageSize = size;
@@ -62,7 +70,8 @@ class Document extends Poe.DomElement {
 
 	show() {
 		super.show();
-		this.caret.show();
+		if (this.caret)
+			this.caret.show();
 	}
 
 	getNodeAtPoint(x, y) {
@@ -91,7 +100,7 @@ class Document extends Poe.DomElement {
 		var firstParagraph = page.childNodes[0];
 		if ($posAboveNode(y, firstParagraph)) {
 			let firstLine = firstParagraph.childNodes[0];
-			let firstWord = firstLine.childNodes[0]
+			let firstWord = firstLine.childNodes[0];
 			let firstChar = firstWord.childNodes[0];
 
 			if (firstChar === this.caret.elm) {
@@ -187,7 +196,7 @@ class Document extends Poe.DomElement {
 		}
 		found = false;
 
-		var rect = null;
+		rect = null;
 		for (i = 0; i < word.childNodes.length; i++) {
 			char = word.childNodes[i];
 			rect = $getBoundingClientRect(char);
@@ -233,36 +242,61 @@ class Document extends Poe.DomElement {
 		return (currentNode === node ? null : currentNode);
 	}
 
+	remove() {
+		super.remove();
+		this.caret.setBuffer(null);
+		this.inputHandler.setCaret(null);
+		this.buffer = null;
+		this.inputHandler = null;
+		this.caret = null;
+		this.textLayout = null;
+		window.app.elm.removeEventListener(this._scrollEventListener);
+	}
+
+	reset() {
+		this.elm.innerHTML = "";
+		this._init();
+	}
+
+	focus() {
+		app.doc.inputHandler.focus();
+		app.doc.caret.show();
+	}
 
 
 	/**************************************************************************
 	 * PRIVATE FUNCTIONS                                                      *
 	 **************************************************************************/
-	 _init() {
-		 var page = Poe.ElementGenerator.createPage();
-		 var paragraph = Poe.ElementGenerator.createParagraph();
-		 var line = Poe.ElementGenerator.createLine();
-		 var word = Poe.ElementGenerator.createWord();
+	 _init(opts) {
+		opts = opts || {};
+		if (opts.createElements !== false)
+		{
+			var page = Poe.ElementGenerator.createPage();
+			var paragraph = Poe.ElementGenerator.createParagraph();
+			var line = Poe.ElementGenerator.createLine();
+			var word = Poe.ElementGenerator.createWord();
 
-		 /*
-		 	The text node is so the caret has something
+			/*
+				The text node is so the caret has something
 			to base it's positions off of when it gets inserted
 			into the DOM.
-		 */
-		 var textNode = document.createTextNode(String.fromCharCode(8203));
-		 $append(textNode, word);
-		 $append(word, line);
-		 $append(line, paragraph);
-		 $append(paragraph, page);
-		 this.append(page, this.elm);
+			*/
+			$append(word, line);
+			$append(line, paragraph);
+			$append(paragraph, page);
+			this.append(page, this.elm);
+		}
 
 		 this.buffer = new Poe.TextBuffer();
+		 if (opts.bufferInit) {
+			opts.bufferInit(this, this.buffer);
+		 }
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
-		 this.InputHandler.setCaret(this.caret);
+		 this.inputHandler.setCaret(this.caret);
 		 this.textLayout = new Poe.TextLayout(this);
 
-		 window.app.elm.addEventListener('scroll', this.caret.show);
+		 this.scrollEventListener = window.app.elm.addEventListener('scroll', this.focus);
 	 }
 
 	 _stylePage(page) {

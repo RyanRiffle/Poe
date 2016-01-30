@@ -9,17 +9,18 @@
 	<link rel="icon" type="image/png" href="favicon.png"/>
 
 	<!-- Theming -->
-	<link rel="stylesheet" type="text/css" media="screen" href="css/Gui.css"/>
+	<link rel="stylesheet" type="text/css" href="css/Gui.css"/>
 	<link rel="stylesheet" type="text/css" href="css/glyphicons.css">
 	<link rel="stylesheet" type="text/css" href="css/DefaultTheme.css">
 	<!-- External libraries -->
+	<!--
 	<script type="text/javascript" src="lib/pdfkit.min.js"></script>
 	<script type="text/javascript" src="lib/blob-stream.min.js"></script>
 	<script type="text/javascript" src="rewrite/Poe.js"></script>
 	<script type="text/javascript" src="rewrite/Keysym.js"></script>
+	<script type="text/javascript" src="rewrite/EventHandler.js"></script>
 	<script type="text/javascript" src="rewrite/DomElement.js"></script>
 	<script type="text/javascript" src="rewrite/InputHandler.js"></script>
-	<script type="text/javascript" src="rewrite/EventHandler.js"></script>
 	<script type="text/javascript" src="rewrite/Writer.js"></script>
 	<script type="text/javascript" src="rewrite/Document.js"></script>
 	<script type="text/javascript" src="rewrite/TextBuffer.js"></script>
@@ -30,15 +31,28 @@
 	<script type="text/javascript" src="rewrite/TextLayout.js"></script>
 	<script type="text/javascript" src="rewrite/TextFormat/TextFormat.js"></script>
 	<script type="text/javascript" src="rewrite/TextFormat/TextStyle.js"></script>
+	<script type="text/javascript" src="rewrite/TextFormat/ParagraphStyle.js"></script>
 
 	<script type="text/javascript" src="rewrite/Ribbon/Ribbon.js"></script>
 	<script type="text/javascript" src="rewrite/Ribbon/TabBar.js"></script>
 	<script type="text/javascript" src="rewrite/Ribbon/TabPane.js"></script>
 	<script type="text/javascript" src="rewrite/Ribbon/Button.js"></script>
 	<script type="text/javascript" src="rewrite/Ribbon/TabPaneGroup.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/InputText.js"></script>
+	<script type="text/javascript" src="rewrite/Clipboard.js"></script>
+	<script type="text/javascript" src="rewrite/Ribbon/Select.js"></script>
 
+	<script type="text/javascript" src="rewrite/FileFormat/FileFormatBase.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/ElectronFile.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/Docx/Docx.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/Docx/Document.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/PoeDocumentPrivate.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/Pml.js"></script>
+	<script type="text/javascript" src="rewrite/FileFormat/Docx.js"></script>
 
-	<!--<script type="text/javascript" src="js/Poe.min.js"></script>-->
+	<script type="text/javascript" src="rewrite/Core/Ajax.js"></script>
+	-->
+	<script type="text/javascript" src="js/Poe.min.js"></script>
 
 	<!-- Setup the application when the document loads. -->
 	<script type="text/javascript">
@@ -48,7 +62,7 @@
 	</script>
 </head>
 <body>
-	<div class="tab-bar">
+	<!--<div class="tab-bar">
 		<div class="tabs">
 			<div class="tab active">
 				Text
@@ -89,7 +103,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 	<div id="Poe"></div>
 </body>
 </html>

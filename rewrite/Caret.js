@@ -9,6 +9,7 @@ class Caret extends Poe.TextBufferMarker {
 		self = this;
 		this.elm = document.createElement('span');
 		this.elm.appendChild(document.createTextNode(String.fromCharCode(8203)));
+		$addClass(this.elm, 'caret');
 
 		this._blinkInterval = null;
 		this._blinkStartTimer = null;
@@ -19,48 +20,62 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	setBuffer(buf) {
+		if (buf === null) {
+			this.elm.remove();
+			this._stopBlink();
+			return;
+		}
+
 		super.setBuffer(buf);
 		this.buffer.on('changed', this._evtBufferChanged);
-		window.addEventHandler
-		if (this.buffer.length != 0)
+		if (this.buffer.length !== 0)
 			this.moveBeginning();
 		else
 			this.buffer.append(this);
 		this.show();
+		this.emit('moved');
 	}
 
 	moveLeft() {
 		this._stopBlink();
+		$insertBefore(this.elm, this.previousSibling);
 		super.moveLeft();
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveRight() {
 		this._stopBlink();
+		$insertAfter(this.elm, this.nextSibling);
 		super.moveRight();
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveBeginning() {
 		this._stopBlink();
 		super.moveBeginning();
+		$insertBefore(this.elm, this.buffer.at(1));
 		this._evtBufferChanged();
 		this._startBlink();
+		this.emit('moved');
 	}
 
 	moveEnd() {
 		super.moveEnd();
-		this._evtBufferChanged();
+		$insertAfter(this.elm, this.previousSibling);
+		this.show();
+		this.emit('moved');
 	}
 
 	show() {
-		if (!this.hasSelection) {
-			$show(this.visibleElm);
-			this._evtBufferChanged();
-			if (this._blinkInterval === null)
-				this._blinkInterval = setInterval(this._blink, 400);
+		if (!self.hasSelection) {
+			$show(self.visibleElm);
+			if (self._blinkInterval === null)
+				self._blinkInterval = setInterval(self._blink, 400);
+			self._evtBufferChanged();
 		}
 	}
 
@@ -100,6 +115,7 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		this.emit('moved');
 		return prev;
 	}
 
@@ -112,23 +128,32 @@ class Caret extends Poe.TextBufferMarker {
 		}
 		this.buffer.setDirty();
 		this._startBlink();
+		this.emit('moved');
 		return next;
 	}
 
 	moveBefore(node) {
 		var nodeIndex = this.buffer.indexOf(node);
-		this.moveTo(nodeIndex);
 		$insertBefore(this.elm, node);
+		this.moveTo(nodeIndex);
 	}
 
 	moveAfter(node) {
 		var nodeIndex = this.buffer.indexOf(node);
-		this.moveTo(nodeIndex + 1);
 		$insertAfter(this.elm, node);
+		this.moveTo(nodeIndex + 1);
 	}
 
 	get currentWord() {
 		return this.elm.parentNode;
+	}
+
+	get currentLine() {
+		return this.currentWord.parentNode;
+	}
+
+	get currentParagraph() {
+		return this.currentLine.parentNode;
 	}
 
 	/**************************************************************************
@@ -141,22 +166,19 @@ class Caret extends Poe.TextBufferMarker {
 
 	_updateGeometry() {
 		var rect = $getBoundingClientRect(this.elm);
+		if (rect.top < $getBoundingClientRect(app.elm).top) {
+			this.hide();
+			return;
+		}
+
 		$css(this.visibleElm, 'height', $pxStr(rect.height));
 		$css(this.visibleElm, 'top', $pxStr(rect.top));
 		$css(this.visibleElm, 'left', $pxStr(rect.left));
 	}
 
 	_updateDomNode() {
-		if (this.elm.parentNode && this.elm.parentNode.childNodes.length === 1) {
-			return;
-		}
-
-		if (this.nextSibling) {
-			$insertBefore(this.elm, this.nextSibling);
-		} else if (this.previousSibling) {
-			$insertAfter(this.elm, this.previousSibling);
-		} else {
-			$append(this.elm, document.querySelector('.word'));
+		if (!this.elm.parentNode) {
+			$prepend(this.elm, document.querySelector('.word'));
 		}
 	}
 

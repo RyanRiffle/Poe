@@ -7,37 +7,63 @@ html, body, #Poe, .writer {
 	width: 100%;
 	margin: 0px;
 	overflow: hidden;
-}
-
-body * {
 	box-sizing: border-box;
 }
 
-.writer {
-	background-color: #E6E6E6;
-	padding-top: 12px;
-	overflow-y: scroll;
-	overflow-x: auto;
-	white-space: nowrap;
-	padding-bottom: 12px;
+p {
+	margin: 0px;
 }
 
-.page {
-	margin-left: auto;
-	margin-right: auto;
+@media screen {
+	body * {
+		box-sizing: border-box;
+	}
 
-	background-color: white;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	user-select: none;
-	-webkit-user-select: none;
-}
+	.writer {
+		background-color: #F8F8F8;
+		padding-top: 12px;
+		overflow-y: scroll;
+		overflow-x: auto;
+		white-space: nowrap;
+		padding-bottom: 12px;
+		height: 100%;
+		width: 100%;
+		padding-bottom: 150px;
+		padding-left: 12px;
+		padding-right: 12px;
+	}
 
-.visible-caret {
-	background-color: black;
-	border-left: 2px solid black;
-	position: absolute;
-	height: 2px;
-	width: 2px;
+	.page {
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 12px;
+
+		background-color: white;
+		border: 1px solid rgba(0, 0, 0, 0.2);
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	/*
+	.line {
+		-webkit-filter: blur(1px) opacity(50%);
+	}
+
+	.line.current {
+		-webkit-filter: none;
+	}*/
+
+	.visible-caret {
+		background-color: black;
+		border-left: 2px solid black;
+		position: absolute;
+		height: 2px;
+		width: 2px;
+	}
+
+	.select-box {
+		background-color: rgba(93, 192, 240, 0.2);
+		position: absolute;
+	}
 }
 
 .user-input {
@@ -48,15 +74,32 @@ body * {
 	width: 2px;
 }
 
-.select-box {
-	background-color: rgba(93, 192, 240, 0.2);
-	position: absolute;
-}
-
-
 /******************************************************************************
  **** RIBBON TOOLBAR
 ******************************************************************************/
+
+@media print{
+
+	body {
+		-webkit-print-color-adjust: exact;
+	}
+	.ribbon {
+		display: none;
+	}
+
+	.page {
+		border: none;
+		height: 11in!important;
+		margin: 0;
+		page-break-after: always;
+	}
+}
+
+.ribbon {
+	border-bottom: 1px solid #E6E6E6;
+	font-family: sans-serif;
+	font-size: 14px;
+}
 
 .tab-bar {
 	width: 100%;
@@ -73,11 +116,9 @@ body * {
 
 .tab-bar .tab {
 	border-right: 1px solid rgba(0, 0, 0, .2);
-	border-bottom: 1px solid rgba(0, 0, 0, .2);
 	display: inline-block;
 
 	padding: 6px 12px;
-	margin-left: -5px;
 }
 
 .tab-bar .tab:hover {
@@ -89,8 +130,9 @@ body * {
 }
 
 .tab-bar .tab.active {
-	border-bottom: 1px solid transparent;
-	margin-bottom: -1px;
+	border-bottom: 1px solid white;
+	position: relative;
+	bottom: -1px;
 }
 
 .tab-bar > .tab-pane {
@@ -98,16 +140,21 @@ body * {
 	height: 100px;
 }
 
+.tab-pane {
+	height: 100px;
+	width: 100%;
+}
+
 .tab-pane > .tab-pane-group {
 	display: inline-block;
-	height: 100%;
-	max-width: 150px;
+	height: 100px;
+	min-width: 100px;
 	border-right: 1px solid rgba(0, 0, 0, .1);
-	margin-left: -5px;
 
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-top: 2px;
+	vertical-align: top;
 }
 
 .tab-pane > .tab-pane-group:first-child {
@@ -145,6 +192,34 @@ body * {
 
 .horizontal-group > * {
 	display: inline-block;
+	vertical-align: top;
+}
+
+/******************************************************************************
+ **** DROPDOWN (CONTEXT) MENU
+******************************************************************************/
+
+.drop-menu {
+	box-sizing: content-box;
+	border: 1px solid #E6E6E6;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	max-width: 100px;
+	min-width: 50px;
+	position: absolute;
+}
+
+ul.menu {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+	background-color: #F8F8F8;
+	width: 100%;
+	height: 100px;
+}
+
+ul.menu li {
+	padding: 6px;
 }
 
 /******************************************************************************
@@ -160,4 +235,23 @@ body * {
 
 .u {
 	text-decoration: underline;
+}
+
+.s {
+	text-decoration: line-through;
+}
+
+.u.s {
+	text-decoration: line-through underline;
+}
+
+.sub {
+	font-variant-position: sub;
+	font-size: 80%;
+	position: relative;
+	top: 4px;
+}
+
+.sup {
+	font-variant-position: super;
 }

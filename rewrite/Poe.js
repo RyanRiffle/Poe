@@ -7,16 +7,18 @@ window.Poe = window.Poe || {
 };
 
 Poe.init = function(parentSelector) {
+	window.ribbon = new Poe.Ribbon.DefaultRibbon();
+	$prepend(window.ribbon.elm, document.body);
 	window.app = new Poe.Writer(parentSelector);
 	var doc = new Poe.Document();
 	app.setDocument(doc);
 	app.show();
+	ribbon.setupEventHandlers();
 
-	/*
-	var note = new Notification('Title', {
-		body: 'Lorem ipsum dolor sit amet.'
-	});
-	*/
+	/** /
+	var pd = new Poe.FileFormat.Pml();
+	pd.openFile('/Users/ryan/Desktop/Untitled.pml');
+	/**/
 };
 
 window.$addClass = function(elm, className) {
@@ -32,6 +34,10 @@ window.$removeClass = function(elm, className) {
 
 window.$hasClass = function(elm, className) {
 	return elm.className.indexOf(className) != -1;
+};
+
+window.$addAttr = function(elm, attr, val) {
+
 };
 
 window.$insertBefore = function(ins, bef) {
@@ -71,6 +77,12 @@ window.$empty = function(elm) {
 window.$createElm = function(tagName) {
 	return document.createElement(tagName);
 };
+
+window.$createElmWithClass = function(tagName, className) {
+	var elm = $createElm(tagName);
+	$addClass(elm, className);
+	return elm;
+}
 
 window.$inchToPx = function(inches) {
 	return inches * 96;
@@ -205,6 +217,15 @@ window.mix = function(one, two) {
 	}
 
 	return o;
+};
+
+/*
+	NOTE: This function is only for testing. It is not
+	a part of the API.
+*/
+window.save = function() {
+	var pml = new Poe.FileFormat.Pml();
+	pml.saveFile('/Users/ryan/Desktop/Untitled.pml');
 };
 
 Poe.Contains = {

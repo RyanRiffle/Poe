@@ -2,20 +2,21 @@
 'use strict';
 
 class Button extends DomElement {
-	constructor() {
-		super('button');
-		this._evts = {
-			'click': []
-		};
+	constructor(text) {
+		super('button', ['click']);
+		this.elm.innerHTML = text;
+		this.show();
+		var self = this;
+		this.elm.addEventListener('click', function() {
+			self.emit('click');
+		});
 	}
 
-	on(evt, callback) {
-		this._evts[evt] = callback;
-	}
-
-	emit(evt) {
-		for (var i = 0; i < this._evts[evt].length; i++) {
-			this._evts[evt][i]();
+	setActive(bool) {
+		if (bool) {
+			this.addClass('active');
+		} else {
+			this.removeClass('active');
 		}
 	}
 }

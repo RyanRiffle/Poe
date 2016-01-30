@@ -1,8 +1,9 @@
-(function() {
+(function(Poe) {
 'use strict';
 
-class DomElement {
-	constructor(tagName) {
+class DomElement extends Poe.EventHandler {
+	constructor(tagName, events) {
+		super(events || []);
 		this.elm = $createElm(tagName);
 		$hide(this.elm);
 	}
@@ -21,12 +22,20 @@ class DomElement {
 		return $hasClass(this.elm, 'hidden');
 	}
 
+	get style() {
+		return this.elm.style;
+	}
+
 	child(index) {
 		return childNodes[index];
 	}
 
 	append(child) {
-		$append(child, this.elm);
+		if (child.elm) {
+			$append(child.elm, this.elm);
+		} else {
+			$append(child, this.elm);
+		}
 		return this;
 	}
 
@@ -43,10 +52,26 @@ class DomElement {
 		$removeClass(this.elm, className);
 	}
 
+	toggleClass(className, on) {
+		if (on) {
+			$addClass(this.elm, className);
+		} else {
+			$removeClass(this.elm, className);
+		}
+	}
+
 	get childNodes() {
 		return this.elm.childNodes;
+	}
+
+	remove() {
+		this.elm.remove();
+	}
+
+	focus() {
+		this.elm.focus();
 	}
 }
 
 Poe.DomElement = DomElement;
-})();
+})(window.Poe);

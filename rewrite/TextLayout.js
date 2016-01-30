@@ -8,14 +8,22 @@ class TextLayout {
 		this.document = document;
 		this.document.buffer.on('changed', this.relayout);
 		self = this;
+		this._isDisabled = false;
+	}
+
+	setDisabled(isDisabled) {
+		this._isDisabled = isDisabled;
 	}
 
 	relayout() {
-		var paragraph = self.document.caret.currentWord.parentNode.parentNode;
+		if (self._isDisabled) {
+			return false;
+		}
+		var paragraph = self.document.caret.currentParagraph;
 		var wordRect, lineRect, line, word;
 		var i;
 		for (i = 0; i < paragraph.childNodes.length; i++) {
-			if (paragraph.childNodes[i] === self.document.caret.elm.parentNode.parentNode) {
+			if (paragraph.childNodes[i] === self.document.caret.currentLine) {
 				break;
 			}
 		}
@@ -89,22 +97,33 @@ class TextLayout {
 		}
 		var indexOfPgraph = i;
 		var pageRect = page.getBoundingClientRect();
+		var pageBottom = pageRect.bottom - parseInt(page.style['padding-bottom']);
 		var pgraphRect;
 		for (i = page.childNodes.length - 1; i >= indexOfPgraph ; i--) {
 			paragraph = page.childNodes[i];
 			pgraphRect = paragraph.getBoundingClientRect();
 
-			while (pgraphRect.bottom > page.bottom) {
+			while (pgraphRect.bottom > pageBottom) {
 				if (!page.nextSibling) {
 					var np = Poe.ElementGenerator.createPage();
 					$insertAfter(np, page);
+					app.doc._stylePage(np);
 				}
 
+				var tmp = paragraph.previousSibling;
+				if (tmp) {
+					pgraphRect = tmp.getBoundingClientRect();
+				}
 				$prepend(paragraph, page.nextSibling);
+				paragraph = tmp;
+				if (!tmp) {
+					break;
+				}
 			}
 		}
 
 		self.document.caret.show();
+		return true;
 	}
 }
 

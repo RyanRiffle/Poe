@@ -13,7 +13,7 @@ class ElementGenerator {
 	}
 
 	createParagraph() {
-		var elm = $createElm('div');
+		var elm = $createElm('p');
 		$addClass(elm, 'paragraph');
 		return elm;
 	}

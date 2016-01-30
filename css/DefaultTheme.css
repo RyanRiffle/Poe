@@ -8,7 +8,11 @@ button {
 	border: 1px solid transparent;
 	background-color: white;
 	outline: none;
-	padding: 4px;
+	padding: 4px 8px;
+	min-width: 27px;
+	min-height: 27px;
+	font-size: 14px;
+	font-family: 'Times New Roman', serif;
 }
 
 button:hover {
@@ -16,6 +20,28 @@ button:hover {
 	background-color: rgba(0, 0, 0, .01);
 }
 
-button:active {
+button:active, button.active {
 	background-color: rgba(0, 0, 0, .04);
+	border: 1px solid rgba(0, 0, 0, .15);
+}
+
+input {
+	font-size: 14px;
+}
+
+select {
+	border: 1px solid rgba(0, 0, 0, .15);
+	padding: 4px;
+	border-radius: 0px!important;
+	background-color: transparent;
+	outline: none;
+}
+
+select:active {
+	outline:none;
+}
+
+.ribbon input {
+	font-size: 12px;
+	
 }
