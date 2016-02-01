@@ -94,8 +94,6 @@ module.exports = function(grunt) {
 	});
 
 	// Load the plugin that provides the "coffee" task.
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-babel');
 
