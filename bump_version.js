@@ -1,5 +1,6 @@
 /* Author: Ryan Riffle */
 var fs = require('fs');
+var child_process = require('child_process');
 fs.readFile('./package.json', function(err, data) {
 	if (err) {
 		throw new Error('Failed to open package.json. Does it exist?');
@@ -25,5 +26,7 @@ fs.readFile('./package.json', function(err, data) {
 		if (err) {
 			throw new Error('Failed to write to package.json.');
 		}
+
+		child_process.exec('git add package.json');
 	});
 });
