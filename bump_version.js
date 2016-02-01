@@ -1,3 +1,4 @@
+/* Author: Ryan Riffle */
 var fs = require('fs');
 fs.readFile('./package.json', function(err, data) {
 	if (err) {
@@ -19,6 +20,7 @@ fs.readFile('./package.json', function(err, data) {
 	}
 
 	pkg.version = version[0] + '.' + version[1] + '.' + version[2];
+	console.log("Version bumped: " + pkg.version);
 	fs.writeFile('./package.json', JSON.stringify(pkg, null, 4), function(err) {
 		if (err) {
 			throw new Error('Failed to write to package.json.');
