@@ -29,7 +29,7 @@ class TextBuffer extends Poe.EventHandler {
 		var it = this.at(ind);
 		var removed = this.buf.splice(ind, 1);
 		for(var i = 0; i < removed.length; i++) {
-			if (typeof removed[i] === 'TextBufferMarker') {
+			if (typeof removed[i] === typeof Poe.TextBufferMarker) {
 
 			}
 		}
