@@ -1,2 +1,6 @@
-/js
+/build
+/build-native
 /node_modules
+/Poe-darwin-x64
+/Poe-win32-ia32
+/Poe-win32-x64
