@@ -5,4 +5,6 @@ before_install:
 - npm install
 before_script:
 - npm install -g electron-packager
+- npm install -g grunt
+- npm install -g babel-cli
 script: grunt build-all
