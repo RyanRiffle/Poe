@@ -94,7 +94,11 @@ window.$pxToInch = function(px) {
 
 window.$pxStr = function(num) {
 	return parseInt(num) + 'px';
-}
+};
+
+window.$ptToPxStr = function(num) {
+	$pxStr(Math.fround(num * 1.33333333333333));
+};
 
 window.$css = function(elm, attr, val) {
 	elm.style[attr] = val;
@@ -195,29 +199,6 @@ window.$getBoundingClientRect = function(node) {
 	return node.getBoundingClientRect();
 };
 
-window.mixin = function(one, two, three) {
-	var o = Object.create(one.prototype);
-	if (two) {
-		o = window.mix(o, two);
-	}
-
-	if (three) {
-		o = window.mix(o, three);
-	}
-
-	return o;
-};
-
-window.mix = function(one, two) {
-	var o = Object.create(one.prototype);
-	for (var k in two) {
-		if (two.hasOwnProperty(k)) {
-			o[k] = two[k];
-		}
-	}
-
-	return o;
-};
 
 /*
 	NOTE: This function is only for testing. It is not

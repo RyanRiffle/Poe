@@ -47,7 +47,7 @@ class TabBar extends Poe.DomElement {
 
 		$addClass(tab, 'active');
 		var pane = null;
-		for (var i = 0; i < this._tabPanes.length; i++) {
+		for (i = 0; i < this._tabPanes.length; i++) {
 			pane = this._tabPanes[i];
 			pane.hide();
 		}

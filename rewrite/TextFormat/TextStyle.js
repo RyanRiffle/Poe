@@ -217,7 +217,7 @@ class TextStyle {
 		}
 
 		word.style['font-family'] = this._fontFace;
-		word.style['font-size'] = $pxStr(Math.fround(this._fontSize * 1.33333333333333));
+		word.style['font-size'] = $ptToPxStr(this._fontSize);
 	}
 }
 

@@ -1,6 +1,10 @@
 (function(Poe, FileFormat, fs, Dialog, zlib) {
 'use strict';
 
+if (!Poe.config.isNative) {
+	return;
+}
+
 /*
 	TODO: Create a notification system wrapper.
 	Probably use electron's built in notification for

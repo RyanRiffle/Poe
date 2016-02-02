@@ -10,7 +10,7 @@ class Document extends Poe.DomElement {
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
-		this.setPageMarginsIn({
+		this.setPageMarginsIn(Poe.config.defaultPageMargins || {
 			top: 1,
 			bottom: 1,
 			left: 1,
@@ -23,6 +23,8 @@ class Document extends Poe.DomElement {
 		this.inputHandler.on('click', function(node) { self.emit('click', [node]); });
 		this.inputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
 		this.inputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
+		this.elm.style['font-family'] = Poe.config.defaultFont;
+		this.elm.style['font-size'] = $ptToPxStr(Poe.config.defaultFontSize);
 		if (opts.init !== false)
 			this._init(opts);
 	}

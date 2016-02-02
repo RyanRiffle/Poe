@@ -64,7 +64,6 @@ class DefaultRibbon extends Ribbon {
 		self.buttons.sup.toggleClass('active', textStyle.isSuperscript());
 		self.buttons.sub.toggleClass('active', textStyle.isSubscript());
 
-		this.input.font.elm.style['font-family'] = textStyle.getFont();
 		this.input.font.setText(textStyle.getFont().replace("'", ""));
 		this.input.fontSize.setText(Math.floor(textStyle.getFontSize()));
 	}
@@ -73,7 +72,9 @@ class DefaultRibbon extends Ribbon {
 		var homePane = this.tabBar.createTab('Home');
 		var fontBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var inputFont = new Poe.Ribbon.InputText();
+		inputFont.setText(Poe.config.defaultFont);
 		var inputFontSize = new Poe.Ribbon.InputText();
+		inputFontSize.setText(Poe.config.defaultFontSize);
 		inputFontSize.elm.style.width = '25px';
 
 		var fontGroup = new Poe.Ribbon.TabPaneGroup('Font');
@@ -196,7 +197,6 @@ class DefaultRibbon extends Ribbon {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFont(inputFont.getText());
 			textStyle.applyStyle(app.doc.caret);
-			inputFont.style['font-family'] = inputFont.getText();
 			app.doc.inputHandler.focus();
 		});
 

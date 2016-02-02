@@ -1,6 +1,5 @@
 (function(Poe, FileFormatNS) {
 'use strict';
-var fs = require('fs');
 
 class FileFormat {
 	constructor() {
@@ -24,7 +23,7 @@ class FileFormat {
 	}
 
 	saveFile(fileName) {
-		
+
 	}
 
 	_doSave(opts) {

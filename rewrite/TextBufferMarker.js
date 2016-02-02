@@ -22,36 +22,41 @@ class TextBufferMarker extends Poe.EventHandler{
 	insertBefore(it) {
 		var myIndex = this.buffer.indexOf(this);
 		this.buffer.splice(myIndex, 0, it);
+		this.emit('moved');
 		return myIndex;
 	}
 
 	insertAfter(it) {
 		var myIndex = this.buffer.indexOf(this);
 		this.buffer.splice(myIndex + 1, 0, it);
+		this.emit('moved');
 		return myIndex + 1;
 	}
 
 	moveLeft() {
 		var myIndex = this.remove();
 		this.buffer.splice(myIndex - 1, 0, this);
+		this.emit('moved');
 		return myIndex - 1;
 	}
 
 	moveRight() {
 		var myIndex = this.remove();
-		this.buffer.splice(myIndex, 0, this);
-
+		this.buffer.splice(myIndex+1, 0, this);
+		this.emit('moved');
 		return myIndex + 1;
 	}
 
 	moveBeginning() {
 		var myIndex = this.remove();
 		this.buffer.splice(0, 0, this);
+		this.emit('moved');
 	}
 
 	moveEnd() {
 		var myIndex = this.remove();
 		this.buffer.splice(this.buffer.length, 0, this);
+		this.emit('moved');
 	}
 
 	moveTo(index) {

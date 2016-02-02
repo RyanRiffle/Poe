@@ -1,4 +1,36 @@
 module.exports = function(grunt) {
+	var isWeb = false;
+	var isNative = false;
+
+	if (process.argv.length !== 2) {
+		switch (process.argv[1]) {
+			case null:
+			case 'build-dist':
+				isWeb = true;
+				break;
+
+			case 'build-dist-native':
+			case 'build-osx':
+			case 'build-win32':
+			case 'build-win64':
+			case 'build-all':
+				isNative = true;
+				break;
+		}
+	} else {
+		isWeb = true;
+	}
+
+	var config;
+	if (isWeb) {
+		config = 'rewrite/Config/Web.js';
+	} else {
+		config = 'rewrite/Config/Native.js';
+	}
+
+	console.log('isWeb: ', isWeb);
+	console.log('isNative: ', isNative);
+
 	require('load-grunt-tasks')(grunt);
 	// Project configuration.
 	grunt.initConfig({
@@ -12,6 +44,7 @@ module.exports = function(grunt) {
 					expand: true,
 					src: [
 						"rewrite/Poe.js",
+						config,
 						"rewrite/Keysym.js",
 						"rewrite/EventHandler.js",
 						"rewrite/DomElement.js",
@@ -36,6 +69,7 @@ module.exports = function(grunt) {
 						"rewrite/Ribbon/Select.js",
 						"rewrite/FileFormat/FileFormatBase.js",
 						"rewrite/FileFormat/ElectronFile.js",
+						"rewrite/FileFormat/WebFile.js",
 						"rewrite/FileFormat/Docx/Docx.js",
 						"rewrite/FileFormat/Docx/Document.js",
 						"rewrite/FileFormat/PoeDocumentPrivate.js",
@@ -56,6 +90,7 @@ module.exports = function(grunt) {
 				files: {
 					"build/js/Poe.min.js": [
 						"build/int-js/rewrite/Poe.js",
+						(isWeb ? "build/int-js/rewrite/Config/Web.js" : "build/int-js/rewrite/Config/Native.js"),
 						"build/int-js/rewrite/Keysym.js",
 						"build/int-js/rewrite/EventHandler.js",
 						"build/int-js/rewrite/DomElement.js",
@@ -80,6 +115,7 @@ module.exports = function(grunt) {
 						"build/int-js/rewrite/Ribbon/Select.js",
 						"build/int-js/rewrite/FileFormat/FileFormatBase.js",
 						"build/int-js/rewrite/FileFormat/ElectronFile.js",
+						"build/int-js/rewrite/FileFormat/WebFile.js",
 						"build/int-js/rewrite/FileFormat/Docx/Docx.js",
 						"build/int-js/rewrite/FileFormat/Docx/Document.js",
 						"build/int-js/rewrite/FileFormat/PoeDocumentPrivate.js",
@@ -113,8 +149,9 @@ module.exports = function(grunt) {
 			},
 
 			fonts: {
-				src:['fonts/**'],
-				dest: 'build/fonts/'
+				src:['fonts/*'],
+				dest: 'build/',
+				expand: true
 			},
 
 			static: {
@@ -162,12 +199,13 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task(s).
-	grunt.registerTask('default', ['babel','uglify']);
 	grunt.registerTask(
 		'build-dist',
 		'Builds Poe and puts it in build',
-		['default', 'copy', 'autoprefixer:dist', 'cssmin:dist', 'clean:postBuild']
+		['babel', 'uglify', 'copy', 'autoprefixer:dist', 'cssmin:dist', 'clean:postBuild']
 	);
+
+	grunt.registerTask('default', ['build-dist']);
 
 	grunt.registerTask(
 		'build-osx',

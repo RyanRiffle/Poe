@@ -45,6 +45,8 @@ class InputHandler extends Poe.DomElement {
 			if(self.caret)
 				self.caret.hide();
 		});
+
+		self.caret.emit('moved');
 	}
 
 	onInput(event) {
@@ -59,6 +61,7 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		self.caret.insertNode(tNode);
+		self._registerMouseMoveEvent(false);
 		self._lastKey = null;
 	}
 
@@ -115,14 +118,30 @@ class InputHandler extends Poe.DomElement {
 				case Poe.Keysym.Right:
 					event.preventDefault();
 					var index = self.caret.buffer.indexOf(self.caret);
-					while (self.caret.buffer.at(index + 1).parentNode.parentNode === self.caret.currentLine) {
+					var buffLastIndex = self.caret.buffer.length - 1;
+					if (index === buffLastIndex) {
+						return;
+					}
+
+					while (index !== buffLastIndex && self.caret.buffer.at(index + 1).parentNode.parentNode === self.caret.currentLine) {
 						index+=1;
 					}
 					self.caret.moveAfter(self.caret.buffer.at(index));
+					self.caret.show();
 					break;
 
 				case Poe.Keysym.Left:
 					event.preventDefault();
+					index = self.caret.buffer.indexOf(self.caret);
+					if (index === 0) {
+						return;
+					}
+
+					while (index !== 0 && self.caret.buffer.at(index - 1).parentNode.parentNode === self.caret.currentLine) {
+						index -= 1;
+					}
+					self.caret.moveBefore(self.caret.buffer.at(index));
+					self.caret.show();
 					break;
 			}
 			return;
@@ -237,7 +256,9 @@ class InputHandler extends Poe.DomElement {
 				textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
 				console.log(self.caret.currentLine.childNodes.length);
 				if (self.caret.currentLine.childNodes.length === 1) {
-					self.caret.currentLine.style['min-height'] = textStyle.getFontSize();
+					let tNode = document.createTextNode(String.fromCharCode(8203));
+					self.caret.insertBefore(tNode);
+					self.caret.currentLine.style['min-height'] = '12px';
 				}
 				var npg = Poe.ElementGenerator.createParagraph();
 				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
@@ -279,7 +300,9 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseMove(event) {
-		if (!self._mouseDownPos) {
+		if (!self._mouseDownPos || event.button !== 0) {
+			self._registerMouseMoveEvent(false);
+			console.log('Stopping mouse movement.');
 			return;
 		}
 
@@ -302,8 +325,7 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseUp(event) {
-		self._registerMouseMoveEvent(false);
-		if (event.target === app.elm || self._mouseDownPos === null) {
+		if (self._mouseDownPos === null) {
 			self.elm.focus();
 			self._mouseDownPos = null;
 			return;
@@ -312,11 +334,16 @@ class InputHandler extends Poe.DomElement {
 		self.elm.focus();
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 		if (event.clientX === self._mouseDownPos.x && event.clientY === self._mouseDownPos.y && node) {
-			self.caret.moveBefore(node);
+			if (app.doc.buffer.indexOf(node) === app.doc.buffer.length - 1) {
+				self.caret.moveAfter(node);
+			} else {
+				self.caret.moveBefore(node);
+			}
 			self.caret.show();
 			self._mouseDownPos = null;
 			self.emit('click', [node]);
 		}
+		self._registerMouseMoveEvent(false);
 	}
 
 	setHasSelection(value) {
@@ -456,7 +483,8 @@ class InputHandler extends Poe.DomElement {
 		if (bool){
 			self._mouseMoveEvent = app.elm.addEventListener('mousemove', self.onMouseMove);
 		} else {
-			app.elm.removeEventListener(self._mouseMoveEvent);
+			self._mouseDownPos = null;
+			app.elm.removeEventListener('mousemove', self._mouseMoveEvent);
 		}
 	}
 }

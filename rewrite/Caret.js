@@ -37,6 +37,9 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	moveLeft() {
+		if (!this.previousSibling) {
+			return;
+		}
 		this._stopBlink();
 		$insertBefore(this.elm, this.previousSibling);
 		super.moveLeft();
@@ -46,6 +49,10 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	moveRight() {
+		if (!this.nextSibling) {
+			return;
+		}
+
 		this._stopBlink();
 		$insertAfter(this.elm, this.nextSibling);
 		super.moveRight();
