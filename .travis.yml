@@ -4,5 +4,5 @@ node_js:
 before_install:
 - npm install
 before_script:
-- npm install -g electron_packager
+- npm install -g electron-packager
 script: grunt build-all
