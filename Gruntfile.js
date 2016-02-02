@@ -42,61 +42,154 @@ module.exports = function(grunt) {
 						"rewrite/FileFormat/Pml.js",
 						"rewrite/FileFormat/Docx.js"
 					],
-					dest: 'js/ES5',
+					dest: 'build/int-js',
 					ext: '.js'
 				}]
 			}
 		},
 
 		uglify: {
-				Poe: {
-					options: {
-						mangle: false
-					},
-					files: {
-						"js/Poe.min.js": [
-							"js/ES5/rewrite/Poe.js",
-							"js/ES5/rewrite/Keysym.js",
-							"js/ES5/rewrite/EventHandler.js",
-							"js/ES5/rewrite/DomElement.js",
-							"js/ES5/rewrite/InputHandler.js",
-							"js/ES5/rewrite/Writer.js",
-							"js/ES5/rewrite/Document.js",
-							"js/ES5/rewrite/TextBuffer.js",
-							"js/ES5/rewrite/TextBufferMarker.js",
-							"js/ES5/rewrite/Caret.js",
-							"js/ES5/rewrite/ElementGenerator.js",
-							"js/ES5/rewrite/TextLayout.js",
-							"js/ES5/rewrite/TextFormat/TextFormat.js",
-							"js/ES5/rewrite/TextFormat/TextStyle.js",
-							"js/ES5/rewrite/TextFormat/ParagraphStyle.js",
-							"js/ES5/rewrite/Ribbon/Ribbon.js",
-							"js/ES5/rewrite/Ribbon/TabBar.js",
-							"js/ES5/rewrite/Ribbon/TabPane.js",
-							"js/ES5/rewrite/Ribbon/Button.js",
-							"js/ES5/rewrite/Ribbon/TabPaneGroup.js",
-							"js/ES5/rewrite/Ribbon/InputText.js",
-							"js/ES5/rewrite/Clipboard.js",
-							"js/ES5/rewrite/Ribbon/Select.js",
-							"js/ES5/rewrite/FileFormat/FileFormatBase.js",
-							"js/ES5/rewrite/FileFormat/ElectronFile.js",
-							"js/ES5/rewrite/FileFormat/Docx/Docx.js",
-							"js/ES5/rewrite/FileFormat/Docx/Document.js",
-							"js/ES5/rewrite/FileFormat/PoeDocumentPrivate.js",
-							"js/ES5/rewrite/FileFormat/Pml.js",
-							"js/ES5/rewrite/FileFormat/Docx.js"
-						]
-					}
+			Poe: {
+				options: {
+					mangle: false
+				},
+				files: {
+					"build/js/Poe.min.js": [
+						"build/int-js/rewrite/Poe.js",
+						"build/int-js/rewrite/Keysym.js",
+						"build/int-js/rewrite/EventHandler.js",
+						"build/int-js/rewrite/DomElement.js",
+						"build/int-js/rewrite/InputHandler.js",
+						"build/int-js/rewrite/Writer.js",
+						"build/int-js/rewrite/Document.js",
+						"build/int-js/rewrite/TextBuffer.js",
+						"build/int-js/rewrite/TextBufferMarker.js",
+						"build/int-js/rewrite/Caret.js",
+						"build/int-js/rewrite/ElementGenerator.js",
+						"build/int-js/rewrite/TextLayout.js",
+						"build/int-js/rewrite/TextFormat/TextFormat.js",
+						"build/int-js/rewrite/TextFormat/TextStyle.js",
+						"build/int-js/rewrite/TextFormat/ParagraphStyle.js",
+						"build/int-js/rewrite/Ribbon/Ribbon.js",
+						"build/int-js/rewrite/Ribbon/TabBar.js",
+						"build/int-js/rewrite/Ribbon/TabPane.js",
+						"build/int-js/rewrite/Ribbon/Button.js",
+						"build/int-js/rewrite/Ribbon/TabPaneGroup.js",
+						"build/int-js/rewrite/Ribbon/InputText.js",
+						"build/int-js/rewrite/Clipboard.js",
+						"build/int-js/rewrite/Ribbon/Select.js",
+						"build/int-js/rewrite/FileFormat/FileFormatBase.js",
+						"build/int-js/rewrite/FileFormat/ElectronFile.js",
+						"build/int-js/rewrite/FileFormat/Docx/Docx.js",
+						"build/int-js/rewrite/FileFormat/Docx/Document.js",
+						"build/int-js/rewrite/FileFormat/PoeDocumentPrivate.js",
+						"build/int-js/rewrite/FileFormat/Pml.js",
+						"build/int-js/rewrite/FileFormat/Docx.js"
+					]
 				}
+			}
 		},
 
-		clean: ["js"]
+		clean: {
+			dist: {
+				src: ['build']
+			},
+
+			postBuild: {
+				src: ['build/int-*']
+			}
+		},
+
+		copy: {
+			distIndex: {
+				src: [ 'distIndex.html' ],
+				dest: 'build/index.html'
+			},
+
+			favicon: {
+				src: ['favicon.png'],
+				dest: 'build/',
+				expand: true
+			},
+
+			fonts: {
+				src:['fonts/**'],
+				dest: 'build/fonts/'
+			},
+
+			static: {
+				src:['LICENSE', 'README.md', 'index.js', 'package.json'],
+				dest: 'build/'
+			},
+    	},
+
+		autoprefixer: {
+			dist: {
+				expand: true,
+				src: [ 'css/*.css' ],
+				dest: 'build/int-css/'
+			}
+		},
+
+		cssmin: {
+			dist: {
+				files: {
+					'build/css/Poe.min.css': [ 'build/int-css/**/*.css' ]
+				}
+			}
+		},
+
+		shell: {
+			osx: {
+				command: 'sh ./build-native.sh osx'
+			},
+
+			win32: {
+				command: 'sh ./build-native.sh win32'
+			},
+
+			win64: {
+				command: 'sh ./build-native.sh win64'
+			}
+		}
 	});
 
-	// Load the plugin that provides the "coffee" task.
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-babel');
+	grunt.loadNpmTasks('grunt-autoprefixer');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task(s).
 	grunt.registerTask('default', ['babel','uglify']);
+	grunt.registerTask(
+		'build-dist',
+		'Builds Poe and puts it in build',
+		['default', 'copy', 'autoprefixer:dist', 'cssmin:dist', 'clean:postBuild']
+	);
+
+	grunt.registerTask(
+		'build-osx',
+		'Builds Poe for OSX',
+		['build-dist', 'shell:osx']
+	);
+
+	grunt.registerTask(
+		'build-win32',
+		'Builds Poe for windows',
+		['build-dist', 'shell:win32']
+	);
+
+	grunt.registerTask(
+		'build-win64',
+		'Builds Poe for x64 Windows',
+		['build-dist', 'shell:win64']
+	);
+
+	grunt.registerTask(
+		'build-all',
+		'Builds Poe for all platforms',
+		['build-dist', 'shell:osx', 'shell:win32', 'shell:win64']
+	);
 };

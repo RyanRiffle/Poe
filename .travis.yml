@@ -1,5 +1,8 @@
 language: node_js
 node_js:
-	- "2.3.0"
+- "2.3.0"
 before_install:
-	- npm install
+- npm install
+before_script:
+- npm install -g electron_packager
+script: grunt build-all
