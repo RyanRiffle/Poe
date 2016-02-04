@@ -1,5 +1,5 @@
 (function(Poe) {
-	Poe.config.defaultFont = 'Times New Roman';
+	Poe.config.defaultFont = 'Open Sans';
 	Poe.config.defaultFontSize = 12;
 	Poe.config.defaultPageMargins = {
 		left: 1,

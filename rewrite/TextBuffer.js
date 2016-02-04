@@ -7,6 +7,10 @@ class TextBuffer extends Poe.EventHandler {
 		this.buf = [];
 	}
 
+	remove() {
+		this.buf = null;
+	}
+
 	append(ins) {
 		this.buf.push(ins);
 	}

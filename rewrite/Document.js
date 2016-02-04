@@ -9,6 +9,10 @@ class Document extends Poe.DomElement {
 		self = this;
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
+		this._filePath = null;
+		this._savedHash = null;
+		this.buffer = null;
+		this.inputHandler = new Poe.InputHandler();
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
 		this.setPageMarginsIn(Poe.config.defaultPageMargins || {
 			top: 1,
@@ -17,9 +21,6 @@ class Document extends Poe.DomElement {
 			right: 1
 		});
 
-		this.buffer = null;
-		this.inputHandler = new Poe.InputHandler();
-		var self = this;
 		this.inputHandler.on('click', function(node) { self.emit('click', [node]); });
 		this.inputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
 		this.inputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
@@ -68,6 +69,37 @@ class Document extends Poe.DomElement {
 	prepend(child) {
 		this._stylePage(child);
 		super.prepend(child);
+	}
+
+	setFilePath(path) {
+		this._filePath = path;
+	}
+
+	getFilePath() {
+		return this._filePath;
+	}
+
+	setSavedHash(hash) {
+		this._savedHash = hash;
+	}
+
+	getSavedHash(hash) {
+		return this._savedHash;
+	}
+
+	hasChanged() {
+		if (this.getSavedHash() === null) {
+			return true;
+		}
+
+		var p = new Poe.FileFormat.PoeDocumentPrivate(this);
+		var hash = new Poe.FileFormat.Hash();
+		hash.setData(p.serialize());
+		if (this.getSavedHash() !== hash.getHash()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	show() {
@@ -246,12 +278,12 @@ class Document extends Poe.DomElement {
 
 	remove() {
 		super.remove();
-		this.caret.setBuffer(null);
-		this.inputHandler.setCaret(null);
-		this.buffer = null;
-		this.inputHandler = null;
-		this.caret = null;
+		this.caret.remove();
+		this.inputHandler.remove();
+		this.buffer.remove();
+		this.inputHandler.remove();
 		this.textLayout = null;
+		app.doc = null;
 		window.app.elm.removeEventListener(this._scrollEventListener);
 	}
 
@@ -299,6 +331,14 @@ class Document extends Poe.DomElement {
 		 this.textLayout = new Poe.TextLayout(this);
 
 		 this.scrollEventListener = window.app.elm.addEventListener('scroll', this.focus);
+
+		 /*
+		 	Compute initial hash
+		 */
+		 var hash = new Poe.FileFormat.Hash();
+		 var pdp = new Poe.FileFormat.PoeDocumentPrivate(this);
+		 hash.setData(pdp.serialize());
+		 this.setSavedHash(hash.getHash());
 	 }
 
 	 _stylePage(page) {

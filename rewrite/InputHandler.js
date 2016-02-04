@@ -16,9 +16,9 @@ class InputHandler extends Poe.DomElement {
 		this.elm.addEventListener('input', this.onInput);
 		this.elm.addEventListener('keydown', this.onKeyDown);
 		this.elm.addEventListener('keyup', this.onKeyUp);
-		this._mouseDownEvent = app.elm.addEventListener('mousedown', this.onMouseDown);
-		this._mouseUpEvent = app.elm.addEventListener('mouseup', this.onMouseUp);
-		this._mouseOutEvent = app.elm.addEventListener('mouseout', this.onMouseUp);
+		app.elm.addEventListener('mousedown', this.onMouseDown);
+		app.elm.addEventListener('mouseup', this.onMouseUp);
+		window.addEventListener('mouseleave', this.onMouseUp);
 		this.elm.focus();
 		this._selection = document.createRange();
 		this._selectBox = document.createElement('div');
@@ -49,6 +49,10 @@ class InputHandler extends Poe.DomElement {
 		self.caret.emit('moved');
 	}
 
+	remove() {
+		super.remove();
+	}
+
 	onInput(event) {
 		var c = self.elm.value;
 		self.elm.value = '';
@@ -61,7 +65,6 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		self.caret.insertNode(tNode);
-		self._registerMouseMoveEvent(false);
 		self._lastKey = null;
 	}
 
@@ -300,12 +303,6 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseMove(event) {
-		if (!self._mouseDownPos || event.button !== 0) {
-			self._registerMouseMoveEvent(false);
-			console.log('Stopping mouse movement.');
-			return;
-		}
-
 		if (event.clientX == self._mouseDownPos.x && event.clientY == self._mouseDownPos.y)
 			return;
 
@@ -325,15 +322,14 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseUp(event) {
-		if (self._mouseDownPos === null) {
-			self.elm.focus();
-			self._mouseDownPos = null;
-			return;
-		}
-
 		self.elm.focus();
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 		if (event.clientX === self._mouseDownPos.x && event.clientY === self._mouseDownPos.y && node) {
+			if (self.hasSelection) {
+				self.setHasSelection(false);
+				return;
+			}
+
 			if (app.doc.buffer.indexOf(node) === app.doc.buffer.length - 1) {
 				self.caret.moveAfter(node);
 			} else {
@@ -481,10 +477,12 @@ class InputHandler extends Poe.DomElement {
 
 	_registerMouseMoveEvent(bool) {
 		if (bool){
-			self._mouseMoveEvent = app.elm.addEventListener('mousemove', self.onMouseMove);
+			console.log('Adding mousemove.');
+			app.elm.addEventListener('mousemove', self.onMouseMove);
 		} else {
+			console.log('Removing mousemove');
 			self._mouseDownPos = null;
-			app.elm.removeEventListener('mousemove', self._mouseMoveEvent);
+			app.elm.removeEventListener('mousemove', self.onMouseMove);
 		}
 	}
 }

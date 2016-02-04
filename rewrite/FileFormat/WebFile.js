@@ -1,7 +1,7 @@
 (function(Poe, FileFormat) {
 'use strict';
 
-if (!Poe.config.isWeb) {
+if (true) {
 	return;
 }
 

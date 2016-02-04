@@ -11,6 +11,10 @@ class TextLayout {
 		this._isDisabled = false;
 	}
 
+	remove() {
+		this.document.buffer.removeOn('changed', this.relayout);
+	}
+
 	setDisabled(isDisabled) {
 		this._isDisabled = isDisabled;
 	}

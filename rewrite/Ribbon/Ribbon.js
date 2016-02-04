@@ -21,13 +21,16 @@ class DefaultRibbon extends Ribbon {
 	}
 
 	init() {
-		var homePane = this.createHomePane();
-		var pageLayoutPane = this.createPageLayoutPane();
-		var insertPane = this.tabBar.createTab('Insert');
+		var file = this.createFileMenu();
+		var home = this.createHomePane();
+		var pageLayout = this.createPageLayoutPane();
+		var insert = this.tabBar.createTab('Insert');
 
-		this.append(homePane);
-		this.append(insertPane);
-		this.append(pageLayoutPane);
+		this.append(home.pane);
+		this.append(insert.pane);
+		this.append(pageLayout.pane);
+		this.append(file.pane);
+		this.tabBar.setTab(home);
 	}
 
 	setupEventHandlers() {
@@ -68,8 +71,72 @@ class DefaultRibbon extends Ribbon {
 		this.input.fontSize.setText(Math.floor(textStyle.getFontSize()));
 	}
 
+	createFileMenu() {
+		var fileMenu = this.tabBar.createTab('File', true);
+		var menu = new Poe.Ribbon.UnorderedList();
+		menu.addClass('menu');
+		var itemNew = menu.addItem('<span class="glyphicons glyphicons-file"></span> New Document');
+		var itemOpen = menu.addItem('<span class="glyphicons glyphicons-disk-open"></span> Open');
+		var itemSave = menu.addItem('<span class="glyphicons glyphicons-disk-save"></span> Save');
+		var itemSaveAs = menu.addItem('<span class="glyphicons glyphicons-disk-import"></span> Save As...');
+		var itemAbout = menu.addItem('<span class="glyphicons glyphicons-circle-info"></span> About Poe');
+		var itemQuit = menu.addItem('<span class="glyphicons glyphicons-exit"></span> Quit');
+		fileMenu.pane.append(menu.elm);
+
+		itemNew.addEventListener('click', function() {
+			if (app.doc.hasChanged()) {
+				//Show 'save work?' dialog
+				console.log('Document has changed!');
+			}
+
+			app.doc.remove();
+			var d = new Poe.Document();
+			app.setDocument(d);
+		});
+
+		itemOpen.addEventListener('click', function() {
+			/*
+				TODO: Implement dialog boxes. Then show a prompt
+				asking if they would like to save their work first
+			*/
+			if (app.doc.hasChanged()) {
+				//Show that dialog
+				console.log('Document has changed!');
+			}
+
+			var p = new Poe.FileFormat.Pml();
+			p.open();
+		});
+
+		itemSave.addEventListener('click', function() {
+			var pml = new Poe.FileFormat.Pml();
+			if (app.doc.getFilePath() !== null) {
+				//The file already has a save location
+				pml.saveFile(app.doc.getFilePath(), app.doc);
+				return;
+			}
+
+			pml.save(app.doc);
+		});
+
+		itemSaveAs.addEventListener('click', function() {
+			var pml = new Poe.FileFormat.Pml();
+			pml.save(app.doc);
+		});
+
+		itemAbout.addEventListener('click', function() {
+
+		});
+
+		itemQuit.addEventListener('click', function() {
+
+		});
+		return fileMenu;
+	}
+
 	createHomePane() {
-		var homePane = this.tabBar.createTab('Home');
+		var home = this.tabBar.createTab('Home');
+		var homePane = home.pane;
 		var fontBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var inputFont = new Poe.Ribbon.InputText();
 		inputFont.setText(Poe.config.defaultFont);
@@ -226,11 +293,12 @@ class DefaultRibbon extends Ribbon {
 				}
 			});
 		});
-		return homePane;
+		return home;
 	}
 
 	createPageLayoutPane() {
-		var pageLayoutPane = this.tabBar.createTab('Page Layout');
+		var pageLayout = this.tabBar.createTab('Page Layout');
+		var pageLayoutPane = pageLayout.pane;
 		var pageSizeGroup = new Poe.Ribbon.TabPaneGroup('Page Size');
 		pageSizeGroup.addClass('vertical-group');
 		var selectSize = new Poe.Ribbon.Select();
@@ -246,7 +314,7 @@ class DefaultRibbon extends Ribbon {
 			app.doc.setPageSizeIn(Poe.Document.PageSize[val]);
 		});
 
-		return pageLayoutPane;
+		return pageLayout;
 	}
 }
 

@@ -1,10 +1,6 @@
 (function(Poe, FileFormat, fs, Dialog, zlib) {
 'use strict';
 
-if (!Poe.config.isNative) {
-	return;
-}
-
 /*
 	TODO: Create a notification system wrapper.
 	Probably use electron's built in notification for
@@ -37,12 +33,14 @@ class ElectronFile extends FileFormat.FileFormatBase {
 				]
 			});
 		}
-
+		var self = this;
 		fs.writeFile(filePath, opts.data, function(err) {
 			if (err) {
 				console.log(err);
 				return;
 			}
+
+			self._saveComplete(filePath, opts.data);
 			new Notification('Poe', {
 				body: 'Save complete!'
 			});
@@ -62,6 +60,7 @@ class ElectronFile extends FileFormat.FileFormatBase {
 			filePath = filePath[0];
 		}
 
+		var self = this;
 		fs.readFile(filePath, function(err, data) {
 			if (err) {
 				console.log(err);
@@ -69,6 +68,7 @@ class ElectronFile extends FileFormat.FileFormatBase {
 
 			var p = new Poe.FileFormat.PoeDocumentPrivate(app.doc);
 			p.deserialize(data);
+			self._saveComplete(filePath, data);
 		});
 	}
 }
