@@ -6,47 +6,46 @@ var self = null;
 class InputHandler extends Poe.DomElement {
 	constructor() {
 		super('textarea', ['click', 'mousedown', 'mousemove']);
-		$addClass(this.elm, 'user-input');
+		this.addClass('user-input');
 		$prepend(this.elm, document.body);
 		this.show();
+		this._hasSelection = false;
+		this._lastKey = null;
+		this._caret = null;
 
-		this.caret = null;
-
-		self = this;
-		this.elm.addEventListener('input', this.onInput);
-		this.elm.addEventListener('keydown', this.onKeyDown);
-		this.elm.addEventListener('keyup', this.onKeyUp);
-		app.elm.addEventListener('mousedown', this.onMouseDown);
-		app.elm.addEventListener('mouseup', this.onMouseUp);
-		window.addEventListener('mouseleave', this.onMouseUp);
-		this.elm.focus();
-		this._selection = document.createRange();
+		//Div to put selection elements in for housekeeping
 		this._selectBox = document.createElement('div');
 		$addClass(this._selectBox, 'select-box');
 		$hide(this._selectBox);
 		$append(this._selectBox, document.body);
-		this._hasSelection = false;
-		this._lastKey = null;
+
+		self = this;
+		Poe.EventManager.addEventListener(this, 'input', this.onInput);
+		Poe.EventManager.addEventListener(this, 'keydown', this.onKeyDown);
+		Poe.EventManager.addEventListener(this, 'keyup', this.onKeyUp);
+		Poe.EventManager.addEventListener(app, 'mousedown', this.onMouseDown);
+		Poe.EventManager.addEventListener(app, 'mouseup', this.onMouseUp);
+		Poe.EventManager.addEventListener(window, 'mouseleave', this.onMouseUp);
+		this.focus();
 	}
 
+	/*
+		@param {Poe.Caret} caret The caret that this InputHandler will use for managing input.
+	*/
 	setCaret(caret) {
-		if (caret === null) {
-			this.elm.removeEventListener(this._focusEvent);
-			this.elm.removeEventListener(this._blurEvent);
-			return;
-		}
-		this.caret = caret;
+		this._caret = caret;
 		this.textBuffer = caret.buffer;
-		this._focusEvent = this.elm.addEventListener('focus', function() {
-			if (self.caret)
-				self.caret.show();
-		});
-		this._blurEvent = this.elm.addEventListener('blur', function() {
-			if(self.caret)
-				self.caret.hide();
+		this.elm.addEventListener('focus', function() {
+			if (self._caret)
+				self._caret.show();
 		});
 
-		self.caret.emit('moved');
+		this.elm.addEventListener('blur', function() {
+			if(self._caret)
+				self._caret.hide();
+		});
+
+		self._caret.emit('moved');
 	}
 
 	remove() {
@@ -59,92 +58,60 @@ class InputHandler extends Poe.DomElement {
 
 		var tNode = document.createTextNode(c);
 
-		if (!self.caret) {
+		if (!self._caret) {
 			console.log('The InputHandler has no caret assigned!');
 			return;
 		}
 
-		self.caret.insertNode(tNode);
+		self._caret.insertNode(tNode);
 		self._lastKey = null;
 	}
 
 	onKeyDown(event) {
 		var textStyle;
+		if (Poe.ShortcutManager.doShortcut({event: event})) {
+			return;
+		}
+
 		if (event.ctrlKey || self._lastKey === 91) {
 			switch(event.keyCode) {
-				case Poe.Keysym.B:
-					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
-					textStyle.setBold(!textStyle.isBold());
-					textStyle.applyStyle(self.caret);
-					self.caret.emit('moved');
-					event.preventDefault();
-					break;
-
-				case Poe.Keysym.I:
-					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
-					textStyle.setItalic(!textStyle.isItalic());
-					textStyle.applyStyle(self.caret);
-					self.caret.emit('moved');
-					event.preventDefault();
-					break;
-
-				case Poe.Keysym.U:
-					textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
-					textStyle.setUnderline(!textStyle.isUnderline());
-					textStyle.applyStyle(self.caret);
-					self.caret.emit('moved');
-					event.preventDefault();
-					break;
-
-				case Poe.Keysym.C:
-					Poe.Clipboard.copySelection();
-					break;
-
-				case Poe.Keysym.V:
-					Poe.Clipboard.pasteSelection(app.doc.caret);
-					break;
-
-				case Poe.Keysym.S:
-					event.preventDefault();
-					break;
-
 				case Poe.Keysym.Down:
 					event.preventDefault();
-					self.caret.moveEnd();
+					self._caret.moveEnd();
 					break;
 
 				case Poe.Keysym.Up:
 					event.preventDefault();
-					self.caret.moveBeginning();
+					self._caret.moveBeginning();
 					break;
 
 				case Poe.Keysym.Right:
 					event.preventDefault();
-					var index = self.caret.buffer.indexOf(self.caret);
-					var buffLastIndex = self.caret.buffer.length - 1;
+					var index = self._caret.buffer.indexOf(self._caret);
+					var buffLastIndex = self._caret.buffer.length - 1;
 					if (index === buffLastIndex) {
 						return;
 					}
 
-					while (index !== buffLastIndex && self.caret.buffer.at(index + 1).parentNode.parentNode === self.caret.currentLine) {
+					while (index !== buffLastIndex && self._caret.buffer.at(index + 1).parentNode.parentNode === self._caret.currentLine) {
 						index+=1;
 					}
-					self.caret.moveAfter(self.caret.buffer.at(index));
-					self.caret.show();
+					self._caret.moveAfter(self._caret.buffer.at(index));
+					self._caret.show();
 					break;
 
 				case Poe.Keysym.Left:
 					event.preventDefault();
-					index = self.caret.buffer.indexOf(self.caret);
+					index = self._caret.buffer.indexOf(self._caret);
 					if (index === 0) {
 						return;
 					}
 
-					while (index !== 0 && self.caret.buffer.at(index - 1).parentNode.parentNode === self.caret.currentLine) {
+					while (index !== 0 && self._caret.buffer.at(index - 1).parentNode.parentNode === self._caret.currentLine) {
 						index -= 1;
 					}
-					self.caret.moveBefore(self.caret.buffer.at(index));
-					self.caret.show();
+					self._caret.moveBefore(self._caret.buffer.at(index));
+					self._caret.show();
 					break;
 			}
 			return;
@@ -155,11 +122,11 @@ class InputHandler extends Poe.DomElement {
 		var caretPos;
 		switch(event.keyCode) {
 			case Poe.Keysym.Backspace:
-				if (self.caret.hasSelection) {
+				if (self._caret.hasSelection) {
 					self._deleteSelection();
 					break;
 				}
-				self.caret.removePreviousSibling();
+				self._caret.removePreviousSibling();
 				event.preventDefault();
 				break;
 
@@ -168,7 +135,7 @@ class InputHandler extends Poe.DomElement {
 					self._deleteSelection();
 					break;
 				}
-				self.caret.removeNextSibling();
+				self._caret.removeNextSibling();
 				event.preventDefault();
 				break;
 
@@ -177,105 +144,105 @@ class InputHandler extends Poe.DomElement {
 					FIXME: Shift + Left and Shift + Right does not work.
 				*/
 				if (event.shiftKey) {
-					self.caret.expandSelectLeft();
+					self._caret.expandSelectLeft();
 					self._makeSelection();
-					self.caret.moveBefore(self.caret.getStartNode());
+					self._caret.moveBefore(self._caret.getStartNode());
 					break;
 				}
 
 				if (self.hasSelection) {
-					self.caret.moveBefore(self.caret.getStartNode());
+					self._caret.moveBefore(self._caret.getStartNode());
 					self._clearSelection();
-					self.caret.show();
+					self._caret.show();
 					break;
 				}
 
-				self.caret.moveLeft();
+				self._caret.moveLeft();
 				event.preventDefault();
 				break;
 
 			case Poe.Keysym.Right:
 				if (event.shiftKey) {
-					self.caret.expandSelectRight();
+					self._caret.expandSelectRight();
 					self._makeSelection();
-					self.caret.moveAfter(self.caret.getEndNode());
+					self._caret.moveAfter(self._caret.getEndNode());
 					break;
 				}
 
 				if (self.hasSelection) {
-					self.caret.moveAfter(self.caret.getEndNode());
+					self._caret.moveAfter(self._caret.getEndNode());
 					self._clearSelection();
-					self.caret.show();
+					self._caret.show();
 					break;
 				}
 
-				self.caret.moveRight();
+				self._caret.moveRight();
 				break;
 
 			case Poe.Keysym.Up:
-				caretRect = $getBoundingClientRect(self.caret.elm);
+				caretRect = $getBoundingClientRect(self._caret.elm);
 				caretPos = {
 					x: caretRect.left,
 					y: caretRect.top - 5
 				};
-				self.caret.moveAfter(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
+				self._caret.moveAfter(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
 				break;
 
 			case Poe.Keysym.Down:
-				caretRect = $getBoundingClientRect(self.caret.elm);
+				caretRect = $getBoundingClientRect(self._caret.elm);
 				caretPos = {
 					x: caretRect.left,
 					y: caretRect.bottom + 5
 				};
-				self.caret.moveBefore(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
+				self._caret.moveBefore(app.doc.getNodeClosestToPoint(caretPos.x, caretPos.y));
 				break;
 
 			case Poe.Keysym.Space:
 				event.preventDefault();
 				let activeStyle = Poe.TextFormat.TextStyle.getStyle();
-				self.caret.insertNode(document.createTextNode(String.fromCharCode(160)));
+				self._caret.insertNode(document.createTextNode(String.fromCharCode(160)));
 				var word = Poe.ElementGenerator.createWord();
-				$insertAfter(word, self.caret.elm.parentNode);
+				$insertAfter(word, self._caret.elm.parentNode);
 				/*
 					If there are letters after the cursor in the
 					current word, move them to the new word as well.
 				*/
-				if (self.caret.nextSibling) {
-					let caretParent = self.caret.elm.parentNode;
-					let siblingIndex = self.caret.buffer.indexOf(self.caret.nextSibling);
+				if (self._caret.nextSibling) {
+					let caretParent = self._caret.elm.parentNode;
+					let siblingIndex = self._caret.buffer.indexOf(self._caret.nextSibling);
 					let node;
-					while ((node = self.caret.buffer.at(siblingIndex)) && node.parentNode === caretParent) {
+					while ((node = self._caret.buffer.at(siblingIndex)) && node.parentNode === caretParent) {
 						$append(node, word);
 						siblingIndex += 1;
 					}
 				}
 
-				$prepend(self.caret.elm, word);
-				self.caret.show();
+				$prepend(self._caret.elm, word);
+				self._caret.show();
 				activeStyle.applyStyleToWord(word);
 				break;
 
 			case Poe.Keysym.Enter:
-				textStyle = Poe.TextFormat.TextStyle.getStyle(self.caret);
-				console.log(self.caret.currentLine.childNodes.length);
-				if (self.caret.currentLine.childNodes.length === 1) {
+				textStyle = Poe.TextFormat.TextStyle.getStyle(self._caret);
+				console.log(self._caret.currentLine.childNodes.length);
+				if (self._caret.currentLine.childNodes.length === 1) {
 					let tNode = document.createTextNode(String.fromCharCode(8203));
-					self.caret.insertBefore(tNode);
-					self.caret.currentLine.style['min-height'] = '12px';
+					self._caret.insertBefore(tNode);
+					self._caret.currentLine.style['min-height'] = '12px';
 				}
 				var npg = Poe.ElementGenerator.createParagraph();
-				var cpg = self.caret.elm.parentNode.parentNode.parentNode;
+				var cpg = self._caret.elm.parentNode.parentNode.parentNode;
 
 				var nl = Poe.ElementGenerator.createLine();
 				var nw = Poe.ElementGenerator.createWord();
 				$insertAfter(npg, cpg);
 				$append(nl, npg);
 				$append(nw, nl);
-				$append(self.caret.elm, nw);
+				$append(self._caret.elm, nw);
 				textStyle.applyStyleToWord(nw);
 				break;
 		}
-		self.caret.show();
+		self._caret.show();
 	}
 
 	onKeyUp(event) {
@@ -289,7 +256,7 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		self.caret.clearSelection();
+		self._caret.clearSelection();
 		self._clearSelection();
 		self._mouseDownPos = {
 			x: event.clientX,
@@ -297,7 +264,7 @@ class InputHandler extends Poe.DomElement {
 		};
 
 		self._baseNode = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
-		self.caret.setStartNode(self._baseNode);
+		self._caret.setStartNode(self._baseNode);
 		self.emit('mousedown', [self._baseNode]);
 		self._registerMouseMoveEvent(true);
 	}
@@ -308,7 +275,7 @@ class InputHandler extends Poe.DomElement {
 
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
 
-		if (node === self.caret.getEndNode() || node === self._baseNode) {
+		if (node === self._caret.getEndNode() || node === self._baseNode) {
 			return;
 		}
 
@@ -316,7 +283,7 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		self.caret.select(self._baseNode, node);
+		self._caret.select(self._baseNode, node);
 		self._makeSelection();
 		self.emit('mousemove', [node]);
 	}
@@ -331,11 +298,11 @@ class InputHandler extends Poe.DomElement {
 			}
 
 			if (app.doc.buffer.indexOf(node) === app.doc.buffer.length - 1) {
-				self.caret.moveAfter(node);
+				self._caret.moveAfter(node);
 			} else {
-				self.caret.moveBefore(node);
+				self._caret.moveBefore(node);
 			}
-			self.caret.show();
+			self._caret.show();
 			self._mouseDownPos = null;
 			self.emit('click', [node]);
 		}
@@ -343,17 +310,16 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	setHasSelection(value) {
-		this._hasSelection = value;
 		if (value) {
-			this.caret.hide();
+			this._caret.hide();
 		} else {
-			this.caret.show();
+			this._caret.show();
 			this._clearSelection();
 		}
 	}
 
 	get hasSelection() {
-		return this.caret._hasSelection;
+		return this._caret._hasSelection;
 	}
 
 	/**************************************************************************
@@ -389,23 +355,23 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	 _deleteSelection() {
-		if (!this.caret.hasSelection) {
+		if (!this._caret.hasSelection) {
 			return false;
 		}
 
-		this.caret.moveBefore(this.caret.getStartNode());
+		this._caret.moveBefore(this._caret.getStartNode());
 
-		var startI = this.textBuffer.indexOf(this.caret.getStartNode());
-		var endI = this.textBuffer.indexOf(this.caret.getEndNode());
+		var startI = this.textBuffer.indexOf(this._caret.getStartNode());
+		var endI = this.textBuffer.indexOf(this._caret.getEndNode());
 		var node;
 
 		while ((node = this.textBuffer.removeAt(startI))) {
-			if (node === this.caret.elm) {
+			if (node === this._caret.elm) {
 				startI += 1;
 				continue;
 			}
 
-			if (node === this.caret.getEndNode()) {
+			if (node === this._caret.getEndNode()) {
 				node.remove();
 				break;
 			}
@@ -414,24 +380,24 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		this.textBuffer.setDirty();
-		this.caret.clearSelection();
+		this._caret.clearSelection();
 		this._clearSelection();
-		this.caret._startBlink();
+		this._caret._startBlink();
 	}
 
 	_makeSelection() {
 		self._clearSelection();
-		self.caret.hide();
-		var currentLine = self.caret.getStartNode().parentNode.parentNode;
-		var startX = $getBoundingClientRect(self.caret.getStartNode()).left;
+		self._caret.hide();
+		var currentLine = self._caret.getStartNode().parentNode.parentNode;
+		var startX = $getBoundingClientRect(self._caret.getStartNode()).left;
 		var lineRect = $getBoundingClientRect(currentLine);
 		var endX;
 		/*
 			If the mideNode is on the same line as the startNode
 			just create a selection around that line.
 		*/
-		if (currentLine.contains(self.caret.getEndNode())) {
-			endX = $getBoundingClientRect(self.caret.getEndNode()).right - startX;
+		if (currentLine.contains(self._caret.getEndNode())) {
+			endX = $getBoundingClientRect(self._caret.getEndNode()).right - startX;
 			self._createSelection(startX, lineRect.top, endX, lineRect.height);
 			$addClass(currentLine, 'selected');
 			return;
@@ -439,10 +405,10 @@ class InputHandler extends Poe.DomElement {
 
 		self._createSelection(startX, lineRect.top, lineRect.right - startX, lineRect.height);
 		$addClass(currentLine, 'selected');
-		var endIndex = self.textBuffer.indexOf(self.caret.getEndNode());
-		var startIndex = self.textBuffer.indexOf(self.caret.getStartNode());
+		var endIndex = self.textBuffer.indexOf(self._caret.getEndNode());
+		var startIndex = self.textBuffer.indexOf(self._caret.getStartNode());
 		var n;
-		while (currentLine === self.caret.getStartNode().parentNode.parentNode) {
+		while (currentLine === self._caret.getStartNode().parentNode.parentNode) {
 			n = self.textBuffer.at(startIndex);
 			if (n.parentNode.parentNode !== currentLine) {
 				currentLine = n.parentNode.parentNode;
@@ -456,7 +422,7 @@ class InputHandler extends Poe.DomElement {
 				currentLine = n;
 			}
 
-			if (!currentLine.contains(self.caret.getEndNode())) {
+			if (!currentLine.contains(self._caret.getEndNode())) {
 				if (!$hasClass(currentLine, 'selected')) {
 					let lastWord = currentLine.childNodes[currentLine.childNodes.length - 1];
 					lineRect = $getBoundingClientRect(currentLine);
@@ -470,19 +436,17 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		lineRect = $getBoundingClientRect(currentLine);
-		endX = $getBoundingClientRect(self.caret.getEndNode()).right - lineRect.left;
+		endX = $getBoundingClientRect(self._caret.getEndNode()).right - lineRect.left;
 		self._createSelection(lineRect.left, lineRect.top, endX, lineRect.height);
 		$addClass(currentLine, 'selected');
 	}
 
 	_registerMouseMoveEvent(bool) {
 		if (bool){
-			console.log('Adding mousemove.');
-			app.elm.addEventListener('mousemove', self.onMouseMove);
+			Poe.EventManager.addEventListener(app, 'mousemove', self.onMouseMove);
 		} else {
-			console.log('Removing mousemove');
 			self._mouseDownPos = null;
-			app.elm.removeEventListener('mousemove', self.onMouseMove);
+			Poe.EventManager.removeEventListener('mousemove', self.onMouseMove);
 		}
 	}
 }

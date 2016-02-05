@@ -27,14 +27,14 @@ class TabBar extends Poe.DomElement {
 
 		if (isFloating) {
 			tabPane.addClass('floating');
-			tabPane.elm.addEventListener('mouseleave', function() {
+			Poe.EventManager.addEventListener(tabPane, 'mouseleave', function() {
 				tabPane.hide();
 				$removeClass(tab, 'active');
 			});
 		}
 
 		var self = this;
-		tab.addEventListener('click', function(evt) {
+		Poe.EventManager.addEventListener(tab, 'click', function(evt) {
 			self.setTab.apply(self, [tab, tabPane]);
 		});
 
@@ -46,7 +46,7 @@ class TabBar extends Poe.DomElement {
 	}
 
 	getTab(index) {
-
+		
 	}
 
 	setTab(tab) {

@@ -21,7 +21,7 @@ class Caret extends Poe.TextBufferMarker {
 
 	setBuffer(buf) {
 		super.setBuffer(buf);
-		this.buffer.on('changed', this._evtBufferChanged);
+		Poe.EventManager.addEventListener(this.buffer, 'changed', this._evtBufferChanged);
 		if (this.buffer.length !== 0)
 			this.moveBeginning();
 		else

@@ -24,6 +24,7 @@ class TextStyle {
 		so it does not need access to the buffer.
 	*/
 	applyStyle(marker) {
+		marker = marker || app.doc.caret;
 		if (marker.hasSelection) {
 			this.applyStyleToSelection(marker);
 		} else {

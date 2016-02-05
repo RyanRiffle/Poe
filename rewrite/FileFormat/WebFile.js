@@ -1,10 +1,6 @@
 (function(Poe, FileFormat) {
 'use strict';
 
-if (true) {
-	return;
-}
-
 class WebFile extends FileFormat.FileFormatBase {
 	constructor() {
 		super();
@@ -23,10 +19,10 @@ class WebFile extends FileFormat.FileFormatBase {
 	_doSave(opts) {
 		var filePath = opts.file || null;
 		var socket = io(Poe.config.backend);
-		socket.on('connect', function() {
+		Poe.EventManager.addEventListener(socket, 'connect', function() {
 			socket.emit('mkDownload', {data: opts.data, name: 'Untitled.pml'});
 
-			socket.on('mkDownload', function(data) {
+			Poe.EventManager.addEventListener(socket, 'mkDownload', function(data) {
 				window.open(data.url, '_blank');
 			});
 		});

@@ -5,7 +5,7 @@ var self;
 class Document extends Poe.DomElement {
 	constructor(opts) {
 		opts = opts || {};
-		super('div', ['click', 'mousedown', 'mousemove']);
+		super('div', ['click', 'mousedown', 'mousemove', 'changed']);
 		self = this;
 		$addClass(this.elm, 'document');
 		$append(this.elm, document.body);
@@ -21,9 +21,6 @@ class Document extends Poe.DomElement {
 			right: 1
 		});
 
-		this.inputHandler.on('click', function(node) { self.emit('click', [node]); });
-		this.inputHandler.on('mousedown', function(node) { self.emit('mousedown', [node]); });
-		this.inputHandler.on('mousemove', function(node) { self.emit('mousemove', [node]); });
 		this.elm.style['font-family'] = Poe.config.defaultFont;
 		this.elm.style['font-size'] = $ptToPxStr(Poe.config.defaultFontSize);
 		if (opts.init !== false)
@@ -325,12 +322,16 @@ class Document extends Poe.DomElement {
 		 if (opts.bufferInit) {
 			opts.bufferInit(this, this.buffer);
 		 }
+		 Poe.EventManager.addEventListener(this.buffer, 'changed', function() {
+			self.emit('changed');
+		 });
+		 
 		 this.caret = new Poe.Caret();
 		 this.caret.setBuffer(this.buffer);
 		 this.inputHandler.setCaret(this.caret);
 		 this.textLayout = new Poe.TextLayout(this);
 
-		 this.scrollEventListener = window.app.elm.addEventListener('scroll', this.focus);
+		 Poe.EventManager.addEventListener(window, 'scroll', this.focus);
 
 		 /*
 		 	Compute initial hash

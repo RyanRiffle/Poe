@@ -35,11 +35,10 @@ class DefaultRibbon extends Ribbon {
 
 	setupEventHandlers() {
 		var self = this;
-		Poe.Clipboard.on('changed', function() {
+		Poe.EventManager.addEventListener(Poe.Clipboard, 'changed', function() {
 			self.updateCopyPasteButton.call(self);
 		});
-
-		app.doc.caret.on('moved', function() {
+		Poe.EventManager.addEventListener(app.doc.caret, 'moved', function() {
 			self.updateStyleButtons.call(self);
 		});
 	}
@@ -83,52 +82,27 @@ class DefaultRibbon extends Ribbon {
 		var itemQuit = menu.addItem('<span class="glyphicons glyphicons-exit"></span> Quit');
 		fileMenu.pane.append(menu.elm);
 
-		itemNew.addEventListener('click', function() {
-			if (app.doc.hasChanged()) {
-				//Show 'save work?' dialog
-				console.log('Document has changed!');
-			}
-
-			app.doc.remove();
-			var d = new Poe.Document();
-			app.setDocument(d);
+		Poe.EventManager.addEventListener(itemNew, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'new_document'});
 		});
 
-		itemOpen.addEventListener('click', function() {
-			/*
-				TODO: Implement dialog boxes. Then show a prompt
-				asking if they would like to save their work first
-			*/
-			if (app.doc.hasChanged()) {
-				//Show that dialog
-				console.log('Document has changed!');
-			}
-
-			var p = new Poe.FileFormat.Pml();
-			p.open();
+		Poe.EventManager.addEventListener(itemOpen, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'open'});
 		});
 
-		itemSave.addEventListener('click', function() {
-			var pml = new Poe.FileFormat.Pml();
-			if (app.doc.getFilePath() !== null) {
-				//The file already has a save location
-				pml.saveFile(app.doc.getFilePath(), app.doc);
-				return;
-			}
-
-			pml.save(app.doc);
+		Poe.EventManager.addEventListener(itemSave, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'save'});
 		});
 
-		itemSaveAs.addEventListener('click', function() {
-			var pml = new Poe.FileFormat.Pml();
-			pml.save(app.doc);
+		Poe.EventManager.addEventListener(itemSaveAs, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alis: 'save_as'});
 		});
 
-		itemAbout.addEventListener('click', function() {
+		Poe.EventManager.addEventListener(itemAbout, 'click', function() {
 
 		});
 
-		itemQuit.addEventListener('click', function() {
+		Poe.EventManager.addEventListener(itemQuit, 'click', function() {
 
 		});
 		return fileMenu;
@@ -213,31 +187,31 @@ class DefaultRibbon extends Ribbon {
 			app.doc.inputHandler.focus();
 		};
 
-		btnBold.on('click', function() {
+		btnBold.addEventListener('click', function() {
 			toggleButtonEvent(btnBold, 'isBold', 'setBold');
 		});
 
-		btnItalic.on('click', function() {
+		btnItalic.addEventListener('click', function() {
 			toggleButtonEvent(btnItalic, 'isItalic', 'setItalic');
 		});
 
-		btnUnderline.on('click', function() {
+		btnUnderline.addEventListener('click', function() {
 			toggleButtonEvent(btnUnderline, 'isUnderline', 'setUnderline');
 		});
 
-		btnStrike.on('click', function() {
+		btnStrike.addEventListener('click', function() {
 			toggleButtonEvent(btnStrike, 'isStrike', 'setStrike');
 		});
 
-		btnSub.on('click', function() {
+		btnSub.addEventListener('click', function() {
 			toggleButtonEvent(btnSub, 'isSubscript', 'setSubscript');
 		});
 
-		btnSup.on('click', function() {
+		btnSup.addEventListener('click', function() {
 			toggleButtonEvent(btnSup, 'isSuperscript', 'setSuperscript');
 		});
 
-		btnCopyPaste.on('click', function() {
+		btnCopyPaste.addEventListener('click', function() {
 			Poe.Clipboard.copySelection();
 		});
 
@@ -248,35 +222,35 @@ class DefaultRibbon extends Ribbon {
 			app.doc.inputHandler.focus();
 		};
 
-		btnAlignLeft.on('click', function() {
+		btnAlignLeft.addEventListener('click', function() {
 			alignButtonEvents('left');
 		});
 
-		btnAlignRight.on('click', function() {
+		btnAlignRight.addEventListener('click', function() {
 			alignButtonEvents('right');
 		});
 
-		btnAlignCenter.on('click', function() {
+		btnAlignCenter.addEventListener('click', function() {
 			alignButtonEvents('center');
 		});
 
-		inputFont.on('change', function() {
+		inputFont.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFont(inputFont.getText());
 			textStyle.applyStyle(app.doc.caret);
 			app.doc.inputHandler.focus();
 		});
 
-		inputFontSize.on('change', function() {
+		inputFontSize.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFontSize(parseInt(inputFontSize.getText()));
 			textStyle.applyStyle(app.doc.caret);
 			app.doc.inputHandler.focus();
 		});
 
-		btnFormatPainter.on('click', function() {
+		btnFormatPainter.addEventListener('click', function() {
 			btnFormatPainter._currentTextStyle = null;
-			var connection = app.doc.on('click', function(node) {
+			var connection = app.doc.addEventListener('click', function(node) {
 				if (btnFormatPainter._currentTextStyle !== null) {
 					if (app.doc.caret.hasSelection) {
 						app.doc.caret.splitStartNode();
@@ -285,7 +259,7 @@ class DefaultRibbon extends Ribbon {
 							btnFormatPainter._currentTextStyle.applyStyleToWord(word);
 						});
 					}
-					app.doc.removeOn('click', connection);
+					app.doc.removeEventListener('click', connection);
 					btnFormatPainter._currentTextStyle = null;
 					app.doc.caret.clearSelection();
 				} else {
@@ -306,7 +280,7 @@ class DefaultRibbon extends Ribbon {
 		pageSizeGroup.append(selectSize);
 		pageLayoutPane.append(pageSizeGroup);
 
-		selectSize.on('change', function(val) {
+		selectSize.addEventListener('change', function(val) {
 			if (!Poe.Document.PageSize[val]) {
 				throw new Error('Invalid page size');
 			}
