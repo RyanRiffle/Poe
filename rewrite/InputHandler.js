@@ -10,7 +10,6 @@ class InputHandler extends Poe.DomElement {
 		$prepend(this.elm, document.body);
 		this.show();
 		this._hasSelection = false;
-		this._lastKey = null;
 		this._caret = null;
 
 		//Div to put selection elements in for housekeeping
@@ -22,7 +21,6 @@ class InputHandler extends Poe.DomElement {
 		self = this;
 		Poe.EventManager.addEventListener(this, 'input', this.onInput);
 		Poe.EventManager.addEventListener(this, 'keydown', this.onKeyDown);
-		Poe.EventManager.addEventListener(this, 'keyup', this.onKeyUp);
 		Poe.EventManager.addEventListener(app, 'mousedown', this.onMouseDown);
 		Poe.EventManager.addEventListener(app, 'mouseup', this.onMouseUp);
 		Poe.EventManager.addEventListener(window, 'mouseleave', this.onMouseUp);
@@ -64,7 +62,6 @@ class InputHandler extends Poe.DomElement {
 		}
 
 		self._caret.insertNode(tNode);
-		self._lastKey = null;
 	}
 
 	onKeyDown(event) {
@@ -73,7 +70,7 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		if (event.ctrlKey || self._lastKey === 91) {
+		if (event.ctrlKey || event.metaKey) {
 			switch(event.keyCode) {
 				case Poe.Keysym.Down:
 					event.preventDefault();
@@ -117,7 +114,6 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		self._lastKey = event.keyCode;
 		var caretRect;
 		var caretPos;
 		switch(event.keyCode) {
@@ -243,12 +239,6 @@ class InputHandler extends Poe.DomElement {
 				break;
 		}
 		self._caret.show();
-	}
-
-	onKeyUp(event) {
-		if (event.ctrlKey || event.keyCode === 91) {
-			self._lastKey = null;
-		}
 	}
 
 	onMouseDown(event) {
