@@ -35,7 +35,7 @@ class Shortcut {
 	}
 
 	getDescription() {
-		
+
 	}
 }
 
@@ -63,7 +63,7 @@ class ShortcutManager extends Poe.Object {
 			}
 		}
 
-		return false;
+		throw new Error('"' + alias + '" is not a valid shortuct alias.');
 	}
 
 	doShortcutForEvent(evt) {

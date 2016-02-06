@@ -46,10 +46,16 @@ class InputHandler extends Poe.DomElement {
 		self._caret.emit('moved');
 	}
 
+	/*
+		Removes this InputHandler, rendering it inoperable.
+	*/
 	remove() {
 		super.remove();
 	}
 
+	/*
+
+	*/
 	onInput(event) {
 		var c = self.elm.value;
 		self.elm.value = '';
@@ -66,32 +72,8 @@ class InputHandler extends Poe.DomElement {
 
 	onKeyDown(event) {
 		var textStyle;
+		//Shortcuts are located at rewrite/PoeDefaultShortcuts.js
 		if (Poe.ShortcutManager.doShortcut({event: event})) {
-			return;
-		}
-
-		if (event.ctrlKey || event.metaKey) {
-			switch(event.keyCode) {
-				case Poe.Keysym.Down:
-					event.preventDefault();
-					self._caret.moveEnd();
-					break;
-
-				case Poe.Keysym.Up:
-					event.preventDefault();
-					self._caret.moveBeginning();
-					break;
-
-				case Poe.Keysym.Right:
-					event.preventDefault();
-					self._caret.moveToEndOfLine();
-					break;
-
-				case Poe.Keysym.Left:
-					event.preventDefault();
-					self._caret.moveToStartOfLine();
-					break;
-			}
 			return;
 		}
 
@@ -201,15 +183,18 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Enter:
 				textStyle = Poe.TextFormat.TextStyle.getStyle(self._caret);
-				console.log(self._caret.currentLine.childNodes.length);
-				if (self._caret.currentLine.childNodes.length === 1) {
-					let tNode = document.createTextNode(String.fromCharCode(8203));
-					self._caret.insertBefore(tNode);
-					self._caret.currentLine.style['min-height'] = '12px';
-				}
+
+				/*
+					In case enter was pressed without any other data
+					on that line, set it to have a minimum height based
+					on the current fontSize
+				*/
+				var tnode = document.createTextNode(String.fromCharCode('8203'));
+				self._caret.insertNode(tnode);
+				self._caret.currentLine.style.minHeight = $ptToPxStr(textStyle.getFontSize());
+
 				var npg = Poe.ElementGenerator.createParagraph();
 				var cpg = self._caret.elm.parentNode.parentNode.parentNode;
-
 				var nl = Poe.ElementGenerator.createLine();
 				var nw = Poe.ElementGenerator.createWord();
 				$insertAfter(npg, cpg);

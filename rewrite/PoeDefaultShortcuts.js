@@ -35,6 +35,22 @@ function Action_ToggleStrikeThrough() {
 	*/
 }
 
+function Action_MoveToEndOfLine() {
+	self._caret.moveToEndOfLine();
+}
+
+function Action_MoveToStartOfLine() {
+	self._caret.moveToStartOfLine();
+}
+
+function Action_MoveCaretDownLine() {
+	self._caret.moveEnd();
+}
+
+function Action_MoveCaretUpLine() {
+	self._caret.moveBeginning();
+}
+
 function Action_NewDocument() {
 	if (app.doc.hasChanged()) {
 		//Show 'save work?' dialog
@@ -106,6 +122,38 @@ Poe.ShortcutManager.addShortcut({
 	keyCode: Poe.Keysym.Dash,
 	description: 'Make selection or input striked out',
 	callback: Action_ToggleStrikeThrough
+});
+
+Poe.ShortcutManager.addShortcut({
+	alias: 'moveToEndOfLine',
+	modifiers: 'meta',
+	keyCode: Poe.Keysym.Right,
+	description: 'Move caret to the end of the line',
+	callback: Action_MoveToEndOfLine
+});
+
+Poe.ShortcutManager.addShortcut({
+	alias: 'moveToStartOfLine',
+	modifiers: 'meta',
+	keyCode: Poe.Keysym.Left,
+	description: 'Move caret to the start of the line',
+	callback: Action_MoveToStartOfLine
+});
+
+Poe.ShortcutManager.addShortcut({
+	alias: 'moveCaretDownLine',
+	modifiers: 'meta',
+	keyCode: Poe.Keysym.Down,
+	description: 'Move caret down one line',
+	callback: Action_MoveCaretDownLine
+});
+
+Poe.ShortcutManager.addShortcut({
+	alias: 'moveCaretUpLine',
+	modifiers: 'meta',
+	keyCode: Poe.Keysym.Up,
+	description: 'Move caret up one line',
+	callback: Action_MoveCaretUpLine
 });
 
 Poe.ShortcutManager.addShortcut({

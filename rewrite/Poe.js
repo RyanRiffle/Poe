@@ -82,7 +82,7 @@ window.$createElmWithClass = function(tagName, className) {
 	var elm = $createElm(tagName);
 	$addClass(elm, className);
 	return elm;
-}
+};
 
 window.$inchToPx = function(inches) {
 	return inches * 96;
@@ -97,7 +97,7 @@ window.$pxStr = function(num) {
 };
 
 window.$ptToPxStr = function(num) {
-	$pxStr(Math.fround(num * 1.33333333333333));
+	return $pxStr(Math.fround(num * 1.33333333333333));
 };
 
 window.$css = function(elm, attr, val) {

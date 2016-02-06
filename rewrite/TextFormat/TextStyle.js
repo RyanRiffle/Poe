@@ -219,6 +219,7 @@ class TextStyle {
 
 		word.style['font-family'] = this._fontFace;
 		word.style['font-size'] = $ptToPxStr(this._fontSize);
+		word.style['min-height'] = $ptToPxStr(this._fontSize);
 	}
 }
 
