@@ -32,9 +32,6 @@ class Caret extends Poe.TextBufferMarker {
 
 	remove() {
 		this._stopBlink();
-		this.elm.remove();
-		this.visibleElm.remove();
-		super.remove();
 	}
 
 	moveLeft() {
@@ -60,6 +57,33 @@ class Caret extends Poe.TextBufferMarker {
 		this._evtBufferChanged();
 		this._startBlink();
 		this.emit('moved');
+	}
+
+	moveToStartOfLine() {
+		var index = this.buffer.indexOf(this);
+		if (index === 0) {
+			return;
+		}
+
+		while (index !== 0 && this.buffer.at(index - 1).parentNode.parentNode === this.currentLine) {
+			index -= 1;
+		}
+		this.moveBefore(this.buffer.at(index));
+		this.show();
+	}
+
+	moveToEndOfLine() {
+		var index = this.buffer.indexOf(this);
+		var buffLastIndex = this.buffer.length - 1;
+		if (index === buffLastIndex) {
+			return;
+		}
+
+		while (index+1 < buffLastIndex && this.buffer.at(index + 1).parentNode.parentNode === this.currentLine) {
+			index+=1;
+		}
+		this.moveAfter(this.buffer.at(index));
+		this.show();
 	}
 
 	moveBeginning() {

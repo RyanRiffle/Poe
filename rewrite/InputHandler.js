@@ -84,31 +84,12 @@ class InputHandler extends Poe.DomElement {
 
 				case Poe.Keysym.Right:
 					event.preventDefault();
-					var index = self._caret.buffer.indexOf(self._caret);
-					var buffLastIndex = self._caret.buffer.length - 1;
-					if (index === buffLastIndex) {
-						return;
-					}
-
-					while (index !== buffLastIndex && self._caret.buffer.at(index + 1).parentNode.parentNode === self._caret.currentLine) {
-						index+=1;
-					}
-					self._caret.moveAfter(self._caret.buffer.at(index));
-					self._caret.show();
+					self._caret.moveToEndOfLine();
 					break;
 
 				case Poe.Keysym.Left:
 					event.preventDefault();
-					index = self._caret.buffer.indexOf(self._caret);
-					if (index === 0) {
-						return;
-					}
-
-					while (index !== 0 && self._caret.buffer.at(index - 1).parentNode.parentNode === self._caret.currentLine) {
-						index -= 1;
-					}
-					self._caret.moveBefore(self._caret.buffer.at(index));
-					self._caret.show();
+					self._caret.moveToStartOfLine();
 					break;
 			}
 			return;
