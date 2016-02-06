@@ -6,7 +6,7 @@ class Select extends DomElement {
 		super('select', ['change']);
 		this.show();
 		self = this;
-		this.elm.addEventListener('change', function() {
+		Poe.EventManager.addEventListener(this.elm, 'change', function() {
 			self.emit('change', [self.elm.value]);
 		});
 	}

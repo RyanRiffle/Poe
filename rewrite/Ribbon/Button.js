@@ -7,7 +7,7 @@ class Button extends DomElement {
 		this.elm.innerHTML = text;
 		this.show();
 		var self = this;
-		this.elm.addEventListener('click', function() {
+		Poe.EventManager.addEventListener(this.elm, 'click', function() {
 			self.emit('click');
 		});
 	}

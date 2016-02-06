@@ -24,6 +24,7 @@ class TextStyle {
 		so it does not need access to the buffer.
 	*/
 	applyStyle(marker) {
+		marker = marker || app.doc.caret;
 		if (marker.hasSelection) {
 			this.applyStyleToSelection(marker);
 		} else {
@@ -217,7 +218,7 @@ class TextStyle {
 		}
 
 		word.style['font-family'] = this._fontFace;
-		word.style['font-size'] = $pxStr(Math.fround(this._fontSize * 1.33333333333333));
+		word.style['font-size'] = $ptToPxStr(this._fontSize);
 	}
 }
 

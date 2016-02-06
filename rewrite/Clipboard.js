@@ -34,7 +34,7 @@ class Clipboard extends Poe.EventHandler {
 		if (app.doc.caret.hasSelection) {
 			app.doc.caret.splitStartNode();
 			app.doc.caret.splitEndNode();
-			app.doc.caret.remove
+			app.doc.caret.remove();
 		}
 	}
 }

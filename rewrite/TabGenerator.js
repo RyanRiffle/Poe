@@ -1,13 +1,12 @@
 (function(Poe) {
 'use strict';
 
-class TabGenerator {
+var self;
+class TabGenerator extends Poe.Object {
 	constructor(buffer) {
-		var self = this;
 		this._tabs = [];
-		buffer.on('change', function() {
-			self._update.call(this);
-		});
+		self = this;
+		Poe.EventManager.addEventListener(buffer, 'change', this._onBufferChange);
 	}
 
 	createTabForStop(stop) {
@@ -18,6 +17,10 @@ class TabGenerator {
 
 		this._tabs.push(tab);
 		tab.tab.style['padding-left'] = stop.width;
+	}
+
+	_onBufferChange() {
+		self._update.call(this);
 	}
 
 	_update() {

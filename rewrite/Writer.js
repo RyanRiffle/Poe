@@ -7,7 +7,7 @@ class Writer extends Poe.DomElement {
 		super('div');
 		$addClass(this.elm, 'writer');
 		if (!parentSelector) {
-			$append(this.elm, document.body)
+			$append(this.elm, document.body);
 		} else {
 			let parent = document.querySelector(parentSelector);
 			$append(this.elm, parent);

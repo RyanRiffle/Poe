@@ -71,6 +71,22 @@ class DomElement extends Poe.EventHandler {
 	focus() {
 		this.elm.focus();
 	}
+
+	addEventListener(type, callback) {
+		if (this.supportsEvent(type)) {
+			return super.addEventListener(type, callback);
+		}
+
+		return this.elm.addEventListener(type, callback);
+	}
+
+	removeEventListener(type, callback) {
+		if (this.supportsEvent(type)) {
+			return super.removeEventListener(type, callback);
+		}
+
+		return this.elm.removeEventListener(type, callback);
+	}
 }
 
 Poe.DomElement = DomElement;

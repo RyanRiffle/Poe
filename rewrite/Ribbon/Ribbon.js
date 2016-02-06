@@ -21,22 +21,24 @@ class DefaultRibbon extends Ribbon {
 	}
 
 	init() {
-		var homePane = this.createHomePane();
-		var pageLayoutPane = this.createPageLayoutPane();
-		var insertPane = this.tabBar.createTab('Insert');
+		var file = this.createFileMenu();
+		var home = this.createHomePane();
+		var pageLayout = this.createPageLayoutPane();
+		var insert = this.tabBar.createTab('Insert');
 
-		this.append(homePane);
-		this.append(insertPane);
-		this.append(pageLayoutPane);
+		this.append(home.pane);
+		this.append(insert.pane);
+		this.append(pageLayout.pane);
+		this.append(file.pane);
+		this.tabBar.setTab(home);
 	}
 
 	setupEventHandlers() {
 		var self = this;
-		Poe.Clipboard.on('changed', function() {
+		Poe.EventManager.addEventListener(Poe.Clipboard, 'changed', function() {
 			self.updateCopyPasteButton.call(self);
 		});
-
-		app.doc.caret.on('moved', function() {
+		Poe.EventManager.addEventListener(app.doc.caret, 'moved', function() {
 			self.updateStyleButtons.call(self);
 		});
 	}
@@ -64,16 +66,56 @@ class DefaultRibbon extends Ribbon {
 		self.buttons.sup.toggleClass('active', textStyle.isSuperscript());
 		self.buttons.sub.toggleClass('active', textStyle.isSubscript());
 
-		this.input.font.elm.style['font-family'] = textStyle.getFont();
 		this.input.font.setText(textStyle.getFont().replace("'", ""));
 		this.input.fontSize.setText(Math.floor(textStyle.getFontSize()));
 	}
 
+	createFileMenu() {
+		var fileMenu = this.tabBar.createTab('File', true);
+		var menu = new Poe.Ribbon.UnorderedList();
+		menu.addClass('menu');
+		var itemNew = menu.addItem('<span class="glyphicons glyphicons-file"></span> New Document');
+		var itemOpen = menu.addItem('<span class="glyphicons glyphicons-disk-open"></span> Open');
+		var itemSave = menu.addItem('<span class="glyphicons glyphicons-disk-save"></span> Save');
+		var itemSaveAs = menu.addItem('<span class="glyphicons glyphicons-disk-import"></span> Save As...');
+		var itemAbout = menu.addItem('<span class="glyphicons glyphicons-circle-info"></span> About Poe');
+		var itemQuit = menu.addItem('<span class="glyphicons glyphicons-exit"></span> Quit');
+		fileMenu.pane.append(menu.elm);
+
+		Poe.EventManager.addEventListener(itemNew, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'new_document'});
+		});
+
+		Poe.EventManager.addEventListener(itemOpen, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'open'});
+		});
+
+		Poe.EventManager.addEventListener(itemSave, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alias: 'save'});
+		});
+
+		Poe.EventManager.addEventListener(itemSaveAs, 'click', function() {
+			Poe.ShortcutManager.doShortcut({alis: 'save_as'});
+		});
+
+		Poe.EventManager.addEventListener(itemAbout, 'click', function() {
+
+		});
+
+		Poe.EventManager.addEventListener(itemQuit, 'click', function() {
+
+		});
+		return fileMenu;
+	}
+
 	createHomePane() {
-		var homePane = this.tabBar.createTab('Home');
+		var home = this.tabBar.createTab('Home');
+		var homePane = home.pane;
 		var fontBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var inputFont = new Poe.Ribbon.InputText();
+		inputFont.setText(Poe.config.defaultFont);
 		var inputFontSize = new Poe.Ribbon.InputText();
+		inputFontSize.setText(Poe.config.defaultFontSize);
 		inputFontSize.elm.style.width = '25px';
 
 		var fontGroup = new Poe.Ribbon.TabPaneGroup('Font');
@@ -145,31 +187,31 @@ class DefaultRibbon extends Ribbon {
 			app.doc.inputHandler.focus();
 		};
 
-		btnBold.on('click', function() {
+		btnBold.addEventListener('click', function() {
 			toggleButtonEvent(btnBold, 'isBold', 'setBold');
 		});
 
-		btnItalic.on('click', function() {
+		btnItalic.addEventListener('click', function() {
 			toggleButtonEvent(btnItalic, 'isItalic', 'setItalic');
 		});
 
-		btnUnderline.on('click', function() {
+		btnUnderline.addEventListener('click', function() {
 			toggleButtonEvent(btnUnderline, 'isUnderline', 'setUnderline');
 		});
 
-		btnStrike.on('click', function() {
+		btnStrike.addEventListener('click', function() {
 			toggleButtonEvent(btnStrike, 'isStrike', 'setStrike');
 		});
 
-		btnSub.on('click', function() {
+		btnSub.addEventListener('click', function() {
 			toggleButtonEvent(btnSub, 'isSubscript', 'setSubscript');
 		});
 
-		btnSup.on('click', function() {
+		btnSup.addEventListener('click', function() {
 			toggleButtonEvent(btnSup, 'isSuperscript', 'setSuperscript');
 		});
 
-		btnCopyPaste.on('click', function() {
+		btnCopyPaste.addEventListener('click', function() {
 			Poe.Clipboard.copySelection();
 		});
 
@@ -180,36 +222,35 @@ class DefaultRibbon extends Ribbon {
 			app.doc.inputHandler.focus();
 		};
 
-		btnAlignLeft.on('click', function() {
+		btnAlignLeft.addEventListener('click', function() {
 			alignButtonEvents('left');
 		});
 
-		btnAlignRight.on('click', function() {
+		btnAlignRight.addEventListener('click', function() {
 			alignButtonEvents('right');
 		});
 
-		btnAlignCenter.on('click', function() {
+		btnAlignCenter.addEventListener('click', function() {
 			alignButtonEvents('center');
 		});
 
-		inputFont.on('change', function() {
+		inputFont.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFont(inputFont.getText());
 			textStyle.applyStyle(app.doc.caret);
-			inputFont.style['font-family'] = inputFont.getText();
 			app.doc.inputHandler.focus();
 		});
 
-		inputFontSize.on('change', function() {
+		inputFontSize.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFontSize(parseInt(inputFontSize.getText()));
 			textStyle.applyStyle(app.doc.caret);
 			app.doc.inputHandler.focus();
 		});
 
-		btnFormatPainter.on('click', function() {
+		btnFormatPainter.addEventListener('click', function() {
 			btnFormatPainter._currentTextStyle = null;
-			var connection = app.doc.on('click', function(node) {
+			var connection = app.doc.addEventListener('click', function(node) {
 				if (btnFormatPainter._currentTextStyle !== null) {
 					if (app.doc.caret.hasSelection) {
 						app.doc.caret.splitStartNode();
@@ -218,7 +259,7 @@ class DefaultRibbon extends Ribbon {
 							btnFormatPainter._currentTextStyle.applyStyleToWord(word);
 						});
 					}
-					app.doc.removeOn('click', connection);
+					app.doc.removeEventListener('click', connection);
 					btnFormatPainter._currentTextStyle = null;
 					app.doc.caret.clearSelection();
 				} else {
@@ -226,11 +267,12 @@ class DefaultRibbon extends Ribbon {
 				}
 			});
 		});
-		return homePane;
+		return home;
 	}
 
 	createPageLayoutPane() {
-		var pageLayoutPane = this.tabBar.createTab('Page Layout');
+		var pageLayout = this.tabBar.createTab('Page Layout');
+		var pageLayoutPane = pageLayout.pane;
 		var pageSizeGroup = new Poe.Ribbon.TabPaneGroup('Page Size');
 		pageSizeGroup.addClass('vertical-group');
 		var selectSize = new Poe.Ribbon.Select();
@@ -238,7 +280,7 @@ class DefaultRibbon extends Ribbon {
 		pageSizeGroup.append(selectSize);
 		pageLayoutPane.append(pageSizeGroup);
 
-		selectSize.on('change', function(val) {
+		selectSize.addEventListener('change', function(val) {
 			if (!Poe.Document.PageSize[val]) {
 				throw new Error('Invalid page size');
 			}
@@ -246,7 +288,7 @@ class DefaultRibbon extends Ribbon {
 			app.doc.setPageSizeIn(Poe.Document.PageSize[val]);
 		});
 
-		return pageLayoutPane;
+		return pageLayout;
 	}
 }
 

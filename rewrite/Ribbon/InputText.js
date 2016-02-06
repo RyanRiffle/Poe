@@ -9,7 +9,7 @@ class InputText extends DomElement {
 		this.show();
 
 		var self = this;
-		this.elm.addEventListener('change', function() {
+		Poe.EventManager.addEventListener(this.elm, 'change', function() {
 			self.emit('change');
 		});
 	}

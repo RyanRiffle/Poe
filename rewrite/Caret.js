@@ -20,14 +20,8 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	setBuffer(buf) {
-		if (buf === null) {
-			this.elm.remove();
-			this._stopBlink();
-			return;
-		}
-
 		super.setBuffer(buf);
-		this.buffer.on('changed', this._evtBufferChanged);
+		Poe.EventManager.addEventListener(this.buffer, 'changed', this._evtBufferChanged);
 		if (this.buffer.length !== 0)
 			this.moveBeginning();
 		else
@@ -36,7 +30,14 @@ class Caret extends Poe.TextBufferMarker {
 		this.emit('moved');
 	}
 
+	remove() {
+		this._stopBlink();
+	}
+
 	moveLeft() {
+		if (!this.previousSibling) {
+			return;
+		}
 		this._stopBlink();
 		$insertBefore(this.elm, this.previousSibling);
 		super.moveLeft();
@@ -46,12 +47,43 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	moveRight() {
+		if (!this.nextSibling) {
+			return;
+		}
+
 		this._stopBlink();
 		$insertAfter(this.elm, this.nextSibling);
 		super.moveRight();
 		this._evtBufferChanged();
 		this._startBlink();
 		this.emit('moved');
+	}
+
+	moveToStartOfLine() {
+		var index = this.buffer.indexOf(this);
+		if (index === 0) {
+			return;
+		}
+
+		while (index !== 0 && this.buffer.at(index - 1).parentNode.parentNode === this.currentLine) {
+			index -= 1;
+		}
+		this.moveBefore(this.buffer.at(index));
+		this.show();
+	}
+
+	moveToEndOfLine() {
+		var index = this.buffer.indexOf(this);
+		var buffLastIndex = this.buffer.length - 1;
+		if (index === buffLastIndex) {
+			return;
+		}
+
+		while (index+1 < buffLastIndex && this.buffer.at(index + 1).parentNode.parentNode === this.currentLine) {
+			index+=1;
+		}
+		this.moveAfter(this.buffer.at(index));
+		this.show();
 	}
 
 	moveBeginning() {

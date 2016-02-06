@@ -1,0 +1,59 @@
+@font-face {
+	font-family: 'Arimo';
+	src: url('../fonts/Arimo/Arimo-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Calligraffitti';
+	src: url('../fonts/Calligraffitti/Calligraffitti');
+}
+
+@font-face {
+	font-family: 'Cousine';
+	src: url('../fonts/Cousine/Cousine-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Droid Sans';
+	src: url('../fonts/Droid_Sans/DroidSans.ttf');
+}
+
+@font-face {
+	font-family: 'Droid Serif';
+	src: url('../fonts/Droid_Serif/DroidSerif.ttf');
+}
+
+@font-face {
+	font-family: 'Lobster';
+	src: url('../fonts/Lobster/Lobster-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Open Sans';
+	src: url('../fonts/Open_Sans/OpenSans-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Pacifico';
+	src: url('../fonts/Pacifico/Pacifico.ttf');
+}
+
+@font-face {
+	font-family: 'Raleway';
+	src: url('../fonts/Raleway/Raleway-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Syncopate';
+	src: url('../fonts/Syncopate/Syncopate-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Tinos';
+	src: url('../fonts/Tinos/Tinos-Regular.ttf');
+}
+
+@font-face {
+	font-family: 'Ubuntu';
+	src: url('../fonts/Ubuntu/Ubuntu-Regular.ttf');
+}

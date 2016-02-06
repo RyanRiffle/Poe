@@ -1,13 +1,13 @@
 (function(Poe, FileFormatNS) {
 'use strict';
-var fs = require('fs');
 
 class FileFormat {
 	constructor() {
-
+		this._doc = null;
 	}
 
 	save(doc) {
+		this._doc = doc;
 		console.log('Saving document');
 	}
 
@@ -23,8 +23,8 @@ class FileFormat {
 
 	}
 
-	saveFile(fileName) {
-		
+	saveFile(fileName, doc) {
+		this._doc = doc;
 	}
 
 	_doSave(opts) {
@@ -33,6 +33,13 @@ class FileFormat {
 
 	_doOpen(opts) {
 
+	}
+
+	_saveComplete(filePath, data) {
+		this._doc.setFilePath(filePath);
+		var hash = new Poe.FileFormat.Hash();
+		hash.setData(data);
+		this._doc.setSavedHash(hash.getHash());
 	}
 }
 

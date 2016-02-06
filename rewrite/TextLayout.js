@@ -3,12 +3,17 @@
 
 var self;
 
-class TextLayout {
+class TextLayout extends Poe.Object {
 	constructor(document) {
+		super();
 		this.document = document;
-		this.document.buffer.on('changed', this.relayout);
+		Poe.EventManager.addEventListener(this.document, 'changed', this.relayout);
 		self = this;
 		this._isDisabled = false;
+	}
+
+	remove() {
+		this.document.buffer.removeEventListener('changed', this.relayout);
 	}
 
 	setDisabled(isDisabled) {
@@ -19,6 +24,7 @@ class TextLayout {
 		if (self._isDisabled) {
 			return false;
 		}
+
 		var paragraph = self.document.caret.currentParagraph;
 		var wordRect, lineRect, line, word;
 		var i;
