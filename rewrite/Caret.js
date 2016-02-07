@@ -17,9 +17,7 @@ class Caret extends Poe.TextBufferMarker {
 		$addClass(this.visibleElm, 'visible-caret');
 		$append(this.visibleElm, document.body);
 		this.clearSelection();
-		Poe.EventManager.addEventListener(app, 'scroll', function() {
-			self.show.apply(self);
-		});
+		Poe.EventManager.addEventListener(app, 'scroll', self.show);
 	}
 
 	setBuffer(buf) {
@@ -34,6 +32,7 @@ class Caret extends Poe.TextBufferMarker {
 	}
 
 	remove() {
+		Poe.EventManager.removeEventListener(app, 'scroll', self.show);
 		this._stopBlink();
 	}
 
