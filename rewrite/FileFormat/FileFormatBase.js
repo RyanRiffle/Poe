@@ -3,7 +3,7 @@
 
 class FileFormat {
 	constructor() {
-		this._doc = null;
+		this._doc = app.doc;
 	}
 
 	save(doc) {

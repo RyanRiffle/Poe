@@ -226,6 +226,11 @@ class InputHandler extends Poe.DomElement {
 	}
 
 	onMouseMove(event) {
+		if (!self._mouseDownPos) {
+			self._registerMouseMoveEvent(false);
+			return;
+		}
+
 		if (event.clientX == self._mouseDownPos.x && event.clientY == self._mouseDownPos.y)
 			return;
 
@@ -402,7 +407,7 @@ class InputHandler extends Poe.DomElement {
 			Poe.EventManager.addEventListener(app, 'mousemove', self.onMouseMove);
 		} else {
 			self._mouseDownPos = null;
-			Poe.EventManager.removeEventListener('mousemove', self.onMouseMove);
+			Poe.EventManager.removeEventListener(app, 'mousemove', self.onMouseMove);
 		}
 	}
 }
