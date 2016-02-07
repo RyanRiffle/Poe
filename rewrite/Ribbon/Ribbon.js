@@ -99,11 +99,11 @@ class DefaultRibbon extends Ribbon {
 		});
 
 		Poe.EventManager.addEventListener(itemAbout, 'click', function() {
-
+			
 		});
 
 		Poe.EventManager.addEventListener(itemQuit, 'click', function() {
-
+			window.close();
 		});
 		return fileMenu;
 	}
