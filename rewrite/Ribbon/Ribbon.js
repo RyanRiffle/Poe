@@ -99,7 +99,7 @@ class DefaultRibbon extends Ribbon {
 		});
 
 		Poe.EventManager.addEventListener(itemAbout, 'click', function() {
-			
+
 		});
 
 		Poe.EventManager.addEventListener(itemQuit, 'click', function() {
@@ -276,9 +276,10 @@ class DefaultRibbon extends Ribbon {
 			Poe.Clipboard.copySelection();
 		});
 
+		var colorPopover = new Poe.Ribbon.ColorPopover();
+
 		btnFontColor.addEventListener('click', function() {
 			/* TODO: Create a popover, then populate with colors */
-			var popover = new Poe.Ribbon.ColorPopover();
 			Poe.EventManager.addEventListener(popover, 'click', function(color) {
 				btnFontColor.style.color = color;
 				var textStyle = Poe.TextFormat.TextStyle.getStyle();
@@ -286,11 +287,10 @@ class DefaultRibbon extends Ribbon {
 				textStyle.applyStyle();
 				popover.hide();
 			});
-			popover.showFor(btnFontColor, 'bottom');
+			colorPopover.showFor(btnFontColor, 'bottom');
 		});
 
 		btnTextBgColor.addEventListener('click', function() {
-			var popover = new Poe.Ribbon.ColorPopover();
 			Poe.EventManager.addEventListener(popover, 'click', function(color) {
 				btnTextBgColor.style.color = color;
 				var textStyle = Poe.TextFormat.TextStyle.getStyle();
@@ -298,7 +298,7 @@ class DefaultRibbon extends Ribbon {
 				textStyle.applyStyle();
 				popover.hide();
 			});
-			popover.showFor(btnTextBgColor, 'bottom');
+			colorPopover.showFor(btnTextBgColor, 'bottom');
 		});
 
 		var alignButtonEvents = function(align) {
