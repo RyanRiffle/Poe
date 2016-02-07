@@ -38,7 +38,7 @@ class DefaultRibbon extends Ribbon {
 		Poe.EventManager.addEventListener(Poe.Clipboard, 'changed', function() {
 			self.updateCopyPasteButton.call(self);
 		});
-		Poe.EventManager.addEventListener(app.doc.caret, 'moved', function() {
+		Poe.EventManager.addEventListener(app.doc.getCaret(), 'moved', function() {
 			self.updateStyleButtons.call(self);
 		});
 	}
@@ -179,11 +179,11 @@ class DefaultRibbon extends Ribbon {
 		homePane.append(paragraphGroup.elm);
 
 		var toggleButtonEvent = function(btn, check, set) {
-			var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
+			var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.getCaret());
 			var flip = !textStyle[check]();
 			textStyle[set](flip);
 			btn.setActive(flip);
-			textStyle.applyStyle(app.doc.caret);
+			textStyle.applyStyle(app.doc.getCaret());
 			app.doc.inputHandler.focus();
 		};
 
@@ -216,9 +216,9 @@ class DefaultRibbon extends Ribbon {
 		});
 
 		var alignButtonEvents = function(align) {
-			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
+			var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.getCaret());
 			pstyle.setTextAlign(align);
-			pstyle.applyStyle(app.doc.caret);
+			pstyle.applyStyle(app.doc.getCaret());
 			app.doc.inputHandler.focus();
 		};
 
@@ -237,14 +237,14 @@ class DefaultRibbon extends Ribbon {
 		inputFont.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFont(inputFont.getText());
-			textStyle.applyStyle(app.doc.caret);
+			textStyle.applyStyle(app.doc.getCaret());
 			app.doc.inputHandler.focus();
 		});
 
 		inputFontSize.addEventListener('change', function() {
 			var textStyle = Poe.TextFormat.TextStyle.getStyle();
 			textStyle.setFontSize(parseInt(inputFontSize.getText()));
-			textStyle.applyStyle(app.doc.caret);
+			textStyle.applyStyle(app.doc.getCaret());
 			app.doc.inputHandler.focus();
 		});
 
@@ -252,16 +252,16 @@ class DefaultRibbon extends Ribbon {
 			btnFormatPainter._currentTextStyle = null;
 			var connection = app.doc.addEventListener('click', function(node) {
 				if (btnFormatPainter._currentTextStyle !== null) {
-					if (app.doc.caret.hasSelection) {
-						app.doc.caret.splitStartNode();
-						app.doc.caret.splitEndNode();
-						app.doc.caret.forEachSelectedWord(function(word) {
+					if (app.doc.getCaret().hasSelection) {
+						app.doc.getCaret().splitStartNode();
+						app.doc.getCaret().splitEndNode();
+						app.doc.getCaret().forEachSelectedWord(function(word) {
 							btnFormatPainter._currentTextStyle.applyStyleToWord(word);
 						});
 					}
 					app.doc.removeEventListener('click', connection);
 					btnFormatPainter._currentTextStyle = null;
-					app.doc.caret.clearSelection();
+					app.doc.getCaret().clearSelection();
 				} else {
 					btnFormatPainter._currentTextStyle = Poe.TextFormat.TextStyle.getStyleOfWord(node.parentNode);
 				}

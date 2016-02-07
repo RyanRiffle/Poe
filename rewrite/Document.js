@@ -11,7 +11,7 @@ class Document extends Poe.DomElement {
 		$append(this.elm, document.body);
 		this._filePath = null;
 		this._savedHash = null;
-		this.buffer = null;
+		this._buffer = null;
 		this.inputHandler = new Poe.InputHandler();
 		this.setPageSizeIn(Poe.Document.PageSize.Letter);
 		this.setPageMarginsIn(Poe.config.defaultPageMargins || {
@@ -26,6 +26,10 @@ class Document extends Poe.DomElement {
 		if (opts.init !== false)
 			this._init(opts);
 	}
+
+	/***************************************************************************
+	/* API Functions
+	**************************************************************************/
 
 	setPageSizeIn(size) {
 		var page = null;
@@ -76,6 +80,14 @@ class Document extends Poe.DomElement {
 		return this._filePath;
 	}
 
+	getCaret() {
+		return this._caret;
+	}
+
+	getBuffer() {
+		return this._buffer;
+	}
+
 	setSavedHash(hash) {
 		this._savedHash = hash;
 	}
@@ -101,8 +113,8 @@ class Document extends Poe.DomElement {
 
 	show() {
 		super.show();
-		if (this.caret)
-			this.caret.show();
+		if (this._caret)
+			this._caret.show();
 	}
 
 	getNodeAtPoint(x, y) {
@@ -134,8 +146,8 @@ class Document extends Poe.DomElement {
 			let firstWord = firstLine.childNodes[0];
 			let firstChar = firstWord.childNodes[0];
 
-			if (firstChar === this.caret.elm) {
-				return this.caret.nextSibling;
+			if (firstChar === this._caret.elm) {
+				return this._caret.nextSibling;
 			}
 
 			return firstChar;
@@ -147,8 +159,8 @@ class Document extends Poe.DomElement {
 			let lastWord = lastLine.childNodes[lastLine.childNodes.length - 1];
 			let lastChar = lastWord.childNodes[lastWord.childNodes.length - 1];
 
-			if (lastChar === this.caret.elm) {
-				return this.caret.previousSibling;
+			if (lastChar === this._caret.elm) {
+				return this._caret.previousSibling;
 			}
 
 			return lastChar;
@@ -192,8 +204,8 @@ class Document extends Poe.DomElement {
 		var rect = firstChild.getBoundingClientRect();
 		if (x < rect.left) {
 			if (firstChild.childNodes[0]) {
-				if (firstChild.childNodes[0] === this.caret.elm) {
-					return this.caret.nextSibling;
+				if (firstChild.childNodes[0] === this._caret.elm) {
+					return this._caret.nextSibling;
 				}
 				return firstChild.childNodes[0];
 			}
@@ -202,8 +214,8 @@ class Document extends Poe.DomElement {
 		if (x > rect.right) {
 			let wordChildren = lastChild.childNodes;
 			let wordLastChild = wordChildren[wordChildren.length - 1];
-			if (wordLastChild === this.caret.elm) {
-				return this.caret.previousSibling;
+			if (wordLastChild === this._caret.elm) {
+				return this._caret.previousSibling;
 			}
 			return wordLastChild;
 		}
@@ -275,9 +287,9 @@ class Document extends Poe.DomElement {
 
 	remove() {
 		super.remove();
-		this.caret.remove();
+		this._caret.remove();
 		this.inputHandler.remove();
-		this.buffer.remove();
+		this._buffer.remove();
 		this.inputHandler.remove();
 		this.textLayout = null;
 		app.doc = null;
@@ -291,7 +303,7 @@ class Document extends Poe.DomElement {
 
 	focus() {
 		app.doc.inputHandler.focus();
-		app.doc.caret.show();
+		app.doc.getCaret().show();
 	}
 
 
@@ -318,17 +330,17 @@ class Document extends Poe.DomElement {
 			this.append(page, this.elm);
 		}
 
-		 this.buffer = new Poe.TextBuffer();
+		 this._buffer = new Poe.TextBuffer();
 		 if (opts.bufferInit) {
-			opts.bufferInit(this, this.buffer);
+			opts.bufferInit(this, this._buffer);
 		 }
-		 Poe.EventManager.addEventListener(this.buffer, 'changed', function() {
+		 Poe.EventManager.addEventListener(this._buffer, 'changed', function() {
 			self.emit('changed');
 		 });
-		 
-		 this.caret = new Poe.Caret();
-		 this.caret.setBuffer(this.buffer);
-		 this.inputHandler.setCaret(this.caret);
+
+		 this._caret = new Poe.Caret();
+		 this._caret.setBuffer(this._buffer);
+		 this.inputHandler.setCaret(this._caret);
 		 this.textLayout = new Poe.TextLayout(this);
 
 		 Poe.EventManager.addEventListener(window, 'scroll', this.focus);

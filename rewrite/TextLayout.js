@@ -13,7 +13,7 @@ class TextLayout extends Poe.Object {
 	}
 
 	remove() {
-		this.document.buffer.removeEventListener('changed', this.relayout);
+		this.document.getBuffer().removeEventListener('changed', this.relayout);
 	}
 
 	setDisabled(isDisabled) {
@@ -25,11 +25,19 @@ class TextLayout extends Poe.Object {
 			return false;
 		}
 
-		var paragraph = self.document.caret.currentParagraph;
+		self.doWordWrapForward();
+		self.doWordWrapBackward();
+		self.doPageWrap();
+
+		return true;
+	}
+
+	doWordWrapForward() {
+		var paragraph = self.document.getCaret().currentParagraph;
 		var wordRect, lineRect, line, word;
 		var i;
 		for (i = 0; i < paragraph.childNodes.length; i++) {
-			if (paragraph.childNodes[i] === self.document.caret.currentLine) {
+			if (paragraph.childNodes[i] === self.document.getCaret().currentLine) {
 				break;
 			}
 		}
@@ -59,7 +67,11 @@ class TextLayout extends Poe.Object {
 				}
 			}
 		}
+	}
 
+	doWordWrapBackward() {
+		var paragraph = self.document.getCaret().currentParagraph;
+		var wordRect, lineRect, line, word, i;
 		/*
 			Check for the inverse. If the line above has room to fit words
 			from the line below, move them up a line.
@@ -95,8 +107,12 @@ class TextLayout extends Poe.Object {
 			}
 		}
 
+	}
+
+	doPageWrap() {
+		var paragraph = self.document.getCaret().currentParagraph;
 		var page = paragraph.parentNode;
-		for(i = 0; i < page.childNodes.length; i++) {
+		for(var i = 0; i < page.childNodes.length; i++) {
 			if (page.childNodes[i] === paragraph) {
 				break;
 			}
@@ -128,8 +144,7 @@ class TextLayout extends Poe.Object {
 			}
 		}
 
-		self.document.caret.show();
-		return true;
+		self.document.getCaret().show();
 	}
 }
 

@@ -24,7 +24,7 @@ class TextStyle {
 		so it does not need access to the buffer.
 	*/
 	applyStyle(marker) {
-		marker = marker || app.doc.caret;
+		marker = marker || app.doc.getCaret();
 		if (marker.hasSelection) {
 			this.applyStyleToSelection(marker);
 		} else {
@@ -224,7 +224,7 @@ class TextStyle {
 }
 
 TextStyle.getStyle = function(caret) {
-	caret = caret || app.doc.caret;
+	caret = caret || app.doc.getCaret();
 	var node = caret.elm;
 	node = node.parentNode;
 

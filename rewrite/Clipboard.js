@@ -18,9 +18,9 @@ class Clipboard extends Poe.EventHandler {
 
 	copySelection() {
 		var self = this;
-		app.doc.caret.splitStartNode();
-		app.doc.caret.splitEndNode();
-		app.doc.caret.forEachSelectedWord(function(word) {
+		app.doc.getCaret().splitStartNode();
+		app.doc.getCaret().splitEndNode();
+		app.doc.getCaret().forEachSelectedWord(function(word) {
 			self._data.push(word.cloneNode(true));
 		});
 		this.emit('changed');
@@ -31,10 +31,10 @@ class Clipboard extends Poe.EventHandler {
 	}
 
 	pasteSelection() {
-		if (app.doc.caret.hasSelection) {
-			app.doc.caret.splitStartNode();
-			app.doc.caret.splitEndNode();
-			app.doc.caret.remove();
+		if (app.doc.getCaret().hasSelection) {
+			app.doc.getCaret().splitStartNode();
+			app.doc.getCaret().splitEndNode();
+			app.doc.getCaret().remove();
 		}
 	}
 }

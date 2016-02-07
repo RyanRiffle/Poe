@@ -9,7 +9,7 @@ function Action_ToggleBold() {
 	var textStyle = Poe.TextFormat.TextStyle.getStyle();
 	textStyle.setBold(!textStyle.isBold());
 	textStyle.applyStyle();
-	app.doc.caret.emit('moved');
+	app.doc.getCaret().emit('moved');
 	event.preventDefault();
 }
 
@@ -17,7 +17,7 @@ function Action_ToggleItalic() {
 	var textStyle = Poe.TextFormat.TextStyle.getStyle();
 	textStyle.setItalic(!textStyle.isItalic());
 	textStyle.applyStyle();
-	app.doc.caret.emit('moved');
+	app.doc.getCaret().emit('moved');
 	event.preventDefault();
 }
 
@@ -25,7 +25,7 @@ function Action_ToggleUnderline() {
 	var textStyle = Poe.TextFormat.TextStyle.getStyle();
 	textStyle.setUnderline(!textStyle.isUnderline());
 	textStyle.applyStyle();
-	app.doc.caret.emit('moved');
+	app.doc.getCaret().emit('moved');
 	event.preventDefault();
 }
 

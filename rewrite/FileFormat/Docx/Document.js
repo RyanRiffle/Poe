@@ -22,7 +22,7 @@ class Document {
 			}
 
 			console.log(Date.now() - time);
-			app.doc.caret.moveBeginning();
+			app.doc.getCaret().moveBeginning();
 		}, 10);
 	}
 
@@ -38,9 +38,9 @@ class Document {
 					prChild = child.childNodes[x];
 					if (prChild.tagName === 'ind') {
 						var indentAmount = Docx.sizeToPxCount(prChild.getAttribute('firstLine'));
-						var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.caret);
+						var pstyle = Poe.TextFormat.ParagraphStyle.getStyle(app.doc.getCaret());
 						pstyle.setIndent(indentAmount);
-						pstyle.applyStyle(app.doc.caret);
+						pstyle.applyStyle(app.doc.getCaret());
 					}
 				}
 				continue;
@@ -57,13 +57,13 @@ class Document {
 		}
 
 		if (!isLast) {
-			var oldPgraph = app.doc.caret.currentWord.parentNode.parentNode;
+			var oldPgraph = app.doc.getCaret().currentWord.parentNode.parentNode;
 			var pgraph = Poe.ElementGenerator.createParagraph();
 			var line = Poe.ElementGenerator.createLine();
 			var word = Poe.ElementGenerator.createWord();
 			pgraph.appendChild(line);
 			line.appendChild(word);
-			word.appendChild(app.doc.caret.elm);
+			word.appendChild(app.doc.getCaret().elm);
 
 			$insertAfter(pgraph, oldPgraph);
 		}
@@ -71,7 +71,7 @@ class Document {
 
 	_parseRun(node) {
 		var child;
-		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.caret);
+		var textStyle = Poe.TextFormat.TextStyle.getStyle(app.doc.getCaret());
 		for (var i = 0; i < node.childNodes.length; i++) {
 			child = node.childNodes[i];
 
@@ -82,7 +82,7 @@ class Document {
 
 					if (prChild.tagName === 'rFonts') {
 						textStyle.setFont(prChild.getAttribute('ascii'));
-						textStyle.applyStyle(app.doc.caret);
+						textStyle.applyStyle(app.doc.getCaret());
 						continue;
 					}
 
@@ -112,14 +112,14 @@ class Document {
 				for (var si = 0; si < txtNode.textContent.length; si++) {
 					var char = txtNode.textContent.charAt(si);
 					if (char === ' ') {
-						app.doc.caret.insertNode(document.createTextNode(String.fromCharCode(160)));
+						app.doc.getCaret().insertNode(document.createTextNode(String.fromCharCode(160)));
 						var word = Poe.ElementGenerator.createWord();
-						$insertAfter(word, app.doc.caret.currentWord);
-						$append(app.doc.caret.elm, word);
+						$insertAfter(word, app.doc.getCaret().currentWord);
+						$append(app.doc.getCaret().elm, word);
 						textStyle.applyStyleToWord(word);
 						continue;
 					}
-					app.doc.caret.insertNode(document.createTextNode(txtNode.textContent.charAt(si)));
+					app.doc.getCaret().insertNode(document.createTextNode(txtNode.textContent.charAt(si)));
 				}
 			}
 		}
