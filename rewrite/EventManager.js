@@ -54,7 +54,7 @@ class EventManager extends Poe.Object {
 	}
 
 	addEventListener(element, type, callback) {
-		if (typeof type === 'Array') {
+		if (Object.prototype.toString.call(type) === '[object Array]') {
 			var listeners = [];
 			for (var i = 0; i < type.length; i++) {
 				listeners.push(this.addEventListener(element, type[i], callback));
@@ -86,6 +86,6 @@ class EventManager extends Poe.Object {
 	}
 }
 
-Poe.EventManager = new EventManager;
+Poe.EventManager = new EventManager();
 Poe.EventListener = EventListener;
 })(window.Poe);
