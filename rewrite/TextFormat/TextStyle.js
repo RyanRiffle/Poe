@@ -5,6 +5,7 @@ class TextStyle {
 	constructor() {
 		this._fontSize = 12;
 		this._fontColor = 'black';
+		this._backgroundColor = 'white';
 		this._fontFace = 'Open Sans';
 		this._decoration = TextStyle.Decoration.NONE;
 	}
@@ -145,6 +146,22 @@ class TextStyle {
 		return this;
 	}
 
+	setFontColor(color) {
+		this._fontColor = color;
+	}
+
+	getFontColor() {
+		return this._fontColor;
+	}
+
+	setBackgroundColor(color) {
+		this._backgroundColor = color;
+	}
+
+	getBackgroundColor(color) {
+		return this._backgroundColor;
+	}
+
 	isBold() {
 		return this._decoration & TextStyle.Decoration.BOLD;
 	}
@@ -213,13 +230,15 @@ class TextStyle {
 			}
 
 			if (this._decoration & TextStyle.Decoration.SUPERSCRIPT) {
-				$addClass(word, sub);
+				$addClass(word, 'sup');
 			}
 		}
 
-		word.style['font-family'] = this._fontFace;
-		word.style['font-size'] = $ptToPxStr(this._fontSize);
-		word.style['min-height'] = $ptToPxStr(this._fontSize);
+		word.style.fontFamily = this._fontFace;
+		word.style.fontSize = $ptToPxStr(this._fontSize);
+		word.style.minHeight = $ptToPxStr(this._fontSize);
+		word.style.color = this._fontColor;
+		word.style.backgroundColor = this._backgroundColor;
 	}
 }
 
@@ -258,6 +277,8 @@ TextStyle.getStyleOfWord = function(word) {
 			s.setSuperscript(true);
 		}
 
+		s.setFontColor(window.getComputedStyle(word).getPropertyValue('color'));
+		s.setBackgroundColor(window.getComputedStyle(word).getPropertyValue('background-color'));
 		s.setFont(window.getComputedStyle(word).getPropertyValue('font-family').replace(/\'/g, ''));
 		var sizeInPx = parseFloat(window.getComputedStyle(word).getPropertyValue('font-size').replace('px', ''));
 		var sizeInPt = (Math.fround(sizeInPx * 0.75));

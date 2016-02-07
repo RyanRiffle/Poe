@@ -231,18 +231,28 @@ ul.ul {
 	padding: 0px;
 	margin: 0px;
 	background-color: transparent;
+	user-select: none;
+	-webkit-user-select: none;
+	max-height: 300px;
+	overflow-y: scroll;
+	cursor: default;
 }
 
 ul.ul li {
+	padding-right: 12px;
+}
+
+ul.ul.menu li {
 	padding: 16px;
 	width: 200px;
 }
 
 ul.ul.menu {
 	font-size: 16px;
+	max-height: none;
 }
 
-ul.ul.menu li:hover {
+ul.ul li:hover {
 	background-color: rgba(0, 0, 0, .045);
 }
 
@@ -252,6 +262,60 @@ ul.menu span.glyphicons {
 
 ul.menu span.glyphicons.glyphicons-exit {
 	color: #f0ad4e;
+}
+
+.popover {
+	border-radius: 2px;
+	border: 1px solid rgba(0, 0, 0, .15);
+	background-color: white;
+	box-sizing: content-box;
+	margin: 6px;
+	position: absolute;
+	min-width: 10px;
+	min-height: 10px;
+	padding: 4px;
+}
+
+
+.popover.color .vertical-group {
+	box-sizing: content-box;
+	margin-left: 4px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	user-select: none;
+	-webkit-user-select: none;
+	cursor: default;
+}
+
+.popover.color .vertical-group:first-child {
+	margin-left: 0px;
+}
+
+.popover.color .horizontal-group {
+	box-sizing: content-box;
+}
+
+.color-block {
+	padding: 15px;
+	display: block;
+	font-size: 4px;
+}
+
+.color-block:last-child {
+	margin-bottom: 0px;
+}
+
+.font.dropdown li {
+	padding: 4px;
+}
+
+.font.dropdown ul {
+	overflow-y: scroll;
+	max-height: 300px;
+}
+
+ul.ul li {
+	padding: 4px;
 }
 
 /******************************************************************************

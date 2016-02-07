@@ -118,6 +118,60 @@ class DefaultRibbon extends Ribbon {
 		inputFontSize.setText(Poe.config.defaultFontSize);
 		inputFontSize.elm.style.width = '25px';
 
+		var fontDrop = new Poe.Ribbon.FontDropdown();
+		fontDrop.addFont('Arimo');
+		fontDrop.addFont('Calligraffitti');
+		fontDrop.addFont('Cousine');
+		fontDrop.addFont('Droid Sans');
+		fontDrop.addFont('Droid Serif');
+		fontDrop.addFont('Lobster');
+		fontDrop.addFont('Open Sans');
+		fontDrop.addFont('Pacifico');
+		fontDrop.addFont('Raleway');
+		fontDrop.addFont('Syncopate');
+		fontDrop.addFont('Tinos');
+		fontDrop.addFont('Ubuntu');
+
+		fontDrop.addEventListener('click', function(fontName) {
+			inputFont.setText(fontName);
+			var textStyle = Poe.TextFormat.TextStyle.getStyle();
+			textStyle.setFont(fontName);
+			textStyle.applyStyle();
+		});
+
+		var fontSizeDrop = new Poe.Ribbon.Dropdown();
+		fontSizeDrop.addItem('8');
+		fontSizeDrop.addItem('9');
+		fontSizeDrop.addItem('10');
+		fontSizeDrop.addItem('11');
+		fontSizeDrop.addItem('12');
+		fontSizeDrop.addItem('14');
+		fontSizeDrop.addItem('16');
+		fontSizeDrop.addItem('18');
+		fontSizeDrop.addItem('20');
+		fontSizeDrop.addItem('22');
+		fontSizeDrop.addItem('24');
+		fontSizeDrop.addItem('26');
+		fontSizeDrop.addItem('28');
+		fontSizeDrop.addItem('36');
+		fontSizeDrop.addItem('48');
+		fontSizeDrop.addItem('72');
+
+		Poe.EventManager.addEventListener(fontSizeDrop, 'click', function(size) {
+			inputFontSize.setText(size);
+			var textStyle = Poe.TextFormat.TextStyle.getStyle();
+			textStyle.setFontSize(parseInt(size));
+			textStyle.applyStyle();
+		});
+
+		Poe.EventManager.addEventListener(inputFont.elm, 'click', function() {
+			fontDrop.showFor(inputFont, 'bottom');
+		});
+
+		Poe.EventManager.addEventListener(inputFontSize.elm, 'click', function() {
+			fontSizeDrop.showFor(inputFontSize, 'bottom');
+		});
+
 		var fontGroup = new Poe.Ribbon.TabPaneGroup('Font');
 		fontGroup.addClass('vertical-group');
 
@@ -147,7 +201,14 @@ class DefaultRibbon extends Ribbon {
 		fontBtnGroupH.appendChild(btnStrike.elm);
 		fontBtnGroupH.appendChild(btnSub.elm);
 		fontBtnGroupH.appendChild(btnSup.elm);
-		fontGroup.appendMultiple([fontInputGroupH, fontBtnGroupH]);
+
+		var colorBtnGroupH = $createElmWithClass('div', 'horizontal-group');
+		var btnFontColor = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-text-color"></span>');
+		var btnTextBgColor = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-text-background"></span>');
+		colorBtnGroupH.appendChild(btnFontColor.elm);
+		colorBtnGroupH.appendChild(btnTextBgColor.elm);
+
+		fontGroup.appendMultiple([fontInputGroupH, fontBtnGroupH, colorBtnGroupH]);
 
 		var alignBtnGroupH = $createElmWithClass('div', 'horizontal-group');
 		var btnAlignLeft = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-align-left"></span>');
@@ -163,7 +224,7 @@ class DefaultRibbon extends Ribbon {
 
 		var clipboardGroup = new Poe.Ribbon.TabPaneGroup();
 		clipboardGroup.addClass('vertical-group');
-		var btnCopyPaste = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4283FC;"></span><br/><div style="padding-top: 4px;">Copy</div>');
+		var btnCopyPaste = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-copy" style="font-size: 32px; color: #4C8ED1;"></span><br/><div style="padding-top: 4px;">Copy</div>');
 		var btnFormatPainter = new Poe.Ribbon.Button('<span class="glyphicons glyphicons-brush"></span>');
 		btnFormatPainter.elm.style['font-size'] = '16px';
 		var clipboardGroupH = $createElmWithClass('div', 'horizontal-group');
@@ -213,6 +274,31 @@ class DefaultRibbon extends Ribbon {
 
 		btnCopyPaste.addEventListener('click', function() {
 			Poe.Clipboard.copySelection();
+		});
+
+		btnFontColor.addEventListener('click', function() {
+			/* TODO: Create a popover, then populate with colors */
+			var popover = new Poe.Ribbon.ColorPopover();
+			Poe.EventManager.addEventListener(popover, 'click', function(color) {
+				btnFontColor.style.color = color;
+				var textStyle = Poe.TextFormat.TextStyle.getStyle();
+				textStyle.setFontColor(color);
+				textStyle.applyStyle();
+				popover.hide();
+			});
+			popover.showFor(btnFontColor, 'bottom');
+		});
+
+		btnTextBgColor.addEventListener('click', function() {
+			var popover = new Poe.Ribbon.ColorPopover();
+			Poe.EventManager.addEventListener(popover, 'click', function(color) {
+				btnTextBgColor.style.color = color;
+				var textStyle = Poe.TextFormat.TextStyle.getStyle();
+				textStyle.setBackgroundColor(color);
+				textStyle.applyStyle();
+				popover.hide();
+			});
+			popover.showFor(btnTextBgColor, 'bottom');
 		});
 
 		var alignButtonEvents = function(align) {

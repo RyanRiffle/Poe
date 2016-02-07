@@ -72,6 +72,10 @@ class DomElement extends Poe.EventHandler {
 		this.elm.focus();
 	}
 
+	getBoundingClientRect() {
+		return this.elm.getBoundingClientRect();
+	}
+
 	addEventListener(type, callback) {
 		if (this.supportsEvent(type)) {
 			return super.addEventListener(type, callback);

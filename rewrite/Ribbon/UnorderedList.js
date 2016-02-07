@@ -3,7 +3,7 @@
 
 class UnorderedList extends Poe.DomElement{
 	constructor() {
-		super('ul');
+		super('ul', ['click']);
 		this.addClass('ul');
 
 		this._items = [];
