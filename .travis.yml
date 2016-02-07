@@ -3,6 +3,7 @@ node_js:
 - "2.3.0"
 before_install:
 - npm install
+- pip install codecov
 before_script:
 - npm install -g electron-packager
 - npm install -g grunt

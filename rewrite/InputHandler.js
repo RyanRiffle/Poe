@@ -158,7 +158,7 @@ class InputHandler extends Poe.DomElement {
 
 			case Poe.Keysym.Space:
 				event.preventDefault();
-				let activeStyle = Poe.TextFormat.TextStyle.getStyle();
+				var activeStyle = Poe.TextFormat.TextStyle.getStyle();
 				self._caret.insertNode(document.createTextNode(String.fromCharCode(160)));
 				var word = Poe.ElementGenerator.createWord();
 				$insertAfter(word, self._caret.elm.parentNode);
@@ -167,9 +167,9 @@ class InputHandler extends Poe.DomElement {
 					current word, move them to the new word as well.
 				*/
 				if (self._caret.nextSibling) {
-					let caretParent = self._caret.elm.parentNode;
-					let siblingIndex = self._caret.buffer.indexOf(self._caret.nextSibling);
-					let node;
+					var caretParent = self._caret.elm.parentNode;
+					var siblingIndex = self._caret.buffer.indexOf(self._caret.nextSibling);
+					var node;
 					while ((node = self._caret.buffer.at(siblingIndex)) && node.parentNode === caretParent) {
 						$append(node, word);
 						siblingIndex += 1;
@@ -231,7 +231,7 @@ class InputHandler extends Poe.DomElement {
 			return;
 		}
 
-		if (event.clientX == self._mouseDownPos.x && event.clientY == self._mouseDownPos.y)
+		if (event.clientX === self._mouseDownPos.x && event.clientY === self._mouseDownPos.y)
 			return;
 
 		var node = app.doc.getNodeClosestToPoint(event.clientX, event.clientY);
