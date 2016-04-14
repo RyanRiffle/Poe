@@ -3,7 +3,6 @@
 		return;
 	}
 	
-	Poe.config = {
-		isNative: true
-	};
+	Poe.config = Poe.config || {};
+	Poe.config.isNative = true;
 })(window.Poe);

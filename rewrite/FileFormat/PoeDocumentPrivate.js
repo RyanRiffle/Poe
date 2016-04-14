@@ -24,7 +24,10 @@ class PoeDocumentPrivate {
 
 	_initBuffer(doc, buffer) {
 		doc.elm.innerHTML = self._data;
-		document.querySelector('.caret').remove();
+		var caret = document.querySelector('.caret');
+		if (caret) {
+			caret.remove();
+		}
 		var i, n, node, tmp;
 		var words = document.querySelectorAll('.word');
 		for (i = 0; i < words.length; i++) {
